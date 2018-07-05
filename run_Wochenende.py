@@ -105,6 +105,9 @@ def createProgressFile():
         progress = f.readlines()
         if progress == []:
             f.writelines(["# PROGRESS FILE FOR Wochenende\n", "<current file>\n"])
+            return None
+        else:
+            return progress[1].replace("\n", "")
 
 
 def addToProgress(func_name, c_file):
@@ -496,11 +499,12 @@ def main(args, sys_argv):
     args = check_arguments(args)
     global progress_file 
     progress_file = args.fastq + "progress.tmp"
-    createProgressFile()
+    currentFile = createProgressFile()
     threads = args.threads
     global inputFastq
     inputFastq = args.fastq
-    currentFile = inputFastq
+    if currentFile is None:
+        currentFile = inputFastq
     print ("Meta/genome selected: " + args.metagenome)
 
     if args.readType == "SE":
