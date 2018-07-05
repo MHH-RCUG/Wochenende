@@ -241,7 +241,7 @@ def runPrinseq(stage_infile):
     stage_outfile = prefix + '.lc.fastq'
     prinseqCmd = [path_prinseq, '-fastq', stage_infile, '-lc_method', 'dust', 
                   '-lc_threshold', '3', '-out_good', stage_outfile, 
-                  '-out_bad', prefix + 'lc_seqs.fq']
+                  '-out_bad', prefix + '.lc_seqs.fq']
     runStage(stage, prinseqCmd)
     # prinseq adds extra .fastq by itself. Remove this by moving the file to 
     # the filename expected by downstream apps
@@ -263,7 +263,7 @@ def runPrinseqPE(stage_infile_1, stage_infile_2):
     prinseqCmd = [path_prinseq, '-fastq', stage_infile_1, 
                   '-fastq2', stage_infile_2, '-lc_method', 'dust', 
                   '-lc_threshold', '3', '-out_good', stage_outfile, 
-                  '-out_bad', prefix + 'lc_seqs.fq']
+                  '-out_bad', prefix + '.lc_seqs.fq']
     runStage(stage, prinseqCmd)
     # prinseq adds extra .fastq by itself. Remove this by moving the file to 
     # the filename expected by downstream apps
