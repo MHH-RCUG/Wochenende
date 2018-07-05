@@ -379,11 +379,11 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     elif "PE" in readType:
         stage_infile2 = deriveRead2Name(stage_infile)
         alignerCmd = [path_bwa, 'mem', '-t', str(noThreads), '-R', 
-                  '"@RG\tID:' + readGroup + '_001\tSM:' + readGroup + '"',
+                  '"@RG\\tID:' + readGroup + '_001\\tSM:' + readGroup + '"',
                   str(index), stage_infile, stage_infile2]
     elif "SE" in readType:
         alignerCmd = [path_bwa, 'mem', '-t', str(noThreads), '-R', 
-                  '"@RG\tID:' + readGroup + '_001\tSM:' + readGroup + '"',
+                  '"@RG\\tID:' + readGroup + '_001\\tSM:' + readGroup + '"',
                   str(index), stage_infile]
     else:
         print("Read type not defined")
