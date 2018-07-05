@@ -54,6 +54,8 @@ path_refseq_dict = {
 }
 ea_adapter_fasta = '/mnt/ngsnfs/tools/miniconda2/pkgs/bbmap-37.17-0/opt/bbmap-37.17/resources/adapters.fa'
 adapter_fasta = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa'
+## Other
+path_tmpdir = '/ngsssd1/rcug/tmp/'
 
 ##############################
 # INITIALIZATION AND ORGANIZATIONAL FUNCTIONS
@@ -479,7 +481,7 @@ def abra(stage_infile, fasta, threads):
     #java -Xmx16G -jar /mnt/ngsnfs/tools/abra2/abra2_latest.jar --in $bam --out $bam.abra.bam --ref $ref --threads 14 --dist 1000 --tmpdir /data/tmp/ > abra.log
     abraCmd = [path_java, '-Xmx16G', '-jar', path_abra_jar, '--in', stage_infile,
                '--out', stage_outfile, '--ref', fasta, '--threads', threads,
-               '--dist', '1000', '--tmpdir', '/ngsssd1/rcug/tmp/']
+               '--dist', '1000', '--tmpdir', path_tmpdir]
     runStage(stage, abraCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
