@@ -210,7 +210,7 @@ def runFastpSE(stage_infile, noThreads):
                 # '--adapter_sequence=' + adapter_fasta,
                 '--cut_by_quality5', '--cut_window_size=5', 
                 '--cut_mean_quality=15', '--html='+ prefix + '.html', 
-                '--thread='+ noThreads]
+                '--json='+ prefix + '.json', '--thread='+ noThreads]
     runStage(stage, fastpcmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
@@ -227,7 +227,7 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
                 '--disable_quality_filtering', '--disable_length_filtering',
                 '--cut_by_quality5', '--cut_window_size=5', 
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
-                '--thread='+ noThreads]
+                '--json='+ prefix + '.json', '--thread='+ noThreads]
     runStage(stage, fastpcmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
