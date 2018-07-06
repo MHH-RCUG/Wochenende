@@ -9,7 +9,7 @@ for i in `ls *_R1.fastq`
 
         do
                 echo $i
-                sbatch run_Wochenende_slurm.sh $i
+                sbatch run_Wochenende_SLURM.sh $i
 
 done
 
