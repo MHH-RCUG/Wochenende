@@ -14,7 +14,7 @@ nano run_Wochenende_slurm.sh
 ```
 3. Run the pipeline
 ```
-sbatch run_Wochenende_slurm.sbatch x.fastq
+sbatch run_Wochenende_SLURM.sh x.fastq
 ```
 
 ### General usage
