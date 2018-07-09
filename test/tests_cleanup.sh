@@ -19,7 +19,7 @@ rm illumina_*prinseq_bad*
 rm -r illumina_ *fastqc_out
 rm illumina_*.fastp.fastq*
 rm illumina_*.html
-rm illumina_fastp.json
+rm illumina_*.json
 rm illumina_*.out
 rm illumina_*.err
 
@@ -44,7 +44,7 @@ rm promethion_*prinseq_bad*
 rm -r promethion_ *fastqc_out
 rm promethion_*.fastp.fastq*
 rm promethion_*.html
-rm promethion_fastp.json
+rm promethion_*.json
 rm promethion_*.out
 rm promethion_*.err
 
