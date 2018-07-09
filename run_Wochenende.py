@@ -100,12 +100,12 @@ def check_arguments(args):
     return args
 
 
-def createProgressFile():
+def createProgressFile(args):
     # Read or create progress file
-    with open(progress_file, mode='w+') as f:
+    with open(progress_file, mode='a+') as f:
+        f.seek(0)
         progress = f.readlines()
-    if progress == [] or progress[1].replace("\n", "") == "<current file>"i or args.force_restart:
-        os.remove(progress_file)
+    if progress == [] or progress[1].replace("\n", "") == "<current file>" or args.force_restart:
         with open(progress_file, mode='w') as f:
             f.writelines(["# PROGRESS FILE FOR Wochenende\n", "<current file>\n"])
         return None
@@ -118,7 +118,7 @@ def addToProgress(func_name, c_file):
     with open(progress_file, mode='r') as f:
         progress_lines = f.readlines()
         progress_lines[1] = c_file + "\n"
-        if func_name not in progress_lines:
+        if func_name+"\n" not in progress_lines:
             progress_lines.append(func_name + "\n")
     with open(progress_file, mode='w') as f:
         f.writelines(progress_lines)
@@ -128,7 +128,7 @@ def addToProgress(func_name, c_file):
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
     # Run function and add it to the progress file
     with open(progress_file, mode='r') as f:
-        done =  func_name in ''.join(f.readlines())
+        done = func_name in ''.join(f.readlines())
     if not done:
         if newCurrentFile:
             cF = func(cF, *extraArgs)
@@ -504,7 +504,7 @@ def main(args, sys_argv):
     args = check_arguments(args)
     global progress_file 
     progress_file = args.fastq + "progress.tmp"
-    currentFile = createProgressFile()
+    currentFile = createProgressFile(args)
     threads = args.threads
     global inputFastq
     inputFastq = args.fastq
