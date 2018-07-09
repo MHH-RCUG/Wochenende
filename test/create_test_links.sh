@@ -1,3 +1,8 @@
+gunzip illumina_PE_R1.fastq
+gunzip illumina_PE_R2.fastq
+gunzip illumina_SE_R1.fastq
+gunzip promethion.fastq
+
 ln -s illumina_PE_R1.fastq illumina_PE_hg19_bwamem_16_debug_longread_R1.fastq
 ln -s illumina_PE_R1.fastq illumina_PE_hg19_bwamem_16_debug_R1.fastq
 ln -s illumina_PE_R1.fastq illumina_PE_hg19_bwamem_16_fastp_debug_longread_R1.fastq

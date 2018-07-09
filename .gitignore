@@ -1,3 +1,4 @@
 test/illumina*
 test/promethion*
 test/tmp
+test/slurm-?????.out

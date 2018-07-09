@@ -510,3 +510,8 @@ rm promethion_SE_PA14_minimap2_8_fastp_longread_noduprem_R1.fastq
 rm promethion_SE_PA14_minimap2_8_fastp_noduprem_R1.fastq
 rm promethion_SE_PA14_minimap2_8_longread_noduprem_R1.fastq
 rm promethion_SE_PA14_minimap2_8_noduprem_R1.fastq
+
+gzip illumina_PE_R1.fastq
+gzip illumina_PE_R2.fastq
+gzip illumina_SE_R1.fastq
+gzip promethion.fastq
