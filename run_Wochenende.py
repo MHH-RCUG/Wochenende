@@ -487,7 +487,7 @@ def abra(stage_infile, fasta, threads):
     #java -Xmx16G -jar /mnt/ngsnfs/tools/abra2/abra2_latest.jar --in $bam --out $bam.abra.bam --ref $ref --threads 14 --dist 1000 --tmpdir /data/tmp/ > abra.log
     abraCmd = [path_java, '-Xmx16G', '-jar', path_abra_jar, '--in', stage_infile,
                '--out', stage_outfile, '--ref', fasta, '--threads', threads,
-               '--dist', '1000', '--tmpdir', path_tmpdir]
+               '--dist', '1000', '--tmpdir', path_tmpdir + 'abra_' +  str(int(time.time()))]
     runStage(stage, abraCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile

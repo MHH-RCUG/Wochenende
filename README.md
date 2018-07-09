@@ -5,22 +5,11 @@
 ### SLURM usage
 
 1. Copy all the run_Wochenende* files to your directory with your FASTQ files
-
-```
-cp /path/to/wochenende/run_Wochenende* .
-```
-
+`cp /path/to/wochenende/run_Wochenende* .`
 2. Adjust settings in the script
-
-```
-nano run_Wochenende_slurm.sh
-```
-
+`nano run_Wochenende_slurm.sh`
 3. Run the pipeline
-
-```
-sbatch run_Wochenende_SLURM.sh x.fastq
-```
+`sbatch run_Wochenende_SLURM.sh x.fastq`
 
 ### General usage
 
@@ -65,24 +54,11 @@ https://github.com/MHH-RCUG/Wochenende#Installation
 We recommend using [Bioconda](https://bioconda.github.io/) for installation of the tools used by our pipeline.
 
 1. Clone or download the repository to your local machine.
-
-```
-git clone https://github.com/MHH-RCUG/wochenende.git
-```
-
+`git clone https://github.com/MHH-RCUG/wochenende.git`
 OR
-
-```
-wget https://github.com/MHH-RCUG/wochenende/archive/master.zip
-```
-
+`wget https://github.com/MHH-RCUG/wochenende/archive/master.zip`
 2. Create a conda environment for the pipeline.
-
-```
-conda create -n wochenende 
-conda install -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap
-``
-
+`conda create -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap`
 3. Install all the other tools. (tools marked with an asterik are not necessarily needed)
    - afterqc *
    - fastp *
@@ -108,13 +84,12 @@ conda install -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq s
 - [trimmomatic](https://github.com/timflutre/trimmomatic)
 
 # Old Version (internal only)
-PPKC: A whole genome/metagenome alignment sequencing analysis pipeline
 
+PPKC: A whole genome/metagenome alignment sequencing analysis pipeline
   * Dr. Colin Davenport
   * Tobias Scheithauer
 
 Hannover Medical School, 2017-2018
-
 
 See documentation on Wiki:
 http://172.17.189.147/doku.php?id=install_ppkc_pipeline
