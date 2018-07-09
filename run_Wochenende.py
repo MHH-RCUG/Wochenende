@@ -98,20 +98,19 @@ def check_arguments(args):
         sys.exit(1)
     return args
 
+
 def createProgressFile():
     # Read or create progress file
-    with open(progress_file, mode='a+') as f:
+    with open(progress_file, mode='r') as f:
         f.seek(0)
         progress = f.readlines()
-        if progress == []:
+    if progress == [] or progress[1].replace("\n", "") == "<current file>":
+        os.remove(progress_file)
+        with open(progress_file, mode='w') as f:
             f.writelines(["# PROGRESS FILE FOR Wochenende\n", "<current file>\n"])
-            return None
-        else:
-            current_file = progress[1].replace("\n", "")
-            if current_file != "<current file>":
-                return current_file
-            else:
-                return None
+        return None
+    else:
+        return progress[1].replace("\n", "")
 
 
 def addToProgress(func_name, c_file):

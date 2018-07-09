@@ -5,14 +5,19 @@
 ### SLURM usage
 
 1. Copy all the run_Wochenende* files to your directory with your FASTQ files
+
 ```
 cp /path/to/wochenende/run_Wochenende* .
 ```
+
 2. Adjust settings in the script
+
 ```
 nano run_Wochenende_slurm.sh
 ```
+
 3. Run the pipeline
+
 ```
 sbatch run_Wochenende_SLURM.sh x.fastq
 ```
@@ -25,10 +30,10 @@ Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer
 version: 1.0
 
 usage: run_Wochenende.py [-h] [--readType {PE,SE}]
-                   [--metagenome {2016_06_1p_genus,2016_06_1p_spec,hg19,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,zf10,PA14}]
-                   [--aligner ALIGNER] [--threads THREADS] [--fastp] [--debug]
-                   [--longread]
-                   fastq
+                         [--metagenome {2016_06_1p_genus,2016_06_1p_spec,hg19,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,zf10,PA14}]
+                         [--aligner ALIGNER] [--threads THREADS] [--fastp]
+                         [--debug] [--longread] [--no_duplicate_removal]
+                         fastq
 
 positional arguments:
   fastq                 _R1.fastq Input read1 fastq file
@@ -38,12 +43,16 @@ optional arguments:
   --readType {PE,SE}    Single end or paired end data, default= SE
   --metagenome {2016_06_1p_genus,2016_06_1p_spec,hg19,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,zf10,PA14}
                         Metagenome to use
-  --aligner ALIGNER     Aligner to use, default= bwamem
+  --aligner ALIGNER     Aligner to use, default= bwamem. Usage of minimap2
+                        optimized for ONT data only.
   --threads THREADS     Number of cores, default = 16
   --fastp               Use fastp instead of fastqc and trimmomatic
   --debug               Report all files
   --longread            Only do steps relevant for long PacBio/ONT reads eg.
                         no trimming, alignment & bam conversion
+  --no_duplicate_removal
+                        Skips steps for duplicate removal. Recommended for
+                        amplicon sequencing.
 
 We recommend using bioconda for the installation of the tools. Remember to run
 'source activate <environment name>' before you start if you are using
@@ -51,25 +60,29 @@ bioconda. Details about the installation are available on
 https://github.com/MHH-RCUG/Wochenende#Installation
 ```
 
-
 ## Installation
 
 We recommend using [Bioconda](https://bioconda.github.io/) for installation of the tools used by our pipeline.
 
 1. Clone or download the repository to your local machine.
+
 ```
 git clone https://github.com/MHH-RCUG/wochenende.git
 ```
+
 OR
+
 ```
 wget https://github.com/MHH-RCUG/wochenende/archive/master.zip
 ```
+
 2. Create a conda environment for the pipeline.
+
 ```
 conda create -n wochenende 
-conda install -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.7 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap
-
+conda install -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap
 ``
+
 3. Install all the other tools. (tools marked with an asterik are not necessarily needed)
    - afterqc *
    - fastp *
