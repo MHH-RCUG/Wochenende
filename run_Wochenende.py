@@ -67,6 +67,7 @@ fileList = []
 global IOthreadsConstant
 IOthreadsConstant='8'
 global args
+os.makedirs(path_tmpdir, exist_ok=True)
 
 
 print('Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline')
@@ -101,8 +102,7 @@ def check_arguments(args):
 
 def createProgressFile():
     # Read or create progress file
-    with open(progress_file, mode='r') as f:
-        f.seek(0)
+    with open(progress_file, mode='w+') as f:
         progress = f.readlines()
     if progress == [] or progress[1].replace("\n", "") == "<current file>":
         os.remove(progress_file)
@@ -485,9 +485,11 @@ def abra(stage_infile, fasta, threads):
     prefix = stage_infile.replace(".bam","")
     stage_outfile = prefix + '.abra.bam'
     #java -Xmx16G -jar /mnt/ngsnfs/tools/abra2/abra2_latest.jar --in $bam --out $bam.abra.bam --ref $ref --threads 14 --dist 1000 --tmpdir /data/tmp/ > abra.log
+    abra_tmpdir = os.path.join(path_tmpdir, 'abra_' +  str(int(time.time())))
+    os.makedirs(abra_tmpdir, exist_ok=True)
     abraCmd = [path_java, '-Xmx16G', '-jar', path_abra_jar, '--in', stage_infile,
                '--out', stage_outfile, '--ref', fasta, '--threads', threads,
-               '--dist', '1000', '--tmpdir', path_tmpdir + 'abra_' +  str(int(time.time()))]
+               '--dist', '1000', '--tmpdir', abra_tmpdir]
     runStage(stage, abraCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
