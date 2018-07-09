@@ -42,6 +42,7 @@ optional arguments:
   --no_duplicate_removal
                         Skips steps for duplicate removal. Recommended for
                         amplicon sequencing.
+  --force_restart       Force restart, without regard to existing progress
 
 We recommend using bioconda for the installation of the tools. Remember to run
 'source activate <environment name>' before you start if you are using
