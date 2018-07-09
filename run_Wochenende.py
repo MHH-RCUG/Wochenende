@@ -104,7 +104,7 @@ def createProgressFile():
     # Read or create progress file
     with open(progress_file, mode='w+') as f:
         progress = f.readlines()
-    if progress == [] or progress[1].replace("\n", "") == "<current file>":
+    if progress == [] or progress[1].replace("\n", "") == "<current file>"i or args.force_restart:
         os.remove(progress_file)
         with open(progress_file, mode='w') as f:
             f.writelines(["# PROGRESS FILE FOR Wochenende\n", "<current file>\n"])
@@ -610,6 +610,8 @@ if __name__ == "__main__":
     parser.add_argument("--longread", help="Only do steps relevant for long PacBio/ONT reads eg. no trimming, alignment & bam conversion", action="store_true")
 
     parser.add_argument("--no_duplicate_removal", help="Skips steps for duplicate removal. Recommended for amplicon sequencing.", action="store_true")
+   
+    parser.add_argument("--force_restart", help="Force restart, without regard to existing progress", action="store_true")
 
     if len(sys.argv) == 1:
         parser.print_help()

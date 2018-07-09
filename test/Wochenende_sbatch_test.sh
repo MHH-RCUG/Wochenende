@@ -22,6 +22,8 @@ PATH=/mnt/ngsnfs/tools/miniconda3/bin:$PATH
  
 # Activate env on cluster node 
 source activate wochenende 
+
+set -x
  
 srun -n1 -N1 --exclusive -e illumina_PE_hg19_bwamem_16_debug_longread_R1.err -o illumina_PE_hg19_bwamem_16_debug_longread_R1.out python3 ../run_Wochenende.py --metagenome hg19 --aligner bwamem --threads 16 --readType PE --debug --longread illumina_PE_hg19_bwamem_16_debug_longread_R1.fastq & # failing
 srun -n1 -N1 --exclusive -e illumina_PE_hg19_bwamem_16_debug_R1.err -o illumina_PE_hg19_bwamem_16_debug_R1.out python3 ../run_Wochenende.py --metagenome hg19 --aligner bwamem --threads 16 --readType PE --debug illumina_PE_hg19_bwamem_16_debug_R1.fastq & # working
