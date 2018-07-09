@@ -67,8 +67,8 @@ wget https://github.com/MHH-RCUG/wochenende/archive/master.zip
 2. Create a conda environment for the pipeline.
 ```
 conda create -n wochenende 
-conda install -n wochenende -c bioconda bwa trimmomatic prinseq samtools=1.8 r-base64 sambamba fastuniq fastqc ea-utils bbmap
-conda install -n wochenende -c conda-forge ncurses
+conda install -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.7 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap
+
 ``
 3. Install all the other tools. (tools marked with an asterik are not necessarily needed)
    - afterqc *
@@ -87,7 +87,8 @@ conda install -n wochenende -c conda-forge ncurses
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [ea-utils](https://github.com/ExpressionAnalysis/ea-utils)
 - [FastUniq](https://sourceforge.net/projects/fastuniq/)
-- [perldup](https://github.com/richardmleggett/scripts/blob/master/remove_pcr_duplicates.pl) Already copied to dependencies folder. Developed by [Richard Legget](https://github.com/richardmleggett).
+- [Minimap2](https://github.com/lh3/minimap2)
+- [perldup](https://github.com/richardmleggett/scripts/blob/master/remove_pcr_duplicates.pl) Already copied to dependencies folder. Developed by [Richard Leggett](https://github.com/richardmleggett).
 - [PRINSEQ](http://prinseq.sourceforge.net/)
 - [sambamba](https://github.com/biod/sambamba)
 - [samtools](https://github.com/samtools/samtools)
