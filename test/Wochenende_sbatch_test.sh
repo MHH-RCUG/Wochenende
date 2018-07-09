@@ -13,7 +13,7 @@
  
 # mail alert at start, end and abortion of execution 
 #SBATCH --mail-type=ALL 
-#SBATCH --mail-user=scheithauer.tobias@mh-hannover.de 
+#SBATCH --mail-user=<your mail address here> 
  
 # Add miniconda3 to PATH 
 PATH=/mnt/ngsnfs/tools/miniconda3/bin:$PATH 
