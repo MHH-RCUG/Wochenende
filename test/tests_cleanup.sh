@@ -9,7 +9,7 @@ rm illumina_*.trm.fastq
 rm illumina_*.lc.fastq
 rm illumina_*.lc.*
 rm illumina_*.ndp.fastq
-rm illumina_*.ndp.lc_seqs.fq.fastq
+rm illumina_*.lc_seqs.fq.fastq
 rm illumina_*.ndp.lc.fastq
 rm illumina_*.ndp.lc.trm.bam
 rm illumina_*.ndp.lc.trm.fastq
@@ -34,7 +34,7 @@ rm promethion_*.trm.fastq
 rm promethion_*.lc.fastq
 rm promethion_*.lc.*
 rm promethion_*.ndp.fastq
-rm promethion_*.ndp.lc_seqs.fq.fastq
+rm promethion_*.lc_seqs.fq.fastq
 rm promethion_*.ndp.lc.fastq
 rm promethion_*.ndp.lc.trm.bam
 rm promethion_*.ndp.lc.trm.fastq

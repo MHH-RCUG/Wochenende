@@ -107,7 +107,11 @@ def createProgressFile():
             f.writelines(["# PROGRESS FILE FOR Wochenende\n", "<current file>\n"])
             return None
         else:
-            return progress[1].replace("\n", "")
+            current_file = progress[1].replace("\n", "")
+            if current_file != "<current file>":
+                return current_file
+            else:
+                return None
 
 
 def addToProgress(func_name, c_file):

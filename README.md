@@ -67,7 +67,7 @@ wget https://github.com/MHH-RCUG/wochenende/archive/master.zip
 2. Create a conda environment for the pipeline.
 ```
 conda create -n wochenende 
-conda install -n wochenende -c bioconda bwa trimmomatic prinseq samtools r-base64 sambamba fastuniq fastqc ea-utils bbmap
+conda install -n wochenende -c bioconda bwa trimmomatic prinseq samtools=1.8 r-base64 sambamba fastuniq fastqc ea-utils bbmap
 conda install -n wochenende -c conda-forge ncurses
 ``
 3. Install all the other tools. (tools marked with an asterik are not necessarily needed)
