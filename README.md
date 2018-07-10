@@ -62,8 +62,6 @@ OR
 2. Create a conda environment for the pipeline.
 `conda create -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap fastp minimap2`
 3. Install all the other tools. (tools marked with an asterik are not necessarily needed)
-   - afterqc *
-   - perldup
    - ABRA2
 4. Edit the configuration section of run_Wochenende.py to set the paths to the tools and reference sequences.
 5. Remember to activate the conda environment before trying to use the pipeline.
@@ -71,7 +69,6 @@ OR
 ## List of Tools
 
 - [ABRA2](https://github.com/mozack/abra2)
-- [AfterQC](https://github.com/OpenGene/AfterQC)
 - [BWA](https://github.com/lh3/bwa)
 - [fastp](https://github.com/OpenGene/fastp)
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
