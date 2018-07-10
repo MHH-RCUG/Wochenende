@@ -1,7 +1,7 @@
 #!/bin/bash 
  
 # set partition 
-#SBATCH -p debug
+#SBATCH -p normal
 #SBATCH --cpus-per-task=16 
  
 # share node 
