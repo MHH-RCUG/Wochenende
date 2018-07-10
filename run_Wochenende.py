@@ -583,7 +583,7 @@ def main(args, sys_argv):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        epilog="We recommend using bioconda for the installation of the tools. Remember to run 'source activate <environment name>' before you start if you are using bioconda. Details about the installation are available on https://github.com/MHH-RCUG/Wochenende#Installation")
+        epilog="We recommend using bioconda for the installation of the tools. Remember to run 'source activate <environment name>' before you start if you are using bioconda. Details about the installation are available on https://github.com/MHH-RCUG/Wochenende#installation")
 
     parser.add_argument("fastq", help="_R1.fastq Input read1 fastq file",
                         type=lambda x: (os.path.abspath(os.path.expanduser(x))))

@@ -48,7 +48,7 @@ optional arguments:
 We recommend using bioconda for the installation of the tools. Remember to run
 'source activate <environment name>' before you start if you are using
 bioconda. Details about the installation are available on
-https://github.com/MHH-RCUG/Wochenende#Installation
+https://github.com/MHH-RCUG/Wochenende#installation
 ```
 
 ## Installation
