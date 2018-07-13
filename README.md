@@ -8,7 +8,7 @@
 `cp /path/to/wochenende/run_Wochenende* .`
 2. Adjust settings in the script
 `nano run_Wochenende_SLURM.sh`
-3. Run the pipeline
+3. Run the pipeline using SLURM
 `sbatch run_Wochenende_SLURM.sh x.fastq`
 
 ### General usage
@@ -61,10 +61,11 @@ OR
 `wget https://github.com/MHH-RCUG/wochenende/archive/master.zip`
 2. Create a conda environment for the pipeline.
 `conda create -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap fastp minimap2`
-3. Install all the other tools. (tools marked with an asterik are not necessarily needed)
+3. Install all the other tools.
    - ABRA2
-4. Edit the configuration section of run_Wochenende.py to set the paths to the tools and reference sequences.
-5. Remember to activate the conda environment before trying to use the pipeline.
+4. Edit the configuration section of `run_Wochenende.py` to set the paths to the tools and reference sequences.
+5. Activate the conda environment before running the pipeline.
+`source activate wochenende`
 
 ## List of Tools
 
