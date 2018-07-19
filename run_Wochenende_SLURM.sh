@@ -14,14 +14,14 @@
 #SBATCH --share
 
 # set max wallclock time
-# SBATCH --time=99:00:00
+# SBATCH --time=47:00:00
 
 # set name of job
 #SBATCH --job-name=Wochenende
 
 # mail alert at start, end and abortion of execution
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=scheithauer.tobias@mh-hannover.de
+#SBATCH --mail-user=<mail_address_for_slurm>
 
 echo "Input file: " $1
 fastq=$1
@@ -38,7 +38,7 @@ source activate wochenende
 ##########
 
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
-python3 run_Wochenende.py --metagenome 2016_06_1p_spec --threads 12  --readType SE --debug $fastq
+python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads 12  --readType SE --debug $fastq
 #python3 run_Wochenende.py --metagenome PA14 --threads 36  --debug $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads 55 --longread --debug $fastq
 #python3 run_Wochenende.py --metagenome mm10 --threads 36 --readType PE --debug $fastq

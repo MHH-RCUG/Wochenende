@@ -42,6 +42,7 @@ path_minimap2    = 'minimap2'
 ## Paths to reference seqs
 path_refseq_dict = {
     "2016_06_1p_genus" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
+    "2016_06_1p_spec_corrected" : "/working2/tuem/metagen/refs/2016/database_2016_names_cln/ref_2016_cln/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
     "2016_06_1p_spec" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
     "hg19": "/lager2/rcug/seqres/HS/bwa/hg19.fa",
     "GRCh38-45GB": "/lager2/rcug/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa",
@@ -594,7 +595,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--metagenome", help="Metagenome to use",
                         action="store", default="2016_06_1p_spec",
-                    choices=["2016_06_1p_genus", "2016_06_1p_spec", "hg19","GRCh38-45GB", "GRCh38-noalt", "GRCh38-mito", "mm10", "rn6", "zf10","PA14"])
+                    choices=list(path_refseq_dict))
 
     parser.add_argument("--aligner", help="Aligner to use, default= bwamem. Usage of minimap2 optimized for ONT data only.",
                         action="store", default=["bwamem","minimap2"]
