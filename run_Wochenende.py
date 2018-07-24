@@ -589,20 +589,17 @@ if __name__ == "__main__":
     parser.add_argument("fastq", help="_R1.fastq Input read1 fastq file",
                         type=lambda x: (os.path.abspath(os.path.expanduser(x))))
 
-    parser.add_argument("--readType", help="Single end or paired end data, default= SE",
-                        default="SE",
-                        choices=["PE", "SE"])
+    parser.add_argument("--readType", help="Single end or paired end data",
+                        action="store", choices=["PE", "SE"])
 
     parser.add_argument("--metagenome", help="Metagenome to use",
-                        action="store", default="2016_06_1p_spec",
-                    choices=list(path_refseq_dict))
+                        action="store", choices=list(path_refseq_dict))
 
-    parser.add_argument("--aligner", help="Aligner to use, default= bwamem. Usage of minimap2 optimized for ONT data only.",
-                        action="store", default=["bwamem","minimap2"]
-                        )
+    parser.add_argument("--aligner", help="Aligner to use, either bwamem or minimap2. Usage of minimap2 optimized for ONT data only.",
+                        action="store", choices=["bwamem","minimap2"])
 
     parser.add_argument("--threads", help="Number of cores, default = 16",
-                    action="store", default="16")
+                        action="store", default="16")
 
     parser.add_argument("--fastp", help="Use fastp instead of fastqc and trimmomatic", action="store_true")
 
