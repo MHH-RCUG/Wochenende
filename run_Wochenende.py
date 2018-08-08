@@ -42,7 +42,7 @@ path_minimap2    = 'minimap2'
 ## Paths to reference seqs
 path_refseq_dict = {
     "2016_06_1p_genus" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
-    "2016_06_1p_spec_corrected" : "/working2/tuem/metagen/refs/2016/database_2016_names_cln/ref_2016_cln/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
+    "2016_06_1p_spec_corrected" : "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
     "2016_06_1p_spec" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
     "hg19": "/lager2/rcug/seqres/HS/bwa/hg19.fa",
     "GRCh38-45GB": "/lager2/rcug/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa",
