@@ -533,7 +533,9 @@ def main(args, sys_argv):
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
-        currentFile = runFunc("abra", abra, currentFile, True, 
+        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        if not args.no_abra:
+            currentFile = runFunc("abra", abra, currentFile, True, 
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True, 
                                  path_refseq_dict.get(args.metagenome))
@@ -564,7 +566,9 @@ def main(args, sys_argv):
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
-        currentFile = runFunc("abra", abra, currentFile, True, 
+        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        if not args.no_abra:
+            currentFile = runFunc("abra", abra, currentFile, True, 
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True, 
                                  path_refseq_dict.get(args.metagenome))
@@ -608,6 +612,8 @@ if __name__ == "__main__":
     parser.add_argument("--longread", help="Only do steps relevant for long PacBio/ONT reads eg. no trimming, alignment & bam conversion", action="store_true")
 
     parser.add_argument("--no_duplicate_removal", help="Skips steps for duplicate removal. Recommended for amplicon sequencing.", action="store_true")
+
+    parser.add_argument("--no_abra", help="Skips steps for Abra realignment. Recommended for metagenome and amplicon analysis.", action="store_true")
    
     parser.add_argument("--force_restart", help="Force restart, without regard to existing progress", action="store_true")
 

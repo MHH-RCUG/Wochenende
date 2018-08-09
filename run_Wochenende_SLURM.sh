@@ -1,5 +1,5 @@
 #!/bin/bash
-## Supply the FASTA input as arg1, sh run_Wochenende_slurm.sh in.fastq
+## Supply the FASTA input as arg1, bash run_Wochenende_slurm.sh in.fastq
 
 # set partition
 #SBATCH -p normal
@@ -38,7 +38,8 @@ source activate wochenende
 ##########
 
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
-python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads 12  --readType SE --debug $fastq
+#python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads 12  --readType SE --debug $fastq
+python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads 12 --aligner bwamem --no_abra --readType SE --debug $fastq
 #python3 run_Wochenende.py --metagenome PA14 --threads 36  --debug $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads 55 --longread --debug $fastq
 #python3 run_Wochenende.py --metagenome mm10 --threads 36 --readType PE --debug $fastq
