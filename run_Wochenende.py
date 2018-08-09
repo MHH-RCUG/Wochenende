@@ -111,6 +111,7 @@ def createProgressFile(args):
             f.writelines(["# PROGRESS FILE FOR Wochenende\n", "<current file>\n"])
         return None
     else:
+        print("Found progress file x.tmp, attempting to resume after last completed stage. If not desired, use --force_restart or delete the .tmp progress files.")
         return progress[1].replace("\n", "")
 
 
@@ -429,6 +430,16 @@ def runBAMindex(stage_infile):
     # No rejigfiles needed as dead end
     return 0
 
+def runMQ30(stage_infile):
+    # Remove reads with less than MQ30
+    stage = "Remove MQ30 reads"
+    prefix = stage_infile.replace(".bam","")
+    stage_outfile = prefix + '.mq30.bam'
+    samtoolsMQ30Cmd = [path_samtools, 'view','-@', IOthreadsConstant, '-b', '-q', '30', stage_infile, '-o', stage_outfile]
+    runStage(stage, samtoolsMQ30Cmd)
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
 
 def markDups(stage_infile):
     # duplicate removal in bam
@@ -531,6 +542,8 @@ def main(args, sys_argv):
                                  args.threads, args.readType)
         currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
+        if args.mq30:
+            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
@@ -564,6 +577,8 @@ def main(args, sys_argv):
                                  args.threads, args.readType)
         currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
+        if args.mq30:
+            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
@@ -599,7 +614,7 @@ if __name__ == "__main__":
     parser.add_argument("--readType", help="Single end or paired end data",
                         action="store", choices=["PE", "SE"])
 
-    parser.add_argument("--metagenome", help="Metagenome to use",
+    parser.add_argument("--metagenome", help="Meta/genome reference to use",
                         action="store", choices=list(path_refseq_dict))
 
     parser.add_argument("--threads", help="Number of cores, default = 16",
@@ -614,7 +629,9 @@ if __name__ == "__main__":
     parser.add_argument("--no_duplicate_removal", help="Skips steps for duplicate removal. Recommended for amplicon sequencing.", action="store_true")
 
     parser.add_argument("--no_abra", help="Skips steps for Abra realignment. Recommended for metagenome and amplicon analysis.", action="store_true")
-   
+
+    parser.add_argument("--mq30", help="Remove reads with mapping quality less than 30. Recommended for metagenome and amplicon analysis.", action="store_true")
+
     parser.add_argument("--force_restart", help="Force restart, without regard to existing progress", action="store_true")
 
     if len(sys.argv) == 1:
