@@ -27,10 +27,10 @@ echo "Input file: " $1
 fastq=$1
 
 # Add miniconda3 to PATH
-PATH=/mnt/ngsnfs/tools/miniconda3/bin:$PATH
+. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 
 # Activate env on cluster node
-source activate wochenende
+conda activate wochenende
 
 
 ### IMPORTANT
