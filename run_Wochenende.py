@@ -2,8 +2,8 @@
 
 """
 A whole metagenome analysis pipeline in Python3
-Author: Dr. Colin Davenport
 Author: Tobias Scheithauer
+Author: Dr. Colin Davenport
 
 TODOs:
 - handle TruSeq and NEB Next adapters 
@@ -35,6 +35,7 @@ path_trimmomatic = 'trimmomatic'
 path_fastq_mcf   = 'fastq_mcf'
 path_bwa         = 'bwa'
 path_samtools    = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools'
+path_bamtools    = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/bamtools'
 path_sambamba    = 'sambamba'
 path_java        = 'java'
 path_abra_jar    = '/mnt/ngsnfs/tools/abra2/abra2_latest.jar'
@@ -143,6 +144,7 @@ def runStage(stage, programCommand):
     # Run a stage of this Pipeline
     print("######  "+ stage + "  ######")
     try:
+        print(programCommand)
         process = subprocess.Popen(programCommand, stdout=subprocess.PIPE)
         output, error = process.communicate()
     except OSError as e:
@@ -440,6 +442,40 @@ def runMQ30(stage_infile):
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
+def runBamtools(stage_infile):
+    # Keep only reads with 0 or 1 mismatch
+    stage = "Keep only reads with 0 or 1 mismatch - for metagenomics"
+    prefix = stage_infile.replace(".bam","")
+    stage_outfile = prefix + '.01mm.bam'
+    tmpfile0 = prefix + '.0mm.tmp.bam'
+    tmpfile1 = prefix + '.1mm.tmp.bam'
+    keep0mm = [path_bamtools, 'filter', '-in', stage_infile, '-out', tmpfile0, '-tag', 'NM:0']
+    keep1mm = [path_bamtools, 'filter', '-in', stage_infile, '-out', tmpfile1, '-tag', 'NM:1']
+    bam_merge = [path_samtools, 'merge', '-@', IOthreadsConstant, stage_outfile, tmpfile0, tmpfile1]
+    bamtools_cmd1 = ' ' .join(keep0mm)
+    bamtools_cmd2 = ' ' .join(keep1mm)
+    merge = ' ' .join(bam_merge)
+
+    
+    try:
+        # could not get subprocess.run, .call etc to work with "&&" 
+        #print(bamtools_cmd)
+        #os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 && bam_merge = path_samtools merge -@ IOthreadsConstant stage_outfile tmpfile0 tmpfile1")
+        os.system(bamtools_cmd1)
+        os.system(bamtools_cmd2)
+        os.system(merge)
+        os.remove(tmpfile0)
+        os.remove(tmpfile1)
+
+    except:
+        print ("########################################")
+        print ("############ Error with BAMtools commands")
+        print ("########################################")
+        sys.exit(1)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
 
 def markDups(stage_infile):
     # duplicate removal in bam
@@ -544,6 +580,8 @@ def main(args, sys_argv):
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
+        if args.remove_mismatching:
+            currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
@@ -579,6 +617,8 @@ def main(args, sys_argv):
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
+        if args.remove_mismatching:
+            currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
@@ -631,6 +671,8 @@ if __name__ == "__main__":
     parser.add_argument("--no_abra", help="Skips steps for Abra realignment. Recommended for metagenome and amplicon analysis.", action="store_true")
 
     parser.add_argument("--mq30", help="Remove reads with mapping quality less than 30. Recommended for metagenome and amplicon analysis.", action="store_true")
+
+    parser.add_argument("--remove_mismatching", help="Remove reads with 2 or more mismatches (via the NM bam tag)", action="store_true")
 
     parser.add_argument("--force_restart", help="Force restart, without regard to existing progress", action="store_true")
 

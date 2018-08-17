@@ -60,7 +60,7 @@ We recommend using [Bioconda](https://bioconda.github.io/) for installation of t
 OR
 `wget https://github.com/MHH-RCUG/wochenende/archive/master.zip`
 2. Create a conda environment for the pipeline.
-`conda create -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap fastp minimap2`
+`conda create -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba fastuniq fastqc ea-utils bbmap fastp minimap2 bamtools`
 3. Install all the other tools.
    - ABRA2
 4. Edit the configuration section of `run_Wochenende.py` to set the paths to the tools and reference sequences.
@@ -81,4 +81,5 @@ OR
 - [sambamba](https://github.com/biod/sambamba)
 - [samtools](https://github.com/samtools/samtools)
 - [trimmomatic](https://github.com/timflutre/trimmomatic)
+- [bamtools](https://github.com/pezmaster31/bamtools)
 
