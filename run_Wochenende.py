@@ -17,7 +17,7 @@ import shutil
 import argparse
 import time
 
-version = "1.0"
+version = "1.1"
 
 ##############################
 # CONFIGURATION
@@ -144,7 +144,7 @@ def runStage(stage, programCommand):
     # Run a stage of this Pipeline
     print("######  "+ stage + "  ######")
     try:
-        print(programCommand)
+        #print(programCommand)
         process = subprocess.Popen(programCommand, stdout=subprocess.PIPE)
         output, error = process.communicate()
     except OSError as e:

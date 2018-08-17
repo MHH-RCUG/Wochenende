@@ -16,13 +16,15 @@
 ```
 Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
 Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer
-version: 1.0
+version: 1.1
 
-usage: run_Wochenende.py [-h] [--readType {PE,SE}]
-                         [--metagenome {2016_06_1p_genus,2016_06_1p_spec,hg19,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,zf10,PA14}]
-                         [--aligner ALIGNER] [--threads THREADS] [--fastp]
-                         [--debug] [--longread] [--no_duplicate_removal]
-                         [--force_restart]
+
+usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2}]
+                         [--readType {PE,SE}]
+                         [--metagenome {zf10,GRCh38-mito,mm10,rn6,2016_06_1p_spec,GRCh38-noalt,PA14,2016_06_1p_spec_corrected,2016_06_1p_genus,GRCh38-45GB,hg19}]
+                         [--threads THREADS] [--fastp] [--debug] [--longread]
+                         [--no_duplicate_removal] [--no_abra] [--mq30]
+                         [--remove_mismatching] [--force_restart]
                          fastq
 
 positional arguments:
@@ -30,11 +32,12 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --readType {PE,SE}    Single end or paired end data, default= SE
-  --metagenome {2016_06_1p_genus,2016_06_1p_spec,hg19,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,zf10,PA14}
-                        Metagenome to use
-  --aligner ALIGNER     Aligner to use, default= bwamem. Usage of minimap2
-                        optimized for ONT data only.
+  --aligner {bwamem,minimap2}
+                        Aligner to use, either bwamem or minimap2. Usage of
+                        minimap2 optimized for ONT data only.
+  --readType {PE,SE}    Single end or paired end data
+  --metagenome {zf10,GRCh38-mito,mm10,rn6,2016_06_1p_spec,GRCh38-noalt,PA14,2016_06_1p_spec_corrected,2016_06_1p_genus,GRCh38-45GB,hg19}
+                        Meta/genome reference to use
   --threads THREADS     Number of cores, default = 16
   --fastp               Use fastp instead of fastqc and trimmomatic
   --debug               Report all files
@@ -43,6 +46,12 @@ optional arguments:
   --no_duplicate_removal
                         Skips steps for duplicate removal. Recommended for
                         amplicon sequencing.
+  --no_abra             Skips steps for Abra realignment. Recommended for
+                        metagenome and amplicon analysis.
+  --mq30                Remove reads with mapping quality less than 30.
+                        Recommended for metagenome and amplicon analysis.
+  --remove_mismatching  Remove reads with 2 or more mismatches (via the NM bam
+                        tag)
   --force_restart       Force restart, without regard to existing progress
 
 We recommend using bioconda for the installation of the tools. Remember to run
