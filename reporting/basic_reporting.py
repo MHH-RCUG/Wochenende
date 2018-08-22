@@ -56,8 +56,12 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','x','y','mt']
 			human_cov = res_df[res_df['species'].isin(human_refs)]['basecount'].sum()/res_df[res_df['species'].isin(human_refs)]['chr_length'].sum()
 			print(human_cov)
-			res_df['bacteria_per_human_cell'] =  (res_df['basecount']/res_df['chr_length']) / human_cov
-			res_df.to_csv(f'{sample_name}.basic_reporting.csv', sep='\t', float_format='%.1f', index=False)
+			res_df['bacteria_per_human_cell'] = (res_df['basecount']/res_df['chr_length']) / human_cov
+			# total normalization RPKM
+			res_df['RPKM'] = res_df['read_count'] / (res_df['chr_length']/1000 * res_df['read_count'].sum()/1000000)
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(axis='RPKM')
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
 		elif sequencer == 'solid':
 			# slow solid reporting (works like illumina reporting but width normalization)
 			click.echo('starting solid reporting')	
@@ -91,7 +95,10 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			print(human_cov)
 			res_df['bacteria_per_human_cell'] =  (res_df['ibasecount']/res_df['chr_length']) / human_cov
 			res_df['norm_factor'] = None
-			res_df.to_csv(f'{sample_name}.basic_reporting.csv', sep='\t', float_format='%.1f', index=False)
+			res_df['RPKM'] = res_df['read_count'] / (res_df['chr_length']/1000 * res_df['read_count'].sum()/1000000)
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(axis='RPKM')
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
 		else: 
 			click.echo('please specify sequencing technology')
 			sys.exit(1)
@@ -111,7 +118,10 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			res_df['gc_ref'] = [gc_ref_dict[s] for s in res_df['species']]
 			res_df['reads_per_million_ref_bases'] = res_df['read_count']/(res_df['chr_length']/1000000)
 			res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum()/1000000)
-			res_df.to_csv(f'{sample_name}.basic_reporting.csv', sep='\t', float_format='%.1f', index=False)
+			res_df['RPKM'] = res_df['read_count'] / (res_df['chr_length']/1000 * res_df['read_count'].sum()/1000000)
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(axis='RPKM')
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
 		elif sequencer == 'solid':
 			# standard solid reporting (works like illumina reporting but width normalization)
 			click.echo('starting solid reporting')	
@@ -129,7 +139,10 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			res_df['reads_per_million_ref_bases'] = res_df['reads_per_million_ref_bases'] * res_df['norm_factor']
 			res_df['reads_per_million_reads_in_experiment'] = res_df['reads_per_million_reads_in_experiment'] * res_df['norm_factor']
 			res_df['norm_factor'] = None
-			res_df.to_csv(f'{sample_name}.basic_reporting.csv', sep='\t', float_format='%.1f', index=False)
+			res_df['RPKM'] = res_df['read_count'] / (res_df['chr_length']/1000 * res_df['read_count'].sum()/1000000)
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(axis='RPKM')
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
 		else: 
 			click.echo('please specify sequencing technology')
 			sys.exit(1)
