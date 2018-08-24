@@ -92,3 +92,11 @@ OR
 - [trimmomatic](https://github.com/timflutre/trimmomatic)
 - [bamtools](https://github.com/pezmaster31/bamtools)
 
+
+### Running the metagenomic reporting scripts
+
+See the subfolder reporting in the repository.
+
+
+conda activate wochenende
+python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --refseq_file /lager2/rcug/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --sample_name test
