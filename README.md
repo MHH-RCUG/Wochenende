@@ -95,9 +95,16 @@ OR
 
 ### Running the metagenomic reporting scripts
 
+This tool reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
+Normalizations are for:
+a) reads normalized to the idealized length of a bacterial chromosome (normalization to 1 million base pairs)
+b) total reads in the sequencing library (normalization to 1 million reads)
+c) the above two normalizations combined
+
 See the subfolder reporting in the repository.
 
 ```
+conda activate 
 conda activate wochenende
 python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --refseq_file /lager2/rcug/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --sample_name test
 ```
