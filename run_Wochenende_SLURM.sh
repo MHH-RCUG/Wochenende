@@ -45,5 +45,5 @@ python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads 12 --
 #python3 run_Wochenende.py --metagenome hg19 --threads 55 --longread --debug $fastq
 #python3 run_Wochenende.py --metagenome mm10 --threads 36 --readType PE --debug $fastq
 #python3 run_Wochenende.py --metagenome GRCh38-mito --threads 16 --readType PE $fastq
-
+python3 run_Wochenende.py --metagenome GRCh38-noalt --threads 56 --readType SE --aligner minimap2 --longread --no_duplicate_removal --no_abra $fastq
 
