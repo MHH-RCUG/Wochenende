@@ -102,7 +102,7 @@ a) reads normalized to the idealized length of a bacterial chromosome (normaliza
 
 b) total reads in the sequencing library (normalization to 1 million reads)
 
-c) the above two normalizations combined
+c) the above two normalizations combined (RPMM)
 
 
 See the subfolder reporting in the repository.
