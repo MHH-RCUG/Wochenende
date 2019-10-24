@@ -24,7 +24,6 @@ def solid_normalization(gc):
 @click.option('--sample_name', help='Name of the sample. Used for output file naming.')
 def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 	if slow:
-		# This section is for SLOW mode only, using BAM files
 		click.echo('Started slow mode.') 
 		click.echo(f'Using {input_file} as alignment file')
 		click.echo(f'Using {refseq_file} as refseq file')
@@ -54,12 +53,12 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			res_df['reads_per_million_ref_bases'] = res_df['read_count']/(res_df['chr_length']/1000000)
 			res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum()/1000000)
 			# calculating bacteria per human cell
-			human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','X','Y','MT']
+			human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','x','y','mt']
 			human_cov = res_df[res_df['species'].isin(human_refs)]['basecount'].sum()/res_df[res_df['species'].isin(human_refs)]['chr_length'].sum()
 			print(human_cov)
-			res_df['bacteria_per_human_cell'] = (res_df['basecount']/res_df['chr_length']) / human_cov
-			# total normalization RPMM. Corrected
-			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000) * res_df['read_count'].sum()/1000000
+			#bam.txtres_df['bacteria_per_human_cell'] = (res_df['basecount']/res_df['chr_length']) / human_cov
+			# total normalization RPMM
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000 * res_df['read_count'].sum()/1000000)
 			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
 			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
 			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
@@ -91,13 +90,13 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			res_df['basecount'] = res_df['basecount'] * res_df['norm_factor']
 			res_df['reads_per_million_ref_bases'] = res_df['reads_per_million_ref_bases'] * res_df['norm_factor']
 			res_df['reads_per_million_reads_in_experiment'] = res_df['reads_per_million_reads_in_experiment'] * res_df['norm_factor']
-			human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','X','Y','MT']
+			human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','x','y','mt']
 			human_cov = res_df[res_df['species'].isin(human_refs)]['basecount'].sum()/res_df[res_df['species'].isin(human_refs)]['chr_length'].sum()
 			print(human_cov)
 			res_df['bacteria_per_human_cell'] =  (res_df['ibasecount']/res_df['chr_length']) / human_cov
 			res_df['norm_factor'] = None
 			# total normalization RPMM
-			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000) * res_df['read_count'].sum()/1000000
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000 * res_df['read_count'].sum()/1000000)
 			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
 			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
 			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
@@ -105,7 +104,6 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			click.echo('please specify sequencing technology')
 			sys.exit(1)
 	else:
-		# This section uses bam.txt files as opposed to full BAM files
 		click.echo(f'Using {input_file} as alignment file')
 		click.echo(f'Using {refseq_file} as refseq file')
 		click.echo()
@@ -122,16 +120,23 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			res_df['reads_per_million_ref_bases'] = res_df['read_count']/(res_df['chr_length']/1000000)
 			res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum()/1000000)
 			# total normalization RPMM
-			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000) * res_df['read_count'].sum()/1000000
-                        # calculating bacteria per human cell
-                        human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','X','Y','MT']
-                        human_cov = res_df[res_df['species'].isin(human_refs)]['basecount'].sum()/res_df[res_df['species'].isin(human_refs)]['chr_length'].sum()
-                        print(human_cov)
-                        res_df['bacteria_per_human_cell'] = (res_df['basecount']/res_df['chr_length']) / human_cov
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000 * res_df['read_count'].sum()/1000000)
 
-			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			#calculating bacteria per human cell
+			#check for human_refs to be correct!
+			human_refs = ['1_1_1_1','1_1_1_2','1_1_1_3','1_1_1_4','1_1_1_5','1_1_1_6','1_1_1_7','1_1_1_8','1_1_1_9','1_1_1_10', '1_1_1_11','1_1_1_12','1_1_1_13','1_1_1_14','1_1_1_15',\
+					'1_1_1_16','1_1_1_17','1_1_1_18','1_1_1_19','1_1_1_20','1_1_1_21','1_1_1_22','1_1_1_X','1_1_1_Y']
+			human_cov = res_df[res_df['species'].isin(human_refs)]['read_count'].sum()
+			res_df['bacteria_per_human_cell'] = (6191.39 * res_df['reads_per_million_ref_bases']) / human_cov
+
+			#rounding to 2 decimals, except for bacteria_per_human_cell, which gets 4 decimals
+			cols = ['gc_ref', 'reads_per_million_ref_bases', 'reads_per_million_reads_in_experiment', 'RPMM']
+			res_df[cols] = res_df[cols].round(2)
+			res_df['bacteria_per_human_cell'] = res_df['bacteria_per_human_cell'].round(4)
+
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', index=False)
 			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
-			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', index=False)
 		elif sequencer == 'solid':
 			# standard solid reporting (works like illumina reporting but width normalization)
 			click.echo('starting solid reporting')	
@@ -150,16 +155,23 @@ def reporting(slow, input_file, refseq_file, sequencer, sample_name):
 			res_df['reads_per_million_reads_in_experiment'] = res_df['reads_per_million_reads_in_experiment'] * res_df['norm_factor']
 			res_df['norm_factor'] = None
 			# total normalization RPMM
-			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000) * res_df['read_count'].sum()/1000000
-                        # calculating bacteria per human cell
-                        human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','X','Y','MT']
-                        human_cov = res_df[res_df['species'].isin(human_refs)]['basecount'].sum()/res_df[res_df['species'].isin(human_refs)]['chr_length'].sum()
-                        print(human_cov)
-                        res_df['bacteria_per_human_cell'] = (res_df['basecount']/res_df['chr_length']) / human_cov
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000 * res_df['read_count'].sum()/1000000)
+			
+			#calculating bacteria per human cell
+			#check for human_refs to be correct!
+			human_refs = ['1_1_1_1','1_1_1_2','1_1_1_3','1_1_1_4','1_1_1_5','1_1_1_6','1_1_1_7','1_1_1_8','1_1_1_9','1_1_1_10', '1_1_1_11','1_1_1_12','1_1_1_13','1_1_1_14','1_1_1_15',\
+					'1_1_1_16','1_1_1_17','1_1_1_18','1_1_1_19','1_1_1_20','1_1_1_21','1_1_1_22','1_1_1_X','1_1_1_Y']
+			human_cov = res_df[res_df['species'].isin(human_refs)]['read_count'].sum()
+			res_df['bacteria_per_human_cell'] = (6191.39 * res_df['reads_per_million_ref_bases']) / human_cov
 
-			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			#rounding to 2 decimals, except for bacteria_per_human_cell, which gets 4 decimals
+			cols = ['gc_ref', 'reads_per_million_ref_bases', 'reads_per_million_reads_in_experiment', 'RPMM']
+			res_df[cols] = res_df[cols].round(2)
+			res_df['bacteria_per_human_cell'] = res_df['bacteria_per_human_cell'].round(4)
+
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', index=False)
 			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
-			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', index=False)
 		else: 
 			click.echo('please specify sequencing technology')
 			sys.exit(1)
