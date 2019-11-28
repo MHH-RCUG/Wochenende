@@ -135,6 +135,7 @@ python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.tx
 
 Wochenende produces many output files, many of which are superseded by later output files and can be removed.
 
+```
 - MB_aero_S2_R1.fastq               # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work well.
 - MB_aero_S2_R1.fastqprogress.tmp   # Temporary file with pipeline stage progress
 - MB_aero_S2_R1.trm.bam             # Initial, unsorted BAM
@@ -153,6 +154,6 @@ Wochenende produces many output files, many of which are superseded by later out
 - MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam.bai # Index
 - MB_aero_S2_R2.fastq                 # Read 2 file
 - MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
-
+```
 
 
