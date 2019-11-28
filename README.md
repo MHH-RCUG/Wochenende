@@ -135,24 +135,24 @@ python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.tx
 
 Wochenende produces many output files, many of which are superseded by later output files and can be removed.
 
-- MB_aero_S2_R1.fastq # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work well.
-- MB_aero_S2_R1.fastqprogress.tmp # Temporary file with pipeline stage progress
-- MB_aero_S2_R1.trm.bam
-- MB_aero_S2_R1.trm.fastq
-- MB_aero_S2_R1.trm.s.bam
-- MB_aero_S2_R1.trm.s.bam.bai
-- MB_aero_S2_R1.trm.s.mq30.01mm.bam
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.bai
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.filt.sort.csv
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.sorted.csv
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam.bai
-- MB_aero_S2_R1.trm.s.mq30.bam
-- MB_aero_S2_R2.fastq
-- MB_aero_S2_R2.trm.fastq
+- MB_aero_S2_R1.fastq               # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work well.
+- MB_aero_S2_R1.fastqprogress.tmp   # Temporary file with pipeline stage progress
+- MB_aero_S2_R1.trm.bam             # Initial, unsorted BAM
+- MB_aero_S2_R1.trm.fastq           # Trimmed FASTQ
+- MB_aero_S2_R1.trm.s.bam           # Sorted BAM output file
+- MB_aero_S2_R1.trm.s.bam.bai       # Index
+- MB_aero_S2_R1.trm.s.mq30.bam                    # BAM where only well mapped reads with Mapping Quality 30 are retained.
+- MB_aero_S2_R1.trm.s.mq30.01mm.bam               # Reads with more than 0 or 1 mismatches (ie 2+) have been excluded
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam           # 
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.bai       # Index
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt       # Important: input for simple runbatch_metagen_awk_filter.sh and complex Wochenende reporting
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.filt.sort.csv           # Filtered and sorted BAM.txt read output
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.sorted.csv    # Output from Wochenende reporting step
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated. Suitable for viewing SNVs in JBrowse etc
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam.bai # Index
+- MB_aero_S2_R2.fastq                 # Read 2 file
+- MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
 
 
 
