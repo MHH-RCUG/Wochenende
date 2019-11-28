@@ -26,7 +26,7 @@ Features include (see programs listed below at the bottom of this page)
 `nano run_Wochenende_SLURM.sh`
 3. Run the pipeline using SLURM
 `sbatch run_Wochenende_SLURM.sh x.fastq`
-4. Optional reporting step to normalize the extracted read counts
+4. Optional reporting step to normalize the extracted read counts  (see reporting below)
 `sbatch run_Wochenende_reporting_SLURM.sh`
 
 ### General usage
@@ -130,3 +130,29 @@ conda activate
 conda activate wochenende
 python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --refseq_file /lager2/rcug/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --sample_name test
 ```
+
+### Wochenende output
+
+Wochenende produces many output files, many of which are superseded by later output files and can be removed.
+
+- MB_aero_S2_R1.fastq # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work well.
+- MB_aero_S2_R1.fastqprogress.tmp # Temporary file with pipeline stage progress
+- MB_aero_S2_R1.trm.bam
+- MB_aero_S2_R1.trm.fastq
+- MB_aero_S2_R1.trm.s.bam
+- MB_aero_S2_R1.trm.s.bam.bai
+- MB_aero_S2_R1.trm.s.mq30.01mm.bam
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.bai
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.filt.sort.csv
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.sorted.csv
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam.bai
+- MB_aero_S2_R1.trm.s.mq30.bam
+- MB_aero_S2_R2.fastq
+- MB_aero_S2_R2.trm.fastq
+
+
+
