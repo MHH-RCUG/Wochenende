@@ -1,5 +1,11 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
+Wochenende runs alignment of either single ended or paired end short reads against a reference sequence. It is simple, portable and has many optional steps. 
+
+Features include 
+- QC
+- trimming, duplicate removal 
+
 ## Usage 
 
 ### SLURM usage
@@ -10,6 +16,8 @@
 `nano run_Wochenende_SLURM.sh`
 3. Run the pipeline using SLURM
 `sbatch run_Wochenende_SLURM.sh x.fastq`
+4. Optional reporting step to normalize the extracted read counts
+`sbatch run_Wochenende_reporting_SLURM.sh`
 
 ### General usage
 
@@ -76,7 +84,7 @@ OR
 5. Activate the conda environment before running the pipeline.
 `source activate wochenende`
 
-## List of Tools
+## List of Tools used or optional in the pipeline
 
 - [ABRA2](https://github.com/mozack/abra2)
 - [BWA](https://github.com/lh3/bwa)
