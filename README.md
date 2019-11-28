@@ -159,3 +159,7 @@ BAM Indices
 ```
 
 
+
+### Contributors
+
+Thanks to @B1T0, @Nijerik, @colindaven
