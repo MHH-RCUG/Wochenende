@@ -5,7 +5,7 @@ Wochenende runs alignment of either single ended or paired end short reads again
 Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
 - pre alignment duplicate removal (perldup)
-- pre alignment poor sequence removal (Prinseq)
+- pre alignment poor sequence removal (Prinseq - used for single ended reads only)
 - trimming (Trimmomatic, fastp)
 - alignment (bwa mem, minimap2)
 - SAM-> BAM conversion (samtools, sambamba)
