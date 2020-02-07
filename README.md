@@ -169,6 +169,9 @@ Thanks to @B1T0, @Nijerik, @colindaven
 
 From the Wochenende directory
 ```
+Using SLURM:
 sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
+Or without a scheduler:
+python3 run_Wochenende.py --metagenome testdb --threads 4 --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart testdb/reads_R1.fastq
 ```
 You should be able to see in the SLURM outfile or standard out if the tests passed or not. Failed tests may be due to program versions or pipeline configuration issues.
