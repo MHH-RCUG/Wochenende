@@ -163,3 +163,12 @@ BAM Indices
 ### Contributors
 
 Thanks to @B1T0, @Nijerik, @colindaven
+
+
+### Running tests
+
+From the Wochenende directory
+```
+sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
+```
+You should be able to see in the SLURM outfile or standard out if the tests passed or not. Failed tests may be due to program versions or pipeline configuration issues.
