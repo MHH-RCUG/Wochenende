@@ -20,6 +20,8 @@ Features include (see programs listed below at the bottom of this page)
 
 ## Usage 
 
+You can just run the pipeline as a normal Python3 script. However, we also offer a template for the job scheduler SLURM below. This template can also be used with Bash to run the commands at the bottom of the SLURM pipeline while ignoring any SLURM specific parameters.
+
 ### SLURM usage
 
 1. Copy all the run_Wochenende* files to your directory with your FASTQ files
