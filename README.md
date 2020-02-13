@@ -9,11 +9,13 @@ Features include (see programs listed below at the bottom of this page)
 - trimming (Trimmomatic, fastp)
 - alignment (bwa mem, minimap2)
 - SAM-> BAM conversion (samtools, sambamba)
+- Report % aligned reads (samtools)
+- Output unmapped reads as fastq (samtools)  (from v1.4)
 - Post-alignment duplicate removal (Picard)
 - Realignment (Abra2)
 - MD tag marking (Samtools)
 - Normalization (to Reads per Million Reads etc, see Reporting below for details)
-- Visualization (chromosome coverage, intended for bacteria in metagenomics projects)
+- Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
 
 
 
