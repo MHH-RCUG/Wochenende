@@ -26,8 +26,8 @@ Features include (see programs listed below at the bottom of this page)
 `cp /path/to/wochenende/run_Wochenende* .`
 2. Adjust settings in the script
 `nano run_Wochenende_SLURM.sh`
-3. Run the pipeline using SLURM
-`sbatch run_Wochenende_SLURM.sh x.fastq`
+3. Run the pipeline using SLURM (the R1 is important)
+`sbatch run_Wochenende_SLURM.sh sample_R1.fastq`
 4. Optional reporting step to normalize the extracted read counts  (see reporting below)
 `sbatch run_Wochenende_reporting_SLURM.sh`
 
