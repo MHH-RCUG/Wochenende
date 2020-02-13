@@ -12,7 +12,6 @@ Features include (see programs listed below at the bottom of this page)
 - Post-alignment duplicate removal (Picard)
 - Realignment (Abra2)
 - MD tag marking (Samtools)
-
 - Normalization (to Reads per Million Reads etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects)
 
@@ -163,10 +162,6 @@ BAM Indices
 
 
 
-### Contributors
-
-Thanks to @B1T0, @Nijerik, @colindaven
-
 
 ### Running tests
 
@@ -178,3 +173,10 @@ Or without a scheduler:
 python3 run_Wochenende.py --metagenome testdb --threads 4 --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart testdb/reads_R1.fastq
 ```
 You should be able to see in the SLURM outfile or standard out if the tests passed or not. Failed tests may be due to program versions or pipeline configuration issues.
+
+
+
+
+### Contributors
+
+Thanks to @B1T0, @Nijerik, @colindaven, @konnosif
