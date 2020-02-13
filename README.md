@@ -105,7 +105,7 @@ OR
 - [ea-utils](https://github.com/ExpressionAnalysis/ea-utils)
 - [FastUniq](https://sourceforge.net/projects/fastuniq/)
 - [Minimap2](https://github.com/lh3/minimap2)
-- [perldup](https://github.com/richardmleggett/scripts/blob/master/remove_pcr_duplicates.pl) Already copied to dependencies folder. Developed by [Richard Leggett](https://github.com/richardmleggett).
+- [perldup](https://github.com/richardmleggett/scripts/blob/master/remove_pcr_duplicates.pl) Already copied to dependencies folder with permission. Developed by [Richard Leggett](https://github.com/richardmleggett).
 - [PRINSEQ](http://prinseq.sourceforge.net/)
 - [sambamba](https://github.com/biod/sambamba)
 - [samtools](https://github.com/samtools/samtools)
