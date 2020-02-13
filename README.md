@@ -138,10 +138,7 @@ python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.tx
 
 ### Running Wochenende_plot
 
-sftp://172.24.148.208/ngsssd1/rcug/tmp/plots/1_CP000057_2_Haemophilus_influenzae_86_028NP__complete_genome_BAC_MC_SCORED_Potentially0.png
-sftp://172.24.148.208/ngsssd1/rcug/tmp/plots/1_CP006958_1_Achromobacter_xylosoxidans_NBRC_15126___ATCC_27061__complete_genome_BAC_MC_BDSC_Potentially3.png
-
-
+TODO
 
 
 ### Wochenende output
