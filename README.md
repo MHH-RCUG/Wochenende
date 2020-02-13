@@ -189,4 +189,14 @@ You should be able to see in the SLURM outfile or standard out if the tests pass
 
 ### Contributors
 
-Thanks to @B1T0, @Nijerik, @colindaven, @konnosif
+Thanks to:
+
+@B1T0 Main programmer, testing, evaluation, documentation
+
+@Nijerik Wochenende reporting
+
+@konnosif Plots visualisation
+
+@colindaven Concept, programming, updates, integration, maintenance, evaluation, documentation
+
+
