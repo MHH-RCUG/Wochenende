@@ -136,6 +136,14 @@ conda activate wochenende
 python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --refseq_file /lager2/rcug/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --sample_name test
 ```
 
+### Running Wochenende_plot
+
+sftp://172.24.148.208/ngsssd1/rcug/tmp/plots/1_CP000057_2_Haemophilus_influenzae_86_028NP__complete_genome_BAC_MC_SCORED_Potentially0.png
+sftp://172.24.148.208/ngsssd1/rcug/tmp/plots/1_CP006958_1_Achromobacter_xylosoxidans_NBRC_15126___ATCC_27061__complete_genome_BAC_MC_BDSC_Potentially3.png
+
+
+
+
 ### Wochenende output
 
 Wochenende produces many output files, many of which are superseded by later output files and can be removed.
@@ -165,7 +173,6 @@ BAM Indices
 
 
 
-
 ### Running tests
 
 From the Wochenende directory
@@ -176,6 +183,7 @@ Or without a scheduler:
 python3 run_Wochenende.py --metagenome testdb --threads 4 --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart testdb/reads_R1.fastq
 ```
 You should be able to see in the SLURM outfile or standard out if the tests passed or not. Failed tests may be due to program versions or pipeline configuration issues.
+
 
 
 
