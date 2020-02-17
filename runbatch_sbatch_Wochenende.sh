@@ -5,11 +5,11 @@
 
 # Remember to check specified a) refseq b) threads c) adapters
 
-for i in `ls *_R1.fastq`
+for i in `ls *R1.fastq`
 
         do
                 echo $i
-                sbatch run_Wochenende_SLURM.sh $i
+                sbatch -c 16 run_Wochenende_SLURM.sh $i
 
 done
 
