@@ -40,15 +40,15 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 ```
 Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
 Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer
-version: 1.1
-
+version: 1.4 - Feb 2020
 
 usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2}]
                          [--readType {PE,SE}]
-                         [--metagenome {zf10,GRCh38-mito,mm10,rn6,2016_06_1p_spec,GRCh38-noalt,PA14,2016_06_1p_spec_corrected,2016_06_1p_genus,GRCh38-45GB,hg19}]
+                         [--metagenome {2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_OMM,2019_10_meta_human,ss11,testdb,2019_01_meta_mouse_ASF,GRCh38-45GB,GRCh37,mm10,GRCh38-noalt,hg19,PA14,2016_06_1p_spec_corrected,rat_1AR1_ont,2016_06_1p_genus,2019_01_meta,zf10,2016_06_1p_spec,GRCh38-mito,rn6}]
                          [--threads THREADS] [--fastp] [--debug] [--longread]
-                         [--no_duplicate_removal] [--no_abra] [--mq30]
-                         [--remove_mismatching] [--force_restart]
+                         [--no_duplicate_removal] [--no_prinseq] [--no_fastqc]
+                         [--no_abra] [--mq30] [--remove_mismatching]
+                         [--force_restart] [--testWochenende]
                          fastq
 
 positional arguments:
@@ -60,7 +60,7 @@ optional arguments:
                         Aligner to use, either bwamem or minimap2. Usage of
                         minimap2 optimized for ONT data only.
   --readType {PE,SE}    Single end or paired end data
-  --metagenome {zf10,GRCh38-mito,mm10,rn6,2016_06_1p_spec,GRCh38-noalt,PA14,2016_06_1p_spec_corrected,2016_06_1p_genus,GRCh38-45GB,hg19}
+  --metagenome {2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_OMM,2019_10_meta_human,ss11,testdb,2019_01_meta_mouse_ASF,GRCh38-45GB,GRCh37,mm10,GRCh38-noalt,hg19,PA14,2016_06_1p_spec_corrected,rat_1AR1_ont,2016_06_1p_genus,2019_01_meta,zf10,2016_06_1p_spec,GRCh38-mito,rn6}
                         Meta/genome reference to use
   --threads THREADS     Number of cores, default = 16
   --fastp               Use fastp instead of fastqc and trimmomatic
@@ -70,6 +70,9 @@ optional arguments:
   --no_duplicate_removal
                         Skips steps for duplicate removal. Recommended for
                         amplicon sequencing.
+  --no_prinseq          Skips prinseq step for low_complexity sequence
+                        removal.
+  --no_fastqc           Skips FastQC quality control step.
   --no_abra             Skips steps for Abra realignment. Recommended for
                         metagenome and amplicon analysis.
   --mq30                Remove reads with mapping quality less than 30.
@@ -77,11 +80,14 @@ optional arguments:
   --remove_mismatching  Remove reads with 2 or more mismatches (via the NM bam
                         tag)
   --force_restart       Force restart, without regard to existing progress
+  --testWochenende      Run pipeline tests vs testdb, needs the subdirectory
+                        testdb, default false
 
 We recommend using bioconda for the installation of the tools. Remember to run
-'source activate <environment name>' before you start if you are using
+'conda activate <environment name>' before you start if you are using
 bioconda. Details about the installation are available on
 https://github.com/MHH-RCUG/Wochenende#installation
+
 ```
 
 ## Installation
