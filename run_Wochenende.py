@@ -7,6 +7,8 @@ Author: Dr. Colin Davenport
 Author: Fabian Friedrich
 
 TODOs:
+- Also trial with far more comprehensive bbmap adapters:
+- Add test slurmscripts für Error prüfen
 - handle TruSeq and NEB Next adapters
   and test this vs alternatives to Trimmomatic, eg
 Changelog
@@ -258,6 +260,7 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
     fastpcmd = [path_fastp, '--in1='+ stage_infile_1, '--out1='+ stage_outfile,
                 '--in2='+ stage_infile_2, '--out2='+ deriveRead2Name(stage_outfile),
                 '--disable_quality_filtering', '--disable_length_filtering',
+                '--length_required=35',
                 '--cut_by_quality5', '--cut_window_size=5',
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
                 '--json='+ prefix + '.json', '--thread='+ noThreads]
