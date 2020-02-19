@@ -1,5 +1,6 @@
 #!/bin/bash
-## Supply the FASTA input as arg1, bash run_Wochenende_slurm.sh in.fastq
+## A SLURM sbatch script which is part of the Wochenende Pipeline
+## Supply the FASTA input as arg1, bash run_Wochenende_slurm.sh in_R1.fastq
 
 # set partition
 #SBATCH -p normal

@@ -106,6 +106,7 @@ OR
 5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.17.4 pandas==0.24.2 matplotlib==3.0.3`
 6. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
+7. Optional: run the tests, see below.
 
 ## List of Tools used or optional in the pipeline
 
@@ -146,7 +147,7 @@ python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.tx
 
 ### Running Wochenende_plot
 
-TODO
+TODO. This part is currently being refactored.
 
 
 ### Wochenende output
