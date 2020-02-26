@@ -125,6 +125,50 @@ OR
 - [bamtools](https://github.com/pezmaster31/bamtools)
 
 
+
+
+
+
+
+### Wochenende output
+
+Wochenende produces many output files, many of which are superseded by later output files and can be removed.
+
+```
+Initial quality checks and read filtering.
+- MB_AERO_044_S70_R1.ndp.fastq                  # Fastq after removal of duplicates by Perldup
+- MB_AERO_044_S70_R1.ndp.lc.fastq               # Fastq after removal of low-complexity sequences by Prinseq
+- MB_AERO_044_S70_R1.ndp.lc_seqs.fq.fastq       # The removed low-complexity output sequences from Prinseq
+- MB_AERO_044_S70_R1.ndp.lc.trm.s.bam.unmapped.fastq    # Unmapped reads in FASTQ format. Can be further analysed, eg with alternative programs such as nextflow-blast, kraken, centrifuge etc
+
+BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filtering results
+- MB_aero_S2_R1.fastq               # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work well.
+- MB_aero_S2_R1.fastqprogress.tmp   # Temporary file with pipeline stage progress
+- MB_aero_S2_R1.trm.bam             # Initial, unsorted BAM. Can usually be deleted !
+- MB_aero_S2_R1.trm.fastq           # Trimmed FASTQ.
+- MB_aero_S2_R1.trm.s.bam           # Sorted BAM output file
+- MB_aero_S2_R1.ndp.lc.trm.s.bam.unmapped.fastq.gz
+- MB_aero_S2_R1.trm.s.mq30.bam                    # BAM where only well mapped reads with Mapping Quality 30 are retained.
+- MB_aero_S2_R1.trm.s.mq30.01mm.bam               # Reads with more than 0 or 1 mismatches (ie 2+) have been excluded
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam           # Duplicates excluded
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt       # Important: input for simple runbatch_metagen_awk_filter.sh and complex Wochenende reporting
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.filt.sort.csv           # Filtered and sorted BAM.txt read output
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.sorted.csv    # Output from Wochenende reporting step
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated. Suitable for viewing SNVs in JBrowse etc
+- MB_aero_S2_R2.fastq                 # Read 2 file
+- MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
+
+
+
+
+BAM Indices
+- MB_aero_S2_R1.trm.s.bam.bai       # Index
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.bai       # Index
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam.bai # Index
+```
+
+
 ### Running the metagenomic reporting scripts
 
 This tool reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
@@ -147,35 +191,32 @@ python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.tx
 
 ### Running Wochenende_plot
 
-TODO. This part is currently being refactored.
+Either run the three scripts all together with wochenende_posthoc_filter.sh
+```
+bash wochenende_posthoc_filter.sh
+```
 
+Or run each stage manually:
 
-### Wochenende output
-
-Wochenende produces many output files, many of which are superseded by later output files and can be removed.
+First generate the data files for wochenende_plot.py
 
 ```
-- MB_aero_S2_R1.fastq               # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work well.
-- MB_aero_S2_R1.fastqprogress.tmp   # Temporary file with pipeline stage progress
-- MB_aero_S2_R1.trm.bam             # Initial, unsorted BAM
-- MB_aero_S2_R1.trm.fastq           # Trimmed FASTQ.
-- MB_aero_S2_R1.trm.s.bam           # Sorted BAM output file
-- MB_aero_S2_R1.trm.s.mq30.bam                    # BAM where only well mapped reads with Mapping Quality 30 are retained.
-- MB_aero_S2_R1.trm.s.mq30.01mm.bam               # Reads with more than 0 or 1 mismatches (ie 2+) have been excluded
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam           # Duplicates excluded
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt       # Important: input for simple runbatch_metagen_awk_filter.sh and complex Wochenende reporting
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.filt.sort.csv           # Filtered and sorted BAM.txt read output
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.sorted.csv    # Output from Wochenende reporting step
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated. Suitable for viewing SNVs in JBrowse etc
-- MB_aero_S2_R2.fastq                 # Read 2 file
-- MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
+# in a directory full of *dup.bam files
+bash runbatch_sambamba_depth.sh
 
-BAM Indices
-- MB_aero_S2_R1.trm.s.bam.bai       # Index
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.bai       # Index
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam.bai # Index
+Then 
+bash runbatch_metagen_window_filter.sh
+
 ```
+
+```
+MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt              # Coverage per window in each BAM
+MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
+MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
+```
+
+### Wochenende_plot output
+
 
 
 
