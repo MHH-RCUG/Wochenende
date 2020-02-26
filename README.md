@@ -166,6 +166,7 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 - MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt              # Coverage per window in each BAM
 - MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
 - MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
+
 # Wochenende_plot.py output (png images)
 - wochenende_png_files/
 - wochenende_png_files/MB_AERO_023_S55_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv/
@@ -277,3 +278,5 @@ Thanks to:
 @colindaven Concept, programming, updates, integration, maintenance, evaluation, documentation
 
 @Colorstorm Programming, testing, maintenance
+
+@sannareddyk Bug testing, updates
