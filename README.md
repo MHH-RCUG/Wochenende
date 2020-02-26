@@ -169,9 +169,9 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 
 # Wochenende_plot.py output (png images)
 - wochenende_png_files/
-- wochenende_png_files/MB_AERO_023_S55_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv/
-- wochenende_png_files/MB_AERO_023_S55_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv/potentially_present/  
-- wochenende_png_files/MB_AERO_023_S55_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv/probably_present/
+- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/
+- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/potentially_present/  
+- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/probably_present/
 
 
 
