@@ -162,6 +162,16 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 - MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
 
 
+# Wochenende_plot.py input (.filt.csv) and output (png images)
+- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt              # Coverage per window in each BAM
+- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
+- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
+# Wochenende_plot.py output (png images)
+- wochenende_png_files/
+- wochenende_png_files/MB_AERO_023_S55_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv/
+- wochenende_png_files/MB_AERO_023_S55_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv/potentially_present/  
+- wochenende_png_files/MB_AERO_023_S55_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv/probably_present/
+
 
 
 BAM Indices
@@ -210,14 +220,9 @@ bash runbatch_sambamba_depth.sh
 
 Then 
 bash runbatch_metagen_window_filter.sh
+```
+The result should be a series of output files containing the keyword *window*
 
-```
-
-```
-MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt              # Coverage per window in each BAM
-MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
-MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
-```
 #### Run the actual plotting 
 
 Finally, run the actual wochenende_plot.py script or the helper bash script.
