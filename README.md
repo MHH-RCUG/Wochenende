@@ -101,7 +101,7 @@ OR
 2. Create a conda environment for the pipeline.
 `conda create -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba=0.6.6 fastuniq fastqc ea-utils bbmap fastp minimap2 bamtools`
 3. Install all the other tools.
-   - ABRA2
+   - [ABRA2](https://github.com/mozack/abra2)
 4. Edit the configuration section of `run_Wochenende.py` to set the paths to the tools and reference sequences.
 5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.17.4 pandas==0.24.2 matplotlib==3.0.3`
 6. Activate the conda environment before running the pipeline.
