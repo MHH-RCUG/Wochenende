@@ -193,6 +193,8 @@ python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.tx
 
 ### Running Wochenende_plot
 
+#### Preparing the data from BAM files
+
 Either run the three preparation scripts all together with wochenende_posthoc_filter.sh
 ```
 bash wochenende_posthoc_filter.sh
@@ -216,14 +218,15 @@ MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt              # Cove
 MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
 MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
 ```
+#### Run the actual plotting 
 
-Finally, run the actual wochenende_plot.py script or the helper SLURM script.
+Finally, run the actual wochenende_plot.py script or the helper bash script.
 
 ```
 bash runbatch_wochenende_plot.sh
 ```
 
-####  wochenende_plot.py usage
+wochenende_plot.py usage:
 ```
 python3 wochenende_plot.py
 usage: wochenende_plot.py [-h] [--minMeanCov MINMEANCOV]
