@@ -6,9 +6,9 @@ Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
 - pre alignment duplicate removal (perldup)
 - pre alignment poor sequence removal (Prinseq - used for single ended reads only)
-- trimming (Trimmomatic, fastp)
-- alignment (bwa mem, minimap2)
-- SAM-> BAM conversion (samtools, sambamba)
+- trimming (Trimmomatic or fastp)
+- alignment (bwa mem or minimap2)
+- SAM-> BAM conversion (samtools and sambamba)
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
 - Post-alignment duplicate removal (Picard)
@@ -151,13 +151,15 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 - MB_aero_S2_R1.trm.s.mq30.bam                    # BAM where only well mapped reads with Mapping Quality 30 are retained.
 - MB_aero_S2_R1.trm.s.mq30.01mm.bam               # Reads with more than 0 or 1 mismatches (ie 2+) have been excluded
 - MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam           # Duplicates excluded
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated. Suitable for viewing SNVs in JBrowse etc
+- MB_aero_S2_R2.fastq                 # Read 2 file
+- MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
+
+# Wochenende reporting input and output
 - MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt       # Important: input for simple runbatch_metagen_awk_filter.sh and complex Wochenende reporting
 - MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.filt.sort.csv           # Filtered and sorted BAM.txt read output
 - MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.sorted.csv    # Output from Wochenende reporting step
 - MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated. Suitable for viewing SNVs in JBrowse etc
-- MB_aero_S2_R2.fastq                 # Read 2 file
-- MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
 
 
 
@@ -181,7 +183,7 @@ b) total reads in the sequencing library (normalization to 1 million reads)
 c) the above two normalizations combined (RPMM)
 
 
-See the subfolder reporting in the repository.
+See the subfolder `reporting` in the repository.
 
 ```
 conda activate 
@@ -191,7 +193,7 @@ python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.tx
 
 ### Running Wochenende_plot
 
-Either run the three scripts all together with wochenende_posthoc_filter.sh
+Either run the three preparation scripts all together with wochenende_posthoc_filter.sh
 ```
 bash wochenende_posthoc_filter.sh
 ```
@@ -214,6 +216,23 @@ MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt              # Cove
 MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
 MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
 ```
+
+Finally, run the actual wochenende_plot.py script or the helper SLURM script.
+
+```
+bash runbatch_wochenende_plot.sh
+```
+
+####  wochenende_plot.py usage
+```
+python3 wochenende_plot.py
+usage: wochenende_plot.py [-h] [--minMeanCov MINMEANCOV]
+                          [--createAllPngs CREATEALLPNGS] [--sclim SCLIM]
+                          [--minWindows MINWINDOWS]
+                          filename1
+wochenende_plot.py: error: the following arguments are required: filename1
+```
+
 
 ### Wochenende_plot output
 
