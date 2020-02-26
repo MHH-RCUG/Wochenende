@@ -242,7 +242,9 @@ wochenende_plot.py: error: the following arguments are required: filename1
 
 
 
-### Running tests
+### Running software tests
+
+These tests test the software and installation on your server with known read set and database. If all is working correctly, then an output message should be created that these tests passed.
 
 From the Wochenende directory
 ```
