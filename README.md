@@ -147,12 +147,12 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 - MB_aero_S2_R1.trm.bam             # Initial, unsorted BAM. Can usually be deleted !
 - MB_aero_S2_R1.trm.fastq           # Trimmed FASTQ.
 - MB_aero_S2_R1.trm.s.bam           # Sorted BAM output file
-- MB_aero_S2_R1.ndp.lc.trm.s.bam.unmapped.fastq.gz
-- MB_aero_S2_R1.trm.s.mq30.bam                    # BAM where only well mapped reads with Mapping Quality 30 are retained.
+- MB_aero_S2_R1.ndp.lc.trm.s.bam.unmapped.fastq   # unmapped FASTQ reads
+- MB_aero_S2_R1.trm.s.mq30.bam                    # BAM where only well mapped reads with Mapping Quality 30 are retained
 - MB_aero_S2_R1.trm.s.mq30.01mm.bam               # Reads with more than 0 or 1 mismatches (ie 2+) have been excluded
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam           # Duplicates excluded
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated. Suitable for viewing SNVs in JBrowse etc
-- MB_aero_S2_R2.fastq                 # Read 2 file
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam           # Duplicates excluded by Picard
+- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated to enable SNVs in JBrowse etc
+- MB_aero_S2_R2.fastq                 # Read 2 input file
 - MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
 
 # Wochenende reporting input and output
