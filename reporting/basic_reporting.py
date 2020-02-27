@@ -1,187 +1,185 @@
-"""
-A reporting script for the results of the Wochenende Pipeline
-Author: Tobias Scheithauer, August 2018
-Author: Erik Wessels, October 2019
-Author: Fabian Charly Friedrich, February 2020
+# Tobias Scheithauer, August 2018
 
-TODOs
-- add plots
-- normalization model for Solid
-Changelog
-1.3 restructured the script
-1.2 bugfix reads_per_human_cell
-1.1 add reads_per_human_cell for metagenomes
-1.0 implement the script
-"""
+# This script can be used for reporting the results of the Wochenende pipeline
 
-import sys
-import os
+import os, sys, time
 from Bio import SeqIO, SeqUtils
 import pysam
+import numpy as np
 import pandas as pd
 import click
 
+def solid_normalization(gc):
+	# TODO: get normalization model
+	return 1
 
-###################################
-# functions
-##################################
-def print_start(input_file, reference, sequencer):
-    click.echo(f'starting {sequencer} reporting')
-    click.echo(f'Started {"bam" if input_file[-4:] == ".bam" else "txt"} mode.')
-    click.echo(f'Using {input_file} as alignment file')
-    click.echo(f'Using {reference} as reference')
-    click.echo()
-
-
-def check_arguments(input_file, reference, sequencer):
-    # check if input file exist and if it is the correct file format
-    if os.path.isfile(input_file):
-        if not input_file[-8:] == '.bam.txt' and not input_file[-4:] == '.bam':
-            click.echo(f'The input file {input_file} \t has a wrong file format.\nType --help for help')
-            sys.exit()
-    else:
-        click.echo(f'The input file {input_file} \t does not exists\nType --help for help')
-        sys.exit()
-
-    # check if refseq file exist and if it is the correct file format
-    if os.path.isfile(reference):
-        if not reference[-6:] == '.fasta':
-            click.echo(f'The input file {reference} \t has a wrong file format.\nType --help for help')
-            sys.exit()
-    else:
-        click.echo(f'The input file {reference} \t does not exists\nType --help for help')
-        sys.exit()
-    # check the sequencer
-    if not sequencer == 'illumina' and not sequencer == 'solid':
-        click.echo(f'The sequencer {sequencer} \t is not supported\nType --help for help')
-        sys.exit()
-    click.echo('Arguments checked successfully')
-
-
-def create_res_df(input_file, reference):
-    if input_file[-4:] == '.bam':
-        return create_res_df_from_bam(input_file, reference)
-    else:
-        return create_res_df_from_txt(input_file, reference)
-
-
-def create_res_df_from_txt(input_file, refseq_file):
-    res_df = pd.read_csv(input_file, sep='\t', header=None, names=['species', 'chr_length', 'read_count'],
-                         usecols=[0, 1, 2])[:-1]
-    # get gc content of ref sequences
-    gc_ref_dict = {}
-    for seq_record in SeqIO.parse(refseq_file, 'fasta'):
-        gc_ref_dict[seq_record.name] = SeqUtils.GC(str(seq_record.seq).replace('N', ''))
-    res_df['gc_ref'] = [gc_ref_dict[s] for s in res_df['species']]
-    return res_df
-
-
-def create_res_df_from_bam(input_file, reference):
-    species_list, chr_length_list, read_count_list, basecount_list, gc_ref_list, gc_reads_list = [], [], [], [], [], []
-
-    for seq_record in SeqIO.parse(reference, 'fasta'):
-        # joining all reads
-        joined_reads = ''.join(
-            [read.query_sequence for read in pysam.AlignmentFile(input_file, 'rb').fetch(contig=seq_record.name)])
-
-        # appending to all Lists
-        species_list.append(seq_record.name)
-        chr_length_list.append(len(seq_record.seq))
-        read_count_list.append(pysam.AlignmentFile(input_file, 'rb').count(contig=seq_record.name))
-        gc_ref_list.append(SeqUtils.GC(seq_record.seq))
-        gc_reads_list.append(SeqUtils.GC(joined_reads))
-        basecount_list.append(sum([len(joined_reads)]))
-
-    # create and return dataframe
-    return pd.DataFrame(data={
-        'species': species_list,
-        'chr_length': chr_length_list,
-        'gc_ref': gc_ref_list,
-        'gc_reads': gc_reads_list,
-        'read_count': read_count_list,
-        'basecount': basecount_list,
-    })
-
-
-def solid_gc_normalization(gc):
-    return 1
-
-
-def solid_normalization(res_df):
-    res_df['norm_factor'] = [solid_gc_normalization(gc) for gc in res_df['gc_ref']]
-    res_df['read_count'] = res_df['read_count'] * res_df['norm_factor']
-    res_df['basecount'] = res_df['basecount'] * res_df['norm_factor']
-    res_df['reads_per_million_ref_bases'] = res_df['reads_per_million_ref_bases'] * res_df['norm_factor']
-    res_df['reads_per_million_reads_in_experiment'] = res_df['reads_per_million_reads_in_experiment'] * res_df[
-        'norm_factor']
-    res_df['norm_factor'] = None
-    return res_df
-
-
-def bacteria_per_human_cell(res_df):
-    # calculating bacteria per human cell
-    # check for human_refs to be correct!
-    # the mitochondrial reads have NOT been added to the sum of human reads, as the bacteria/human ratio  would have been extremly small.
-    # this needs to be further discussed
-    human_refs = ['1_1_1_1', '1_1_1_2', '1_1_1_3', '1_1_1_4', '1_1_1_5', '1_1_1_6', '1_1_1_7', '1_1_1_8',
-                  '1_1_1_9', '1_1_1_10', '1_1_1_11', '1_1_1_12', '1_1_1_13', '1_1_1_14', '1_1_1_15',
-                  '1_1_1_16', '1_1_1_17', '1_1_1_18', '1_1_1_19', '1_1_1_20', '1_1_1_21', '1_1_1_22', '1_1_1_X',
-                  '1_1_1_Y']
-    human_cov = res_df[res_df['species'].isin(human_refs)]['read_count'].sum()
-    res_df['bacteria_per_human_cell'] = (6191.39 * res_df['reads_per_million_ref_bases']) / human_cov
-    return res_df
-
-
-def compute_res_df(res_df, sequencer):
-    # calculating reads_per_million_ref_bases
-    res_df['reads_per_million_ref_bases'] = res_df['read_count'] / (res_df['chr_length'] / 1000000).round(2)
-
-    # calculating reads_per_million_reads_in_experiment
-    res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (
-            res_df['read_count'].sum() / 1000000).round(2)
-
-    # special solid normalization
-    if sequencer == 'solid': res_df = solid_normalization(res_df)
-
-    # total normalization RPMM. Corrected
-    res_df['RPMM'] = (
-            res_df['read_count'] / (res_df['chr_length'] / 1000000) * res_df['read_count'].sum() / 1000000).round(2)
-
-    # calculating bacteria per human cell
-    res_df = bacteria_per_human_cell(res_df)
-
-    return res_df
-
-
-def export_res(res_df, output):
-    res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
-    res_df_filtered_and_sorted.to_csv(f'{output}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
-
-
-###################################
-# main
-##################################
+# Command Line Argument Parsing
 @click.command()
-@click.argument('input_file')
-@click.argument('reference')
-@click.option('--sequencer', '-s', default='illumina', help='Sequencer technology used only solid and illumina are supported, default: illumina ')
-@click.option('--output', '-o', default='report', help='Name for the output file(sample name), default report')
-def main(input_file, reference, sequencer, output):
-    """
-    This script can be used to report the results of the Wochenende pipeline
+# Slow mode uses the bam file while standard mode uses the bam.text created by wochenende pipeline. Slow mode gives an advanced output.
+@click.option('--slow', default=False, help='Use this flag if you want to process the bam file instead of *.bam.txt')
+@click.option('--input_file', help='The output file of Wochenende. Either *.bam.txt or .bam (use with --slow flag only)')
+@click.option('--refseq_file', help='The refseq file used by Wochenende.')
+# While illumina does not, SOLID sequencing data requires special normalization. Therefore an extra step is required. The model has to be defined in the function above.
+@click.option('--sequencer', help='Sequencer technology used (solid or illumina)')
+@click.option('--sample_name', help='Name of the sample. Used for output file naming.')
+def reporting(slow, input_file, refseq_file, sequencer, sample_name):
+	if slow:
+		# This section is for SLOW mode only, using BAM files
+		click.echo('Started slow mode.') 
+		click.echo(f'Using {input_file} as alignment file')
+		click.echo(f'Using {refseq_file} as refseq file')
+		click.echo()
+		if sequencer == 'illumina':
+			# slow illumina reporting
+			click.echo('starting illumina reporting')
+			# creating lists for dataframe creation
+			species_list, chr_length_list, read_count_list, basecount_list, gc_ref_list, gc_reads_list = [], [], [], [], [], []
+			for seq_record in SeqIO.parse(refseq_file, 'fasta'):
+				species_list.append(seq_record.name)
+				chr_length_list.append(len(seq_record.seq))
+				read_count_list.append(pysam.AlignmentFile(input_file, 'rb').count(contig=seq_record.name))
+				# joining all reads to get number of bases in experiment and gc content of reads
+				joined_reads = ''.join([read.query_sequence for read in pysam.AlignmentFile(input_file, 'rb').fetch(contig=seq_record.name)])
+				basecount_list.append(sum([len(joined_reads)]))
+				gc_ref_list.append(SeqUtils.GC(seq_record.seq))
+				gc_reads_list.append(SeqUtils.GC(joined_reads))
+			res_df = pd.DataFrame(data={
+				'species': species_list, 
+				'chr_length': chr_length_list, 
+				'gc_ref': gc_ref_list, 
+				'gc_reads': gc_reads_list, 
+				'read_count': read_count_list, 
+				'basecount': basecount_list,
+			})
+			res_df['reads_per_million_ref_bases'] = res_df['read_count']/(res_df['chr_length']/1000000)
+			res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum()/1000000)
+			# calculating bacteria per human cell
+			human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','X','Y','MT']
+			human_cov = res_df[res_df['species'].isin(human_refs)]['basecount'].sum()/res_df[res_df['species'].isin(human_refs)]['chr_length'].sum()
+			print(human_cov)
+			res_df['bacteria_per_human_cell'] = (res_df['basecount']/res_df['chr_length']) / human_cov
+			# total normalization RPMM. Corrected
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000) * res_df['read_count'].sum()/1000000
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
+		elif sequencer == 'solid':
+			# slow solid reporting (works like illumina reporting but width normalization)
+			click.echo('starting solid reporting')	
+			species_list, chr_length_list, read_count_list, basecount_list, gc_ref_list, gc_reads_list = [], [], [], [], [], []
+			for seq_record in SeqIO.parse(refseq_file, 'fasta'):
+				species_list.append(seq_record.name)
+				chr_length_list.append(len(seq_record.seq))
+				read_count_list.append(pysam.AlignmentFile(input_file, 'rb').count(contig=seq_record.name))
+				joined_reads = ''.join([read.query_sequence for read in pysam.AlignmentFile(input_file, 'rb').fetch(contig=seq_record.name)])
+				basecount_list.append(sum([len(joined_reads)]))
+				gc_ref_list.append(SeqUtils.GC(seq_record.seq))
+				gc_reads_list.append(SeqUtils.GC(joined_reads))
+			res_df = pd.DataFrame(data={
+				'species': species_list, 
+				'chr_length': chr_length_list, 
+				'gc_ref': gc_ref_list, 
+				'gc_reads': gc_reads_list, 
+				'read_count': read_count_list, 
+				'basecount': basecount_list,
+			})
+			res_df['reads_per_million_ref_bases'] = res_df['read_count']/(res_df['chr_length']/1000000)
+			res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum()/1000000)
+			# special SOLID normalization steps
+			res_df['norm_factor'] = [solid_normalization(gc) for gc in res_df['gc_ref']]
+			res_df['read_count'] = res_df['read_count'] * res_df['norm_factor']
+			res_df['basecount'] = res_df['basecount'] * res_df['norm_factor']
+			res_df['reads_per_million_ref_bases'] = res_df['reads_per_million_ref_bases'] * res_df['norm_factor']
+			res_df['reads_per_million_reads_in_experiment'] = res_df['reads_per_million_reads_in_experiment'] * res_df['norm_factor']
+			human_refs = ['1','2','3','4','5','6','7','8','9','10', '11','12','13','14','15','16','17','18','19','20','21','22','X','Y','MT']
+			human_cov = res_df[res_df['species'].isin(human_refs)]['basecount'].sum()/res_df[res_df['species'].isin(human_refs)]['chr_length'].sum()
+			print(human_cov)
+			res_df['bacteria_per_human_cell'] =  (res_df['ibasecount']/res_df['chr_length']) / human_cov
+			res_df['norm_factor'] = None
+			# total normalization RPMM
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000) * res_df['read_count'].sum()/1000000
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', float_format='%.1f', index=False)
+		else: 
+			click.echo('please specify sequencing technology')
+			sys.exit(1)
+	else:
+		# This section uses bam.txt files as opposed to full BAM files
+		click.echo(f'Using {input_file} as alignment file')
+		click.echo(f'Using {refseq_file} as refseq file')
+		click.echo()
+		if sequencer == 'illumina':
+			# standard illumina reporting
+			click.echo('starting illumina reporting')
+			# reading in wochenende output file without last line (* as species name)
+			res_df = pd.read_csv(input_file, sep='\t', header=None, names=['species', 'chr_length', 'read_count'], usecols=[0,1,2])[:-1]
+			# get gc content of ref sequences
+			gc_ref_dict = {}
+			for seq_record in SeqIO.parse(refseq_file, 'fasta'):
+				gc_ref_dict[seq_record.name] = SeqUtils.GC(str(seq_record.seq).replace('N', ''))
+			res_df['gc_ref'] = [gc_ref_dict[s] for s in res_df['species']]
+			res_df['reads_per_million_ref_bases'] = res_df['read_count']/(res_df['chr_length']/1000000)
+			res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum()/1000000)
+			# total normalization RPMM
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000 * res_df['read_count'].sum()/1000000)
 
-    INPUT_FILE    File in .bam.txt or .bam format from the Wochenende pipeline output
+			#calculating bacteria per human cell
+			#check for human_refs to be correct!
+			#the mitochondrial reads have NOT been added to the sum of human reads, as the bacteria/human ratio  would have been extremly small.
+			#this needs to be further discussed
+			human_refs = ['1_1_1_1','1_1_1_2','1_1_1_3','1_1_1_4','1_1_1_5','1_1_1_6','1_1_1_7','1_1_1_8','1_1_1_9','1_1_1_10', '1_1_1_11','1_1_1_12','1_1_1_13','1_1_1_14','1_1_1_15',\
+					'1_1_1_16','1_1_1_17','1_1_1_18','1_1_1_19','1_1_1_20','1_1_1_21','1_1_1_22','1_1_1_X','1_1_1_Y']
+			human_cov = res_df[res_df['species'].isin(human_refs)]['read_count'].sum()
+			res_df['bacteria_per_human_cell'] = (6191.39 * res_df['reads_per_million_ref_bases']) / human_cov
 
-    REFERENCE     File in .fasta format has to be the reference used by the Wochenende pipeline
-    """
+			#rounding to 2 decimals, except for bacteria_per_human_cell, which gets 4 decimals
+			cols = ['gc_ref', 'reads_per_million_ref_bases', 'reads_per_million_reads_in_experiment', 'RPMM']
+			res_df[cols] = res_df[cols].round(2)
+			res_df['bacteria_per_human_cell'] = res_df['bacteria_per_human_cell'].round(4)
 
-    check_arguments(input_file, reference, sequencer)
-    print_start(input_file, reference, sequencer)
-    res_df = create_res_df(input_file, reference)
-    res_df = compute_res_df(res_df, sequencer)
-    export_res(res_df, output)
-    res_df.to_csv(f'{output}.reporting.unsorted.csv', sep='\t', float_format='%.1f', index=False)
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', index=False)
+		elif sequencer == 'solid':
+			# standard solid reporting (works like illumina reporting but width normalization)
+			click.echo('starting solid reporting')	
+			res_df = pd.read_csv(input_file, sep='\t', header=None, names=['species', 'chr_length', 'read_count'], usecols=[0,1,2])[:-1]
+			gc_ref_list = []
+			for seq_record in SeqIO.parse(refseq_file, 'fasta'):
+				gc_ref_dict[seq_record.name] = SeqUtils.GC(str(seq_record.seq).replace('N', ''))
+			res_df['gc_ref'] = gc_ref_list
+			res_df['reads_per_million_ref_bases'] = res_df['read_count']/(res_df['chr_length']/1000000)
+			res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum()/1000000)
+			# special SOLID normalization
+			res_df['norm_factor'] = [solid_normalization(gc) for gc in res_df['gc_ref']]
+			res_df['read_count'] = res_df['read_count'] * res_df['norm_factor']
+			res_df['basecount'] = res_df['basecount'] * res_df['norm_factor']
+			res_df['reads_per_million_ref_bases'] = res_df['reads_per_million_ref_bases'] * res_df['norm_factor']
+			res_df['reads_per_million_reads_in_experiment'] = res_df['reads_per_million_reads_in_experiment'] * res_df['norm_factor']
+			res_df['norm_factor'] = None
+			# total normalization RPMM
+			res_df['RPMM'] = res_df['read_count'] / (res_df['chr_length']/1000000 * res_df['read_count'].sum()/1000000)
+			
+			#calculating bacteria per human cell
+			#check for human_refs to be correct!
+			human_refs = ['1_1_1_1','1_1_1_2','1_1_1_3','1_1_1_4','1_1_1_5','1_1_1_6','1_1_1_7','1_1_1_8','1_1_1_9','1_1_1_10', '1_1_1_11','1_1_1_12','1_1_1_13','1_1_1_14','1_1_1_15',\
+					'1_1_1_16','1_1_1_17','1_1_1_18','1_1_1_19','1_1_1_20','1_1_1_21','1_1_1_22','1_1_1_X','1_1_1_Y']
+			human_cov = res_df[res_df['species'].isin(human_refs)]['read_count'].sum()
+			res_df['bacteria_per_human_cell'] = (6191.39 * res_df['reads_per_million_ref_bases']) / human_cov
 
+			#rounding to 2 decimals, except for bacteria_per_human_cell, which gets 4 decimals
+			cols = ['gc_ref', 'reads_per_million_ref_bases', 'reads_per_million_reads_in_experiment', 'RPMM']
+			res_df[cols] = res_df[cols].round(2)
+			res_df['bacteria_per_human_cell'] = res_df['bacteria_per_human_cell'].round(4)
 
+			res_df.to_csv(f'{sample_name}.reporting.unsorted.csv', sep='\t', index=False)
+			res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
+			res_df_filtered_and_sorted.to_csv(f'{sample_name}.reporting.sorted.csv', sep='\t', index=False)
+		else: 
+			click.echo('please specify sequencing technology')
+			sys.exit(1)
+ 
+	
 if __name__ == '__main__':
-    main()
+	reporting()
