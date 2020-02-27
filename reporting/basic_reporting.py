@@ -1,7 +1,7 @@
 """
 A reporting script for the results of the Wochenende Pipeline
 Author: Tobias Scheithauer, August 2018
-Author: Erik Weßels, October 2019
+Author: Erik Wessels, October 2019
 Author: Fabian Charly Friedrich, February 2020
 
 TODOs
