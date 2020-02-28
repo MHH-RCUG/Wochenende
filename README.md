@@ -184,7 +184,7 @@ BAM Indices
 
 ### Running the metagenomic reporting scripts
 
-This tool reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
+This tool (which requires python3.6) reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
 Normalizations are for:
 
 a) reads normalized to the idealized length of a bacterial chromosome (normalization to 1 million base pairs)
