@@ -17,7 +17,9 @@ Features include (see programs listed below at the bottom of this page)
 - Normalization (to Reads per Million Reads etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
 
+## Platforms
 
+Ubuntu has currently (Feb 2020) only been tested on Ubuntu Linux 16.04 64bit . We advise against any attempts on MacOS or Windows. An appropriate conda environment and Python3.6+ is critical to get things working.
 
 
 ## Usage 
