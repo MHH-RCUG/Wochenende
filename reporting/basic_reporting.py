@@ -167,13 +167,13 @@ def export_res(res_df, output):
 @click.option('--output_name', '-o', default='report', help='Name for the output file(sample name), default report')
 def main(input_file, reference, sequencer, output_name):
     """
-    This script can be used to report the results of the Wochenende pipeline.
-    The .bam.txt file as input is recommended.
+    This Python3.6 script can be used to report the results of the Wochenende pipeline.
+    The .bam.txt file as input is recommended (fast).
     The .bam file will take longer and  generate more information.
 
     The column reads_per_human_cell is only for metagenomes from human hosts.
 
-    Reports for solid sequencing data are not supported, a special normalisation model has to be implemented first.
+    Reports for solid sequencing data are not supported, a special GC normalisation model has to be implemented first.
     """
 
     check_arguments(input_file, reference, sequencer)
