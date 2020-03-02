@@ -195,15 +195,41 @@ b) total reads in the sequencing library (normalization to 1 million reads)
 
 c) the above two normalizations combined (RPMM)
 
+d) reads per human cell(only works for metagenomes from human hosts)
 
 See the subfolder `reporting` in the repository.
 
 ```
 conda activate 
 conda activate wochenende
-python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --refseq_file /lager2/rcug/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --sample_name test
+python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --reference /lager2/rcug/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --output_name test
 ```
 
+#### Usage
+```
+Usage: basic_reporting.py [OPTIONS]
+
+  This script can be used to report the results of the Wochenende pipeline.
+  The .bam.txt file as input is recommended. The .bam file will take longer
+  and  generate more information.
+
+  The column reads_per_human_cell is only for metagenomes from human hosts.
+
+  Reports for solid sequencing data are not supported, a special
+  normalisation model has to be implemented first.
+
+Options:
+  -i, --input_file TEXT   File in .bam.txt or .bam format from the Wochenende
+                          pipeline output
+  -r, --reference TEXT    File in .fasta format has to be the reference used
+                          by the Wochenende pipeline
+  -s, --sequencer TEXT    Sequencer technology used only solid and illumina
+                          are available, only illumina is supported, default:
+                          illumina
+  -o, --output_name TEXT  Name for the output file(sample name), default
+                          report
+  --help                  Show this message and exit.
+```
 ### Running Wochenende_plot
 
 #### Preparing the data from BAM files
