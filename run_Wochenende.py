@@ -7,11 +7,13 @@ Author: Dr. Colin Davenport
 Author: Fabian Friedrich
 
 TODOs:
-- Also trial with far more comprehensive bbmap adapters:
-- Add test slurmscripts für Error prüfen
+- Also trial with far more comprehensive bbmap adapters
+- Add test slurmscripts to check errors
 - handle TruSeq and NEB Next adapters
   and test this vs alternatives to Trimmomatic, eg
+
 Changelog
+1.5 restructure wochenende_reporting, requires Python3.6+
 1.4 add wochenende_plot.py file plotting
 1.3 add samtools flagstat to get per cent reads aligned
 1.3 add --testWochenende tests to test pipeline functionality and report success on a small reference
@@ -28,7 +30,7 @@ import shutil
 import argparse
 import time
 
-version = "1.4 - Feb 2020"
+version = "1.5 - Mar 2020"
 
 ##############################
 # CONFIGURATION
