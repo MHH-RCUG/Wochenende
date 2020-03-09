@@ -4,11 +4,16 @@
 A whole genome/metagenome analysis pipeline in Python3
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
+Author: Fabian Friedrich
 
 TODOs:
+- Also trial with far more comprehensive bbmap adapters
+- Add test slurmscripts to check errors
 - handle TruSeq and NEB Next adapters
   and test this vs alternatives to Trimmomatic, eg
+
 Changelog
+1.5 restructure wochenende_reporting, requires Python3.6+
 1.4 add wochenende_plot.py file plotting
 1.3 add samtools flagstat to get per cent reads aligned
 1.3 add --testWochenende tests to test pipeline functionality and report success on a small reference
@@ -25,13 +30,13 @@ import shutil
 import argparse
 import time
 
-version = "1.4 - Feb 2020"
+version = "1.5 - Mar 2020"
 
 ##############################
 # CONFIGURATION
 ##############################
 
-## Paths to commands. If it is in your PATH just type the command. We recommend conda.
+## Paths to commands - please edit as appropriate. If it is in your PATH just type the command. We recommend conda.
 path_fastqc      = 'fastqc'
 path_afterqc     = '/mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py'
 path_fastp       = '/mnt/ngsnfs/tools/fastp/fastp'
@@ -48,7 +53,7 @@ path_sambamba    = 'sambamba'
 path_java        = 'java'
 path_abra_jar    = '/mnt/ngsnfs/tools/abra2/abra2_latest.jar'
 path_minimap2    = 'minimap2'
-## Paths to reference seqs
+## Paths to reference seqs. Edit as appropriate!
 path_refseq_dict = {
     "2016_06_1p_genus" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
     "2016_06_1p_spec_corrected" : "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
@@ -70,9 +75,9 @@ path_refseq_dict = {
     "zf10": "/lager2/rcug/seqres/DR/bwa/GRCz10.fa",
     "ss11": "/lager2/rcug/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
     "PA14": "/lager2/rcug/seqres/PA/bwa/NC_008463.fna",
-    "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
     "testdb": "testdb/ref.fa",
 }
+# Adapters - edit as appropriate
 ea_adapter_fasta = '/mnt/ngsnfs/tools/miniconda2/pkgs/bbmap-37.17-0/opt/bbmap-37.17/resources/adapters.fa'
 adapter_fasta = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa'
 ## Other
@@ -257,6 +262,7 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
     fastpcmd = [path_fastp, '--in1='+ stage_infile_1, '--out1='+ stage_outfile,
                 '--in2='+ stage_infile_2, '--out2='+ deriveRead2Name(stage_outfile),
                 '--disable_quality_filtering', '--disable_length_filtering',
+                '--length_required=35',
                 '--cut_by_quality5', '--cut_window_size=5',
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
                 '--json='+ prefix + '.json', '--thread='+ noThreads]
