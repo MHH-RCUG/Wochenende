@@ -75,6 +75,7 @@ path_refseq_dict = {
     "zf10": "/lager2/rcug/seqres/DR/bwa/GRCz10.fa",
     "ss11": "/lager2/rcug/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
     "PA14": "/lager2/rcug/seqres/PA/bwa/NC_008463.fna",
+    "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
     "testdb": "testdb/ref.fa",
 }
 # Adapters - edit as appropriate

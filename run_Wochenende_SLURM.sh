@@ -79,6 +79,14 @@ python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende -
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_ASF --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_OMM --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
+## 2020 03 NCI viruses only - with mq30. Use with unmapped reads only after removing human + bact
+#python3 run_Wochenende.py --metagenome nci_viruses --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+## 2020 03 NCI viruses only - no mq30.  Use with unmapped reads only after removing human + bact
+#python3 run_Wochenende.py --metagenome nci_viruses --threads $cpus --aligner bwamem --no_abra --remove_mismatching --readType SE --debug --force_restart $fastq
+
+
+
+
 #2016 2016_06_PPKC_metagenome_test_1p_spec_change
 #python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus  --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus --aligner bwamem --no_abra --mq30 --readType SE --debug --force_restart $fastq
