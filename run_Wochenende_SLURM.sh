@@ -1,6 +1,5 @@
 #!/bin/bash
-## A SLURM sbatch script which is part of the Wochenende Pipeline
-## Supply the FASTA input as arg1, bash run_Wochenende_slurm.sh in_R1.fastq
+## Supply the FASTA input as arg1, bash run_Wochenende_slurm.sh in.fastq
 
 # set partition
 #SBATCH -p normal
@@ -61,7 +60,7 @@ cpus=12
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
 
 # Test wochenende pipeline. Run tests with sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
-python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 # Test wochenemde with fastp - the auto tests here will fail here since fastp not trm is in the filename
 #python3 run_Wochenende.py --metagenome testdb --fastp --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
@@ -78,6 +77,11 @@ python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende -
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_ASF_OMM --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_ASF --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_OMM --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+
+## 2020 03 NCI viruses only - with mq30
+#python3 run_Wochenende.py --metagenome nci_viruses --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+## 2020 03 NCI viruses only - no mq30
+python3 run_Wochenende.py --metagenome nci_viruses --threads $cpus --aligner bwamem --no_abra --remove_mismatching --readType SE --debug --force_restart $fastq
 
 #2016 2016_06_PPKC_metagenome_test_1p_spec_change
 #python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus  --readType SE --debug --force_restart $fastq
