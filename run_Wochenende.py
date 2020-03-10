@@ -244,9 +244,9 @@ def runFastpSE(stage_infile, noThreads):
     stage_outfile = prefix + '.fastp.fastq'
     fastpcmd = [path_fastp, '--in1=' + stage_infile, '--out1=' + stage_outfile,
                 '--disable_quality_filtering', '--disable_length_filtering',
-                '--length_required=35',
-                # '--adapter_sequence=' + adapter_fasta,
-                '--cut_by_quality5', '--cut_window_size=5',
+                '--length_required=45',
+                '--adapter_sequence=' + adapter_fasta,
+                '--cut_front', '--cut_window_size=5',
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
                 '--json='+ prefix + '.json', '--thread='+ noThreads]
     runStage(stage, fastpcmd)
