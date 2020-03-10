@@ -93,7 +93,7 @@ python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende -
 #python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 # Genomes
-#python3 run_Wochenende.py --metagenome PA14 --threads $cpus  --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome PA14 --threads $cpus --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --longread --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --readType PE --no_duplicate_removal --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome GRCh37 --threads $cpus --readType PE --aligner bwamem --no_duplicate_removal --no_abra --force_restart $fastq
