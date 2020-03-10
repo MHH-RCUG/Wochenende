@@ -80,9 +80,9 @@ path_refseq_dict = {
     "testdb": "testdb/ref.fa",
 }
 # Adapters - edit as appropriate
-ea_adapter_fasta = '/mnt/ngsnfs/tools/miniconda3/pkgs/bbmap-38.06-2/opt/bbmap-38.06/resources/adapters.fa'
+ea_adapter_fasta = '/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa'
 adapter_fasta = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa'
-adapter_fastp = ''
+adapter_fastp = '/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa'
 ## Other
 path_tmpdir = '/ngsssd1/rcug/tmp/'
 
