@@ -247,7 +247,7 @@ def runFastpSE(stage_infile, noThreads):
     fastpcmd = [path_fastp, '--in1=' + stage_infile, '--out1=' + stage_outfile,
                 '--disable_quality_filtering', '--disable_length_filtering',
                 '--length_required=40',
-                '--adapter_fasta=' + adapter_fastp,
+                '--adapter_sequence=' + adapter_fastp,
                 '--cut_front', '--cut_window_size=5',
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
                 '--json='+ prefix + '.json', '--thread='+ noThreads]
@@ -266,7 +266,7 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
                 '--in2='+ stage_infile_2, '--out2='+ deriveRead2Name(stage_outfile),
                 '--disable_quality_filtering', '--disable_length_filtering',
                 '--length_required=40',
-                '--adapter_fasta=' + adapter_fastp,
+                '--adapter_sequence=' + adapter_fastp,
                 '--cut_front', '--cut_window_size=5',
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
                 '--json='+ prefix + '.json', '--thread='+ noThreads]
