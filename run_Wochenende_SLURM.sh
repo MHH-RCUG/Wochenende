@@ -61,7 +61,7 @@ cpus=12
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
 
 # Test wochenende pipeline. Run tests with sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
-python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 # Test wochenemde with fastp - the auto tests here will fail here since fastp not trm is in the filename
 #python3 run_Wochenende.py --metagenome testdb --fastp --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
@@ -70,6 +70,8 @@ python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende -
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # without prinseq
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --no_fastqc --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+# with fastp
+python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 
 ## 2019 01 January metagenomes
