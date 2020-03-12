@@ -61,7 +61,7 @@ cpus=12
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
 
 # Test wochenende pipeline. Run tests with sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
-python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 # Test wochenemde with fastp - the auto tests here will fail here since fastp not trm is in the filename
 #python3 run_Wochenende.py --metagenome testdb --fastp --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
@@ -70,6 +70,8 @@ python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende -
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # without prinseq
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --no_fastqc --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+# with fastp
+python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 
 ## 2019 01 January metagenomes
@@ -93,7 +95,7 @@ python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende -
 #python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 # Genomes
-#python3 run_Wochenende.py --metagenome PA14 --threads $cpus  --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome PA14 --threads $cpus --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --longread --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --readType PE --no_duplicate_removal --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome GRCh37 --threads $cpus --readType PE --aligner bwamem --no_duplicate_removal --no_abra --force_restart $fastq

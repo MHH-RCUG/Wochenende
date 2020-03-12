@@ -13,6 +13,7 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
 1.5 restructure wochenende_reporting, requires Python3.6+
 1.4 add wochenende_plot.py file plotting
 1.3 add samtools flagstat to get per cent reads aligned
@@ -30,7 +31,7 @@ import shutil
 import argparse
 import time
 
-version = "1.5 - Mar 2020"
+version = "1.5.1 - Mar 2020"
 
 ##############################
 # CONFIGURATION
@@ -39,7 +40,7 @@ version = "1.5 - Mar 2020"
 ## Paths to commands - please edit as appropriate. If it is in your PATH just type the command. We recommend conda.
 path_fastqc      = 'fastqc'
 path_afterqc     = '/mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py'
-path_fastp       = '/mnt/ngsnfs/tools/fastp/fastp'
+path_fastp       = 'fastp'
 path_prinseq     = 'prinseq-lite.pl'
 path_perl        = 'perl'
 path_perldup     = '/mnt/ngsnfs/tools/Wochenende/dependencies/remove_pcr_duplicates.pl'
@@ -79,8 +80,9 @@ path_refseq_dict = {
     "testdb": "testdb/ref.fa",
 }
 # Adapters - edit as appropriate
-ea_adapter_fasta = '/mnt/ngsnfs/tools/miniconda2/pkgs/bbmap-37.17-0/opt/bbmap-37.17/resources/adapters.fa'
+ea_adapter_fasta = '/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa'
 adapter_fasta = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa'
+adapter_fastp = '/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa'
 ## Other
 path_tmpdir = '/ngsssd1/rcug/tmp/'
 
@@ -241,12 +243,12 @@ def runFastpSE(stage_infile, noThreads):
     stage = "fastp - SE"
     print("######  "+ stage + "  ######")
     prefix = stage_infile.replace(".fastq","")
-    stage_outfile = prefix + '.fastp.fastq'
+    stage_outfile = prefix + '.trm.fastq'
     fastpcmd = [path_fastp, '--in1=' + stage_infile, '--out1=' + stage_outfile,
                 '--disable_quality_filtering', '--disable_length_filtering',
-                '--length_required=35',
-                # '--adapter_sequence=' + adapter_fasta,
-                '--cut_by_quality5', '--cut_window_size=5',
+                '--length_required=40',
+                '--adapter_fasta=' + adapter_fastp,
+                '--cut_front', '--cut_window_size=5',
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
                 '--json='+ prefix + '.json', '--thread='+ noThreads]
     runStage(stage, fastpcmd)
@@ -263,8 +265,9 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
     fastpcmd = [path_fastp, '--in1='+ stage_infile_1, '--out1='+ stage_outfile,
                 '--in2='+ stage_infile_2, '--out2='+ deriveRead2Name(stage_outfile),
                 '--disable_quality_filtering', '--disable_length_filtering',
-                '--length_required=35',
-                '--cut_by_quality5', '--cut_window_size=5',
+                '--length_required=40',
+                '--adapter_fasta=' + adapter_fastp,
+                '--cut_front', '--cut_window_size=5',
                 '--cut_mean_quality=15', '--html='+ prefix + '.html',
                 '--json='+ prefix + '.json', '--thread='+ noThreads]
     runStage(stage, fastpcmd)
