@@ -101,7 +101,10 @@ We recommend using [Bioconda](https://bioconda.github.io/) for installation of t
 OR
 `wget https://github.com/MHH-RCUG/wochenende/archive/master.zip`
 2. Create a conda environment for the pipeline.
-`conda create -n wochenende -c conda-forge -c bioconda bwa trimmomatic prinseq samtools=1.8 ncurses r-base64 sambamba=0.6.6 fastuniq fastqc ea-utils bbmap fastp=0.20.0 minimap2 bamtools`
+```
+cd wochenende
+conda env create -f env.wochenende.yml
+```
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
 4. Edit the configuration section of `run_Wochenende.py` to set the paths to the tools and reference sequences.
@@ -109,6 +112,12 @@ OR
 6. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
 7. Optional: run the tests, see below.
+
+### Update conda enviroment
+If there is already a conda enviroment named wochenende:
+```
+conda env update -f env.wochenende.yml
+```
 
 ## List of Tools used or optional in the pipeline
 
