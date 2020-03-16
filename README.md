@@ -113,6 +113,12 @@ conda env create -f env.wochenende.yml
 `conda activate wochenende`
 7. Optional: run the tests, see below.
 
+### Update conda enviroment
+If there is already a conda enviroment named wochenende:
+```
+conda env update -f env.wochenende.yml
+```
+
 ## List of Tools used or optional in the pipeline
 
 - [ABRA2](https://github.com/mozack/abra2)
