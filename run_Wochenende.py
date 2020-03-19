@@ -99,7 +99,6 @@ IOthreadsConstant='8'
 global args
 os.makedirs(path_tmpdir, exist_ok=True)
 
-
 print('Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline')
 print('Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer')
 print('version: ' + version)
@@ -403,6 +402,9 @@ def runEATrimming(stage_infile):
 
 def runAligner(stage_infile, aligner, index, noThreads, readType):
     # Alignment - Short-read single and paired end using bwa-mem. minimap2 or ngmlr for long reads
+
+    ngmlrMinIdentity = 0.85 # Aligner ngmlr only: minimum identity (fraction) of read to reference
+
     stage= "Alignment"
     print("######  "+ stage + "  ######")
 
@@ -415,7 +417,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     if "minimap2" in aligner:
         alignerCmd = [path_minimap2, '-x', 'map-ont', '-a', '-t', str(noThreads), str(index), stage_infile]
     elif "ngmlr" in aligner:
-        alignerCmd = [path_ngmlr, '-x', 'ont', '-i', '0.85', '-t', str(noThreads), '-r', str(index), '-q', stage_infile]
+        alignerCmd = [path_ngmlr, '-x', 'ont', '-i', str(ngmlrMinIdentity), '-t', str(noThreads), '-r', str(index), '-q', stage_infile]
     elif "PE" in readType:
         stage_infile2 = deriveRead2Name(stage_infile)
         alignerCmd = [path_bwa, 'mem', '-t', str(noThreads), '-R',
@@ -739,7 +741,7 @@ def main(args, sys_argv):
         if not args.no_duplicate_removal and not args.longread:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
-        if not args.no_abra:
+        if not args.no_abra and not args.longread::
             currentFile = runFunc("abra", abra, currentFile, True,
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True,
