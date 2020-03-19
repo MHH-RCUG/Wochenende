@@ -8,11 +8,11 @@ Author: Fabian Friedrich
 
 TODOs:
 - Also trial with far more comprehensive bbmap adapters
-- Add test slurmscripts to check errors
 - handle TruSeq and NEB Next adapters
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
 1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
 1.5 restructure wochenende_reporting, requires Python3.6+
 1.4 add wochenende_plot.py file plotting
@@ -31,7 +31,7 @@ import shutil
 import argparse
 import time
 
-version = "1.5.1 - Mar 2020"
+version = "1.6 - Mar 2020"
 
 ##############################
 # CONFIGURATION
@@ -54,6 +54,7 @@ path_sambamba    = 'sambamba'
 path_java        = 'java'
 path_abra_jar    = '/mnt/ngsnfs/tools/abra2/abra2_latest.jar'
 path_minimap2    = 'minimap2'
+path_ngmlr       = 'ngmlr'
 ## Paths to reference seqs. Edit as appropriate!
 path_refseq_dict = {
     "2016_06_1p_genus" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
@@ -401,7 +402,7 @@ def runEATrimming(stage_infile):
 
 
 def runAligner(stage_infile, aligner, index, noThreads, readType):
-    # Alignment - single and paired end
+    # Alignment - Short-read single and paired end using bwa-mem. minimap2 or ngmlr for long reads
     stage= "Alignment"
     print("######  "+ stage + "  ######")
 
@@ -413,6 +414,8 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     alignerCmd = ""
     if "minimap2" in aligner:
         alignerCmd = [path_minimap2, '-x', 'map-ont', '-a', '-t', str(noThreads), str(index), stage_infile]
+    elif "ngmlr" in aligner:
+        alignerCmd = [path_ngmlr, '-x', 'ont', '-i', '0.85', '-t', str(noThreads), '-r', str(index), '-q', stage_infile]
     elif "PE" in readType:
         stage_infile2 = deriveRead2Name(stage_infile)
         alignerCmd = [path_bwa, 'mem', '-t', str(noThreads), '-R',
@@ -733,7 +736,7 @@ def main(args, sys_argv):
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
         if args.remove_mismatching:
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
-        if not args.no_duplicate_removal:
+        if not args.no_duplicate_removal and not args.longread:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
         if not args.no_abra:
@@ -746,7 +749,7 @@ def main(args, sys_argv):
 
 
 
-    # Paired end input reads
+    # Paired end input reads. Long reads cannot be paired end (true 2020).
     elif args.readType == "PE":
         print('Input File 1 : ' + currentFile)
         print('Input File 2 : ' + deriveRead2Name(currentFile))
@@ -821,11 +824,11 @@ if __name__ == "__main__":
     parser.add_argument("fastq", help="_R1.fastq Input read1 fastq file",
                         type=lambda x: (os.path.abspath(os.path.expanduser(x))))
 
-    parser.add_argument("--aligner", help="Aligner to use, either bwamem or minimap2. Usage of minimap2 optimized for ONT data only.",
-                        action="store", choices=["bwamem","minimap2"], default="bwamem")
+    parser.add_argument("--aligner", help="Aligner to use, either bwamem, ngmlr minimap2. Usage of minimap2 and ngmlr currently optimized for nanopore data only.",
+                        action="store", choices=["bwamem","minimap2", "ngmlr"], default="bwamem")
 
     parser.add_argument("--readType", help="Single end or paired end data",
-                        action="store", choices=["PE", "SE"])
+                        action="store", choices=["PE", "SE"], default="SE")
 
     parser.add_argument("--metagenome", help="Meta/genome reference to use",
                         action="store", choices=list(path_refseq_dict))

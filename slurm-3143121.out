@@ -1,0 +1,106 @@
+Input file:  testdb/reads_R1.fastq
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=172.24.2.50 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=172.24.2.50 -Dhttps.proxyPort=8080
+Detecting adapter sequence for read1...
+No adapter detected for read1
+
+Read1 before filtering:
+total reads: 730
+total bases: 110230
+Q20 bases: 104842(95.112%)
+Q30 bases: 98162(89.052%)
+
+Read1 after filtering:
+total reads: 730
+total bases: 110150
+Q20 bases: 104776(95.1212%)
+Q30 bases: 98103(89.0631%)
+
+Filtering result:
+reads passed filter: 730
+reads failed due to low quality: 0
+reads failed due to too many N: 0
+reads with adapter trimmed: 12
+bases trimmed due to adapters: 71
+
+Duplication rate (may be overestimated since this is SE data): 1.32353%
+
+JSON report: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.json
+HTML report: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.html
+
+fastp --in1=/mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.fastq --out1=/mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.fastq --disable_quality_filtering --disable_length_filtering --length_required=40 --adapter_fasta=/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa --cut_front --cut_window_size=5 --cut_mean_quality=15 --html=/mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.html --json=/mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.json --thread=12 
+fastp v0.20.0, time used: 1 seconds
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 730 sequences (110150 bp)...
+[M::mem_process_seqs] Processed 730 reads in 0.599 CPU sec, 0.052 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 12 -R @RG\tID:reads_R1_001\tSM:reads_R1 /lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.fastq
+[main] Real time: 15.356 sec; CPU: 15.867 sec
+[bam_sort_core] merging from 0 files and 8 in-memory blocks...
+[M::bam2fq_mainloop] discarded 0 singletons
+[M::bam2fq_mainloop] processed 503 reads
+finding positions of the duplicate reads in the file...
+  sorted 0 end pairs
+     and 37 single ends (among them 0 unmatched pairs)
+  collecting indices of duplicate reads...   done in 3 ms
+  found 5 duplicates
+collected list of positions in 0 min 0 sec
+removing duplicates...
+total time elapsed: 0 min 0 sec
+Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
+Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer
+version: 1.6 - Mar 2020
+
+Meta/genome selected: 2019_10_meta_human
+######  FastQC  ######
+######  Remove non-unique reads with Perldup  ######
+######  fastp - SE  ######
+######  fastp - SE  ######
+######  Alignment  ######
+bwa mem -t 12 -R "@RG\tID:reads_R1_001\tSM:reads_R1" /lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.fastq | /mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools view -@ 8 -bhS > /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.bam
+######  Sort BAM  ######
+######  Index BAM  ######
+######  samtools flagstat  ######
+/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools flagstat /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam > /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam.flagstat.txt
+######  Get unmapped reads from BAM  ######
+/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools view -f 4 /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam | /mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools bam2fq - > /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam.unmapped.fastq
+/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools view -f 4 /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam | /mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools bam2fq - > /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam.unmapped.fastq
+######  Remove MQ30 reads  ######
+######  Sambamba mark duplicates  ######
+######  Samtools index stats - chromosome counts  ######
+######  Index BAM  ######
+Filelist item: FastQC
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.fastq
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.fastq
+Filelist item: Remove non-unique reads with Perldup
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.fastq
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.fastq
+Filelist item: fastp - SE
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.fastq
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.fastq
+Filelist item: Alignment
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.fastq
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.bam
+Filelist item: Sort BAM
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.bam
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam
+Filelist item: Remove MQ30 reads
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.bam
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.bam
+Filelist item: Keep only reads with 0 or 1 mismatch - for metagenomics
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.bam
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.01mm.bam
+Filelist item: Sambamba mark duplicates
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.01mm.bam
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.01mm.dup.bam
+Filelist item: Samtools index stats - chromosome counts
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.01mm.dup.bam
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.01mm.dup.bam.txt
+Filelist item: Samtools calmd
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.01mm.dup.bam
+Filelist item: /mnt/ngsnfs/tools/dev/Wochenende/testdb/reads_R1.ndp.trm.s.mq30.01mm.dup.calmd.bam
+Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
+Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer
+version: 1.6 - Mar 2020
+
+Meta/genome selected: testdb
+ --readType must be set to either SE or PE (meaning single ended or paired-end)
