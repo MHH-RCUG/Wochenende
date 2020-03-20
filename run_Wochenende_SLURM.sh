@@ -67,9 +67,9 @@ cpus=12
 # without prinseq
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --no_fastqc --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # with fastp
-python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # longread with ngmlr aligner
-python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --no_prinseq --aligner ngmlr --mq30 --readType SE --debug --force_restart $fastq
+python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner ngmlr --mq30 --readType SE --debug --force_restart $fastq
 
 ## 2019 01 January metagenomes
 #python3 run_Wochenende.py --metagenome 2019_01_meta --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
@@ -112,5 +112,5 @@ python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --no_p
 #python3 run_Wochenende.py --metagenome testdb --fastp --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 # Test new ngmlr aligner
-python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner ngmlr --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner ngmlr --readType SE --debug --force_restart $fastq
 
