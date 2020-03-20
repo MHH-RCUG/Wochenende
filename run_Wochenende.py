@@ -741,7 +741,7 @@ def main(args, sys_argv):
         if not args.no_duplicate_removal and not args.longread:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
-        if not args.no_abra and not args.longread::
+        if not args.no_abra and not args.longread:
             currentFile = runFunc("abra", abra, currentFile, True,
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True,
