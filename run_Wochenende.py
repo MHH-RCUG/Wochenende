@@ -12,6 +12,7 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem
 1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
 1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
 1.5 restructure wochenende_reporting, requires Python3.6+
@@ -31,7 +32,7 @@ import shutil
 import argparse
 import time
 
-version = "1.6 - Mar 2020"
+version = "1.6.1 - Mar 2020"
 
 ##############################
 # CONFIGURATION
@@ -429,10 +430,47 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
                   str(index), stage_infile]
     else:
         print("Read type not defined")
+
         system.exit(1)
 
-    samtoolsCmd = ['|', path_samtools, 'view', '-@', IOthreadsConstant, '-bhS',
+    # minimap2 cannot pipe directly to samtools for bam conversion, the @SQ problem
+    if "minimap2" not in aligner:
+        samtoolsCmd = ['|', path_samtools, 'view', '-@', IOthreadsConstant, '-bhS',
                    '>', stage_outfile]
+        wholeCmd = alignerCmd + samtoolsCmd
+        print(' '.join(wholeCmd))
+        wholeCmdString=' '.join(wholeCmd)
+        try:
+            # could not get subprocess.run, .call etc to work with pipes and redirect '>'
+            os.system(wholeCmdString)
+        except:
+            print("Error running non-minimap2 aligner")
+            sys.exit(1)
+    # minimap2 cannot pipe directly to samtools for bam conversion, the @SQ problem
+    elif "minimap2" in aligner:
+        samtoolsCmd = [path_samtools, 'view', '-@', IOthreadsConstant, '-bhS',
+                   '>', stage_outfile]
+
+        #wholeCmd = alignerCmd + samtoolsCmd
+        print(' '.join(alignerCmd))
+        alignerCmdString=' '.join(alignerCmd)
+        print(' '.join(samtoolsCmd))
+        minimapSamtoolsCmdString=' '.join(samtoolsCmd)
+
+        try:
+           # could not get subprocess.run, .call etc to work with pipes and redirect '>'
+           os.system(alignerCmdString)
+           os.system(minimapSamtoolsCmdString)
+        except:
+           print("Error running minimap2 aligner (does not use pipe to samtools)")
+           sys.exit(1)
+
+    else:
+        print("minimap2 aligner check failed");
+        system.exit(1)
+
+    '''
+    # Old actual run alignment block
     wholeCmd = alignerCmd + samtoolsCmd
     print(' '.join(wholeCmd))
     wholeCmdString=' '.join(wholeCmd)
@@ -442,6 +480,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
         os.system(wholeCmdString)
     except:
         sys.exit(1)
+    '''
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
@@ -734,13 +773,21 @@ def main(args, sys_argv):
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
         currentFile = runFunc("runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False)
         currentFile = runFunc("runGetUnmappedReads", runGetUnmappedReads, currentFile, False)
+
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-        if args.remove_mismatching:
+            currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+
+        if args.remove_mismatching and not args.longread:
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+            currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+
         if not args.no_duplicate_removal and not args.longread:
             currentFile = runFunc("markDups", markDups, currentFile, True)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+            currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+
         if not args.no_abra and not args.longread:
             currentFile = runFunc("abra", abra, currentFile, True,
                                  path_refseq_dict.get(args.metagenome), threads)
