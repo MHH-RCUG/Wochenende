@@ -40,9 +40,10 @@ conda activate wochenende
 
 # All options
 # --threads 12
-#--longread
+#--longread (implies aligner is not bwa-mem, no prinseq, no duplicate removal)
 #--aligner bwamem
 #--aligner minimap2
+#--aligner ngmlr
 #--no_abra
 #--mq30
 #--readType SE
@@ -53,26 +54,22 @@ conda activate wochenende
 #--no_duplicate_removal
 #--no_prinseq
 #--no_fastqc
-#--testWochenende
+#--testWochenende - runs the test scripts with test reads vs a testDB and checks if all seems well.
 #--fastp - fastp is recommended as a trimmer for SOLiD data which can auto find adapters
 
 cpus=12
 
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
 
-# Test wochenende pipeline. Run tests with sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
-#python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
-
-# Test wochenemde with fastp - the auto tests here will fail here since fastp not trm is in the filename
-#python3 run_Wochenende.py --metagenome testdb --fastp --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 ## 2019 10 October metagenomes
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # without prinseq
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --no_fastqc --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # with fastp
-python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
-
+#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+# longread with ngmlr aligner
+python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner ngmlr --mq30 --readType SE --debug --force_restart $fastq
 
 ## 2019 01 January metagenomes
 #python3 run_Wochenende.py --metagenome 2019_01_meta --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
@@ -107,3 +104,13 @@ python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fast
 #python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType SE --aligner minimap2 --longread --no_duplicate_removal --no_abra --force_restart $fastq
 #python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType SE --aligner bwamem --no_duplicate_removal --no_abra --force_restart $fastq
 #python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType PE --aligner bwamem --no_duplicate_removal --no_abra --remove_mismatching --mq30 --force_restart $fastq
+
+# Test wochenende pipeline. Run tests with sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
+#python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+
+# Test wochenemde with fastp - the auto tests here will fail here since fastp not trm is in the filename
+#python3 run_Wochenende.py --metagenome testdb --fastp --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+
+# Test new ngmlr aligner
+#python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner ngmlr --readType SE --debug --force_restart $fastq
+
