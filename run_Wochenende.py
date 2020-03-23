@@ -12,7 +12,7 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
-1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem
+1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem with --split-prefix temp_name
 1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
 1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
 1.5 restructure wochenende_reporting, requires Python3.6+
@@ -246,7 +246,6 @@ def runFastpSE(stage_infile, noThreads):
     prefix = stage_infile.replace(".fastq","")
     stage_outfile = prefix + '.trm.fastq'
     fastpcmd = [path_fastp, '--in1=' + stage_infile, '--out1=' + stage_outfile,
-                '--disable_quality_filtering', '--disable_length_filtering',
                 '--length_required=40',
                 '--adapter_fasta=' + adapter_fastp,
                 '--cut_front', '--cut_window_size=5',
@@ -265,7 +264,6 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
     stage_outfile = prefix + '.fastp.fastq'
     fastpcmd = [path_fastp, '--in1='+ stage_infile_1, '--out1='+ stage_outfile,
                 '--in2='+ stage_infile_2, '--out2='+ deriveRead2Name(stage_outfile),
-                '--disable_quality_filtering', '--disable_length_filtering',
                 '--length_required=40',
                 '--adapter_fasta=' + adapter_fastp,
                 '--cut_front', '--cut_window_size=5',
@@ -410,13 +408,14 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     print("######  "+ stage + "  ######")
 
     prefix = stage_infile.replace(".fastq","")
+    minimap_samfile = prefix + '.sam'
     stage_outfile = prefix + '.bam'
     global inputFastq
     readGroup = os.path.basename(inputFastq.replace(".fastq",""))
 
     alignerCmd = ""
     if "minimap2" in aligner:
-        alignerCmd = [path_minimap2, '-x', 'map-ont', '-a', '-t', str(noThreads), str(index), stage_infile]
+        alignerCmd = [path_minimap2, '-x', 'map-ont', '-a', '--split-prefix', prefix, '-t', str(noThreads), str(index), stage_infile, '>', minimap_samfile]
     elif "ngmlr" in aligner:
         alignerCmd = [path_ngmlr, '-x', 'ont', '-i', str(ngmlrMinIdentity), '-t', str(noThreads), '-r', str(index), '-q', stage_infile]
     elif "PE" in readType:
@@ -448,19 +447,23 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
             sys.exit(1)
     # minimap2 cannot pipe directly to samtools for bam conversion, the @SQ problem
     elif "minimap2" in aligner:
-        samtoolsCmd = [path_samtools, 'view', '-@', IOthreadsConstant, '-bhS',
+        #samtools view -@ 8 -bhS $sam > $sam.bam
+        samtoolsCmd = [path_samtools, 'view', '-@', IOthreadsConstant, '-bhS', minimap_samfile,
                    '>', stage_outfile]
 
         #wholeCmd = alignerCmd + samtoolsCmd
         print(' '.join(alignerCmd))
-        alignerCmdString=' '.join(alignerCmd)
+        alignerCmdString = ' '.join(alignerCmd)
         print(' '.join(samtoolsCmd))
         minimapSamtoolsCmdString=' '.join(samtoolsCmd)
+        rmSamCmd = ['rm', minimap_samfile]
+        rmSamCmdStr =(' '.join(rmSamCmd))
 
         try:
            # could not get subprocess.run, .call etc to work with pipes and redirect '>'
            os.system(alignerCmdString)
            os.system(minimapSamtoolsCmdString)
+           #os.system(rmSamCmdStr)
         except:
            print("Error running minimap2 aligner (does not use pipe to samtools)")
            sys.exit(1)
