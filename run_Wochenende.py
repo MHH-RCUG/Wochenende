@@ -12,6 +12,7 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6.2 make more general for new users, improve initial error messages
 1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem with --split-prefix temp_name
 1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
 1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
@@ -32,7 +33,7 @@ import shutil
 import argparse
 import time
 
-version = "1.6.1 - Mar 2020"
+version = "1.6.2 - Mar 2020"
 
 ##############################
 # CONFIGURATION
@@ -88,9 +89,17 @@ adapter_fastp = '/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_soli
 ## Other
 path_tmpdir = '/ngsssd1/rcug/tmp/'
 
+
 ##############################
 # INITIALIZATION AND ORGANIZATIONAL FUNCTIONS
 ##############################
+
+
+print('Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline')
+print('Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer with help from many further contributors')
+print('version: ' + version)
+print()
+
 
 stage_outfile = ""
 stage_infile = ""
@@ -98,12 +107,6 @@ fileList = []
 global IOthreadsConstant
 IOthreadsConstant='8'
 global args
-os.makedirs(path_tmpdir, exist_ok=True)
-
-print('Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline')
-print('Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer')
-print('version: ' + version)
-print()
 
 
 def check_arguments(args):
@@ -129,6 +132,15 @@ def check_arguments(args):
         sys.exit(1)
     return args
 
+
+def createTmpDir(path_tmpdir):
+    # Set the path_tmpdir variable at the top of the script, not here:
+    try:
+        os.makedirs(path_tmpdir, exist_ok=True)
+    except:
+        print("Error: Failed to create directory, do you have write access to the configured directory?" + path_tmpdir)
+        sys.exit(1)
+    return 0
 
 def createProgressFile(args):
     # Read or create progress file
@@ -752,6 +764,7 @@ def main(args, sys_argv):
     inputFastq = args.fastq
     if currentFile is None:
         currentFile = inputFastq
+    createTmpDir(path_tmpdir)
 
     print ("Meta/genome selected: " + args.metagenome)
 
