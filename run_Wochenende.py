@@ -12,6 +12,7 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6.3 generalize conda to avoid specific filesystem
 1.6.2 make more general for new users, improve initial error messages
 1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem with --split-prefix temp_name
 1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
@@ -33,7 +34,7 @@ import shutil
 import argparse
 import time
 
-version = "1.6.2 - Mar 2020"
+version = "1.6.3 - Mar 2020"
 
 ##############################
 # CONFIGURATION
@@ -50,8 +51,8 @@ path_fastuniq    = 'fastuniq'
 path_trimmomatic = 'trimmomatic'
 path_fastq_mcf   = 'fastq_mcf'
 path_bwa         = 'bwa'
-path_samtools    = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools'
-path_bamtools    = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/bamtools'
+path_samtools    = 'samtools'
+path_bamtools    = 'bamtools'
 path_sambamba    = 'sambamba'
 path_java        = 'java'
 path_abra_jar    = '/mnt/ngsnfs/tools/abra2/abra2_latest.jar'
@@ -89,14 +90,13 @@ adapter_fastp = '/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_soli
 ## Other
 path_tmpdir = '/ngsssd1/rcug/tmp/'
 
-
 ##############################
 # INITIALIZATION AND ORGANIZATIONAL FUNCTIONS
 ##############################
 
 
 print('Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline')
-print('Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer with help from many further contributors')
+print('Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors')
 print('version: ' + version)
 print()
 
@@ -138,7 +138,7 @@ def createTmpDir(path_tmpdir):
     try:
         os.makedirs(path_tmpdir, exist_ok=True)
     except:
-        print("Error: Failed to create directory, do you have write access to the configured directory?" + path_tmpdir)
+        print("Error: Failed to create directory, do you have write access to the configured directory? Directory: " + path_tmpdir)
         sys.exit(1)
     return 0
 
@@ -889,7 +889,7 @@ if __name__ == "__main__":
     parser.add_argument("fastq", help="_R1.fastq Input read1 fastq file",
                         type=lambda x: (os.path.abspath(os.path.expanduser(x))))
 
-    parser.add_argument("--aligner", help="Aligner to use, either bwamem, ngmlr minimap2. Usage of minimap2 and ngmlr currently optimized for nanopore data only.",
+    parser.add_argument("--aligner", help="Aligner to use, either bwamem, ngmlr or minimap2. Usage of minimap2 and ngmlr currently optimized for nanopore data only.",
                         action="store", choices=["bwamem","minimap2", "ngmlr"], default="bwamem")
 
     parser.add_argument("--readType", help="Single end or paired end data",
