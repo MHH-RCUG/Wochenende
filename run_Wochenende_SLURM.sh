@@ -31,7 +31,7 @@ fastq=$1
 . /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 
 # Activate env on cluster node
-conda activate wochenende
+conda activate wochenende >> /dev/null
 
 
 ### IMPORTANT
