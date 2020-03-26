@@ -31,7 +31,7 @@ fastq=$1
 . /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 
 # Activate env on cluster node
-conda activate wochenende
+conda activate wochenende >> /dev/null
 
 
 ### IMPORTANT
@@ -60,7 +60,7 @@ conda activate wochenende
 cpus=12
 
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
-
+# Uncomment/adapt the line only you want to run
 
 ## 2019 10 October metagenomes
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
@@ -70,6 +70,8 @@ cpus=12
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # longread with ngmlr aligner
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner ngmlr --mq30 --readType SE --debug --force_restart $fastq
+# longread with minimap2 aligner
+python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner minimap2 --mq30 --readType SE --debug --force_restart $fastq
 
 ## 2019 01 January metagenomes
 #python3 run_Wochenende.py --metagenome 2019_01_meta --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
@@ -113,5 +115,5 @@ cpus=12
 
 # Test new ngmlr aligner
 #python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner ngmlr --readType SE --debug --force_restart $fastq
-python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner minimap2 --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner minimap2 --readType SE --debug --force_restart $fastq
 

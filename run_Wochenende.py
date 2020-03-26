@@ -12,6 +12,7 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6.4 solve bam.txt mq30 problems
 1.6.3 generalize conda to avoid specific filesystem
 1.6.2 make more general for new users, improve initial error messages
 1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem with --split-prefix temp_name
@@ -34,7 +35,7 @@ import shutil
 import argparse
 import time
 
-version = "1.6.3 - Mar 2020"
+version = "1.6.4 - Mar 2020"
 
 ##############################
 # CONFIGURATION
@@ -473,9 +474,11 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
 
         try:
            # could not get subprocess.run, .call etc to work with pipes and redirect '>'
+           # run split command for minimap
            os.system(alignerCmdString)
            os.system(minimapSamtoolsCmdString)
-           #os.system(rmSamCmdStr)
+           # remove sam file
+           os.system(rmSamCmdStr)
         except:
            print("Error running minimap2 aligner (does not use pipe to samtools)")
            sys.exit(1)
@@ -786,31 +789,32 @@ def main(args, sys_argv):
                                  args.aligner, path_refseq_dict.get(args.metagenome),
                                  args.threads, args.readType)
         currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
-        currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
+        currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False)
         currentFile = runFunc("runGetUnmappedReads", runGetUnmappedReads, currentFile, False)
 
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
-            currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
         if args.remove_mismatching and not args.longread:
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
-            currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
-            currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
             currentFile = runFunc("markDups", markDups, currentFile, True)
-            currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+            currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
         if not args.no_abra and not args.longread:
             currentFile = runFunc("abra", abra, currentFile, True,
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True,
                                  path_refseq_dict.get(args.metagenome))
-        currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        currentFile = runFunc("runBAMindex5", runBAMindex, currentFile, False)
+        currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
 
 
 
@@ -845,14 +849,14 @@ def main(args, sys_argv):
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
             currentFile = runFunc("abra", abra, currentFile, True,
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True,
                                  path_refseq_dict.get(args.metagenome))
         currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
     else:
         print(" --readType must be set to either SE or PE (meaning single ended or paired-end)")
