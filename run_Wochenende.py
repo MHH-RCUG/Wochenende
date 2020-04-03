@@ -12,6 +12,7 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6.5 add new ref 2019_10_meta_human_univec
 1.6.4 solve bam.txt mq30 problems
 1.6.3 generalize conda to avoid specific filesystem
 1.6.2 make more general for new users, improve initial error messages
@@ -35,7 +36,7 @@ import shutil
 import argparse
 import time
 
-version = "1.6.4 - Mar 2020"
+version = "1.6.5 - Apr 2020"
 
 ##############################
 # CONFIGURATION
@@ -66,6 +67,7 @@ path_refseq_dict = {
     "2016_06_1p_spec" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
     "2019_01_meta" : "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
     "2019_10_meta_human" : "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
+    "2019_10_meta_human_univec" : "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
     "2019_01_meta_mouse" : "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
     "2019_01_meta_mouse_ASF_OMM" : "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
     "2019_01_meta_mouse_ASF" : "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
