@@ -8,6 +8,7 @@ TODOs
 - add plots
 - normalization model for Solid
 Changelog
+1.4 add version, reduce output file name length. reporting -> rep, sorted -> s etc
 1.3 restructured the script
 1.2 bugfix reads_per_human_cell
 1.1 add reads_per_human_cell for metagenomes
@@ -21,6 +22,8 @@ import pysam
 import pandas as pd
 import click
 
+
+version = 1.4
 
 ###################################
 # functions
@@ -152,9 +155,9 @@ def compute_res_df(res_df, sequencer):
 
 
 def export_res(res_df, output):
-    res_df.to_csv(f'{output}.reporting.unsorted.csv', sep=',', float_format='%.1f', index=False)
+    res_df.to_csv(f'{output}.rep.us.csv', sep=',', float_format='%.1f', index=False)
     res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
-    res_df_filtered_and_sorted.to_csv(f'{output}.reporting.sorted.csv', sep=',', float_format='%.1f', index=False)
+    res_df_filtered_and_sorted.to_csv(f'{output}.rep.s.csv', sep=',', float_format='%.1f', index=False)
 
 
 ###################################
@@ -166,6 +169,7 @@ def export_res(res_df, output):
 @click.option('--sequencer', '-s', default='illumina', help='Sequencer technology used only solid and illumina are available, only illumina is supported, default: illumina ')
 @click.option('--output_name', '-o', default='report', help='Name for the output file(sample name), default report')
 def main(input_file, reference, sequencer, output_name):
+    print(version)
     """
     This Python3.6 script can be used to report the results of the Wochenende pipeline.
     The .bam.txt file as input is recommended (fast).
