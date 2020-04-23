@@ -7,7 +7,7 @@
 # sorted descending in col5 for within experiment clarity and to find regions with excessive counts 
 # eg false positives, illumina adapters in assemblies etc
 
-for i in $(ls "*window.txt")
+for i in `ls *window.txt`
         do
 	# filter out human reads
 	grep -v "1_1_1"  "$i" > "$i".filt.csv

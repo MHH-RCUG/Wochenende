@@ -1,7 +1,7 @@
 #!/bin/bash
 # Erik Wessels, Colin Davenport Jan 2020
 # Check window coverage on Wochenende sorted dup.bam output
-# Use for Python script to check coverage distribution
+# Use output for Python script to check coverage distribution
 
 for i in *dup.bam; do
 	input=$i

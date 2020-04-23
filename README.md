@@ -41,12 +41,12 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 
 ```
 Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
-Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer
-version: 1.4 - Feb 2020
+Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer with help from many further contributors
+version: 1.6.2 - Mar 2020
 
-usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2}]
+usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2,ngmlr}]
                          [--readType {PE,SE}]
-                         [--metagenome {2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_OMM,2019_10_meta_human,ss11,testdb,2019_01_meta_mouse_ASF,GRCh38-45GB,GRCh37,mm10,GRCh38-noalt,hg19,PA14,2016_06_1p_spec_corrected,rat_1AR1_ont,2016_06_1p_genus,2019_01_meta,zf10,2016_06_1p_spec,GRCh38-mito,rn6}]
+                         [--metagenome {2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,testdb}]
                          [--threads THREADS] [--fastp] [--debug] [--longread]
                          [--no_duplicate_removal] [--no_prinseq] [--no_fastqc]
                          [--no_abra] [--mq30] [--remove_mismatching]
@@ -58,11 +58,12 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --aligner {bwamem,minimap2}
-                        Aligner to use, either bwamem or minimap2. Usage of
-                        minimap2 optimized for ONT data only.
+  --aligner {bwamem,minimap2,ngmlr}
+                        Aligner to use, either bwamem, ngmlr minimap2. Usage
+                        of minimap2 and ngmlr currently optimized for nanopore
+                        data only.
   --readType {PE,SE}    Single end or paired end data
-  --metagenome {2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_OMM,2019_10_meta_human,ss11,testdb,2019_01_meta_mouse_ASF,GRCh38-45GB,GRCh37,mm10,GRCh38-noalt,hg19,PA14,2016_06_1p_spec_corrected,rat_1AR1_ont,2016_06_1p_genus,2019_01_meta,zf10,2016_06_1p_spec,GRCh38-mito,rn6}
+  --metagenome {2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,testdb}
                         Meta/genome reference to use
   --threads THREADS     Number of cores, default = 16
   --fastp               Use fastp instead of fastqc and trimmomatic
@@ -90,6 +91,7 @@ We recommend using bioconda for the installation of the tools. Remember to run
 bioconda. Details about the installation are available on
 https://github.com/MHH-RCUG/Wochenende#installation
 
+
 ```
 
 ## Installation
@@ -100,14 +102,14 @@ We recommend using [Bioconda](https://bioconda.github.io/) for installation of t
 `git clone https://github.com/MHH-RCUG/wochenende.git`
 OR
 `wget https://github.com/MHH-RCUG/wochenende/archive/master.zip`
-2. Create a conda environment for the pipeline.
+2. Create a conda environment for the pipeline. You should have first installed miniconda 64-bit Linux.
 ```
 cd wochenende
 conda env create -f env.wochenende.yml
 ```
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
-4. Edit the configuration section of `run_Wochenende.py` to set the paths to the tools and reference sequences.
+4. Important! Edit the configuration section of `run_Wochenende.py` to set the paths to the tools, tmp directory and reference sequences.
 5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.17.4 pandas==0.24.2 matplotlib==3.0.3`
 6. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
@@ -308,12 +310,12 @@ Thanks to:
 
 @B1T0 Main programmer, testing, evaluation, documentation
 
-@Nijerik Wochenende reporting
-
-@konnosif Plots visualisation
-
 @colindaven Concept, programming, updates, integration, maintenance, evaluation, documentation
 
 @Colorstorm Programming, testing, maintenance
+
+@konnosif Plots visualisation
+
+@Nijerik Wochenende reporting
 
 @sannareddyk Bug testing, updates

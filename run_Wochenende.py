@@ -8,11 +8,16 @@ Author: Fabian Friedrich
 
 TODOs:
 - Also trial with far more comprehensive bbmap adapters
-- Add test slurmscripts to check errors
 - handle TruSeq and NEB Next adapters
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6.5 add new ref 2019_10_meta_human_univec
+1.6.4 solve bam.txt mq30 problems
+1.6.3 generalize conda to avoid specific filesystem
+1.6.2 make more general for new users, improve initial error messages
+1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem with --split-prefix temp_name
+1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
 1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
 1.5 restructure wochenende_reporting, requires Python3.6+
 1.4 add wochenende_plot.py file plotting
@@ -31,7 +36,7 @@ import shutil
 import argparse
 import time
 
-version = "1.5.1 - Mar 2020"
+version = "1.6.5 - Apr 2020"
 
 ##############################
 # CONFIGURATION
@@ -48,12 +53,13 @@ path_fastuniq    = 'fastuniq'
 path_trimmomatic = 'trimmomatic'
 path_fastq_mcf   = 'fastq_mcf'
 path_bwa         = 'bwa'
-path_samtools    = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/samtools'
-path_bamtools    = '/mnt/ngsnfs/tools/miniconda3/envs/wochenende/bin/bamtools'
+path_samtools    = 'samtools'
+path_bamtools    = 'bamtools'
 path_sambamba    = 'sambamba'
 path_java        = 'java'
 path_abra_jar    = '/mnt/ngsnfs/tools/abra2/abra2_latest.jar'
 path_minimap2    = 'minimap2'
+path_ngmlr       = 'ngmlr'
 ## Paths to reference seqs. Edit as appropriate!
 path_refseq_dict = {
     "2016_06_1p_genus" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
@@ -61,6 +67,7 @@ path_refseq_dict = {
     "2016_06_1p_spec" : "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
     "2019_01_meta" : "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
     "2019_10_meta_human" : "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
+    "2019_10_meta_human_univec" : "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
     "2019_01_meta_mouse" : "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
     "2019_01_meta_mouse_ASF_OMM" : "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
     "2019_01_meta_mouse_ASF" : "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
@@ -90,19 +97,19 @@ path_tmpdir = '/ngsssd1/rcug/tmp/'
 # INITIALIZATION AND ORGANIZATIONAL FUNCTIONS
 ##############################
 
+
+print('Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline')
+print('Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors')
+print('version: ' + version)
+print()
+
+
 stage_outfile = ""
 stage_infile = ""
 fileList = []
 global IOthreadsConstant
 IOthreadsConstant='8'
 global args
-os.makedirs(path_tmpdir, exist_ok=True)
-
-
-print('Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline')
-print('Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer')
-print('version: ' + version)
-print()
 
 
 def check_arguments(args):
@@ -128,6 +135,15 @@ def check_arguments(args):
         sys.exit(1)
     return args
 
+
+def createTmpDir(path_tmpdir):
+    # Set the path_tmpdir variable at the top of the script, not here:
+    try:
+        os.makedirs(path_tmpdir, exist_ok=True)
+    except:
+        print("Error: Failed to create directory, do you have write access to the configured directory? Directory: " + path_tmpdir)
+        sys.exit(1)
+    return 0
 
 def createProgressFile(args):
     # Read or create progress file
@@ -245,7 +261,6 @@ def runFastpSE(stage_infile, noThreads):
     prefix = stage_infile.replace(".fastq","")
     stage_outfile = prefix + '.trm.fastq'
     fastpcmd = [path_fastp, '--in1=' + stage_infile, '--out1=' + stage_outfile,
-                '--disable_quality_filtering', '--disable_length_filtering',
                 '--length_required=40',
                 '--adapter_fasta=' + adapter_fastp,
                 '--cut_front', '--cut_window_size=5',
@@ -264,7 +279,6 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
     stage_outfile = prefix + '.fastp.fastq'
     fastpcmd = [path_fastp, '--in1='+ stage_infile_1, '--out1='+ stage_outfile,
                 '--in2='+ stage_infile_2, '--out2='+ deriveRead2Name(stage_outfile),
-                '--disable_quality_filtering', '--disable_length_filtering',
                 '--length_required=40',
                 '--adapter_fasta=' + adapter_fastp,
                 '--cut_front', '--cut_window_size=5',
@@ -401,18 +415,24 @@ def runEATrimming(stage_infile):
 
 
 def runAligner(stage_infile, aligner, index, noThreads, readType):
-    # Alignment - single and paired end
+    # Alignment - Short-read single and paired end using bwa-mem. minimap2 or ngmlr for long reads
+
+    ngmlrMinIdentity = 0.85 # Aligner ngmlr only: minimum identity (fraction) of read to reference
+
     stage= "Alignment"
     print("######  "+ stage + "  ######")
 
     prefix = stage_infile.replace(".fastq","")
+    minimap_samfile = prefix + '.sam'
     stage_outfile = prefix + '.bam'
     global inputFastq
     readGroup = os.path.basename(inputFastq.replace(".fastq",""))
 
     alignerCmd = ""
     if "minimap2" in aligner:
-        alignerCmd = [path_minimap2, '-x', 'map-ont', '-a', '-t', str(noThreads), str(index), stage_infile]
+        alignerCmd = [path_minimap2, '-x', 'map-ont', '-a', '--split-prefix', prefix, '-t', str(noThreads), str(index), stage_infile, '>', minimap_samfile]
+    elif "ngmlr" in aligner:
+        alignerCmd = [path_ngmlr, '-x', 'ont', '-i', str(ngmlrMinIdentity), '-t', str(noThreads), '-r', str(index), '-q', stage_infile]
     elif "PE" in readType:
         stage_infile2 = deriveRead2Name(stage_infile)
         alignerCmd = [path_bwa, 'mem', '-t', str(noThreads), '-R',
@@ -424,10 +444,53 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
                   str(index), stage_infile]
     else:
         print("Read type not defined")
+
         system.exit(1)
 
-    samtoolsCmd = ['|', path_samtools, 'view', '-@', IOthreadsConstant, '-bhS',
+    # minimap2 cannot pipe directly to samtools for bam conversion, the @SQ problem
+    if "minimap2" not in aligner:
+        samtoolsCmd = ['|', path_samtools, 'view', '-@', IOthreadsConstant, '-bhS',
                    '>', stage_outfile]
+        wholeCmd = alignerCmd + samtoolsCmd
+        print(' '.join(wholeCmd))
+        wholeCmdString=' '.join(wholeCmd)
+        try:
+            # could not get subprocess.run, .call etc to work with pipes and redirect '>'
+            os.system(wholeCmdString)
+        except:
+            print("Error running non-minimap2 aligner")
+            sys.exit(1)
+    # minimap2 cannot pipe directly to samtools for bam conversion, the @SQ problem
+    elif "minimap2" in aligner:
+        #samtools view -@ 8 -bhS $sam > $sam.bam
+        samtoolsCmd = [path_samtools, 'view', '-@', IOthreadsConstant, '-bhS', minimap_samfile,
+                   '>', stage_outfile]
+
+        #wholeCmd = alignerCmd + samtoolsCmd
+        print(' '.join(alignerCmd))
+        alignerCmdString = ' '.join(alignerCmd)
+        print(' '.join(samtoolsCmd))
+        minimapSamtoolsCmdString=' '.join(samtoolsCmd)
+        rmSamCmd = ['rm', minimap_samfile]
+        rmSamCmdStr =(' '.join(rmSamCmd))
+
+        try:
+           # could not get subprocess.run, .call etc to work with pipes and redirect '>'
+           # run split command for minimap
+           os.system(alignerCmdString)
+           os.system(minimapSamtoolsCmdString)
+           # remove sam file
+           os.system(rmSamCmdStr)
+        except:
+           print("Error running minimap2 aligner (does not use pipe to samtools)")
+           sys.exit(1)
+
+    else:
+        print("minimap2 aligner check failed");
+        system.exit(1)
+
+    '''
+    # Old actual run alignment block
     wholeCmd = alignerCmd + samtoolsCmd
     print(' '.join(wholeCmd))
     wholeCmdString=' '.join(wholeCmd)
@@ -437,6 +500,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
         os.system(wholeCmdString)
     except:
         sys.exit(1)
+    '''
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
@@ -705,6 +769,7 @@ def main(args, sys_argv):
     inputFastq = args.fastq
     if currentFile is None:
         currentFile = inputFastq
+    createTmpDir(path_tmpdir)
 
     print ("Meta/genome selected: " + args.metagenome)
 
@@ -726,27 +791,36 @@ def main(args, sys_argv):
                                  args.aligner, path_refseq_dict.get(args.metagenome),
                                  args.threads, args.readType)
         currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
-        currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
+        currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False)
         currentFile = runFunc("runGetUnmappedReads", runGetUnmappedReads, currentFile, False)
+
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-        if args.remove_mismatching:
+            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+
+        if args.remove_mismatching and not args.longread:
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
-        if not args.no_duplicate_removal:
+            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
+
+        if not args.no_duplicate_removal and not args.longread:
             currentFile = runFunc("markDups", markDups, currentFile, True)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
-        if not args.no_abra:
+            currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
+
+        if not args.no_abra and not args.longread:
             currentFile = runFunc("abra", abra, currentFile, True,
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True,
                                  path_refseq_dict.get(args.metagenome))
-        currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        currentFile = runFunc("runBAMindex5", runBAMindex, currentFile, False)
+        currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
 
 
 
-    # Paired end input reads
+    # Paired end input reads. Long reads cannot be paired end (true 2020).
     elif args.readType == "PE":
         print('Input File 1 : ' + currentFile)
         print('Input File 2 : ' + deriveRead2Name(currentFile))
@@ -777,14 +851,14 @@ def main(args, sys_argv):
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
             currentFile = runFunc("abra", abra, currentFile, True,
                                  path_refseq_dict.get(args.metagenome), threads)
         currentFile = runFunc("calmd", calmd, currentFile, True,
                                  path_refseq_dict.get(args.metagenome))
         currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats", runIDXstats, currentFile, False)
+        currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
     else:
         print(" --readType must be set to either SE or PE (meaning single ended or paired-end)")
@@ -821,11 +895,11 @@ if __name__ == "__main__":
     parser.add_argument("fastq", help="_R1.fastq Input read1 fastq file",
                         type=lambda x: (os.path.abspath(os.path.expanduser(x))))
 
-    parser.add_argument("--aligner", help="Aligner to use, either bwamem or minimap2. Usage of minimap2 optimized for ONT data only.",
-                        action="store", choices=["bwamem","minimap2"], default="bwamem")
+    parser.add_argument("--aligner", help="Aligner to use, either bwamem, ngmlr or minimap2. Usage of minimap2 and ngmlr currently optimized for nanopore data only.",
+                        action="store", choices=["bwamem","minimap2", "ngmlr"], default="bwamem")
 
     parser.add_argument("--readType", help="Single end or paired end data",
-                        action="store", choices=["PE", "SE"])
+                        action="store", choices=["PE", "SE"], default="SE")
 
     parser.add_argument("--metagenome", help="Meta/genome reference to use",
                         action="store", choices=list(path_refseq_dict))
