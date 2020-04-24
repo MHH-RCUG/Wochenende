@@ -6,7 +6,7 @@
 #Script made: Jan 2020-Feb 2020
 #Script made for: MHH - RCUG
 # Plot coverage data after the wochenende_posthoc_filter.sh sambamba coverage step of the Wochenende pipeline.
-# Create some png files,one txt that includes the organisms that seem related 
+# Create some png files,one txt that includes the organisms that seem related
 # and a tsv file with information from tsv file that was given.
 # Usage: python3 wochenende_plot.py dup.calmd_cov_window.txt.filt.csv
 
@@ -24,6 +24,13 @@ import numpy as np
 import os
 import math
 import statistics
+
+
+#Changelog
+
+#0.2 reduce --minMeanCov default from 1.0 to 0.2 after testing, add version.
+#0.1 initial working script
+
 
 # use_line_collection should be True
 import warnings
@@ -51,6 +58,13 @@ args = parser.parse_args()
 
 
 #_____________________________________________________
+
+
+version = 0.2
+print("\n###############################")
+print("Wochenende plotting, Version: %s" % version)
+print("###############################\n")
+
 filename=args.filename1
 BDSC=int(args.createAllPngs)
 Scorelimitforminormax=float(args.minMeanCov)
@@ -71,28 +85,44 @@ defaultorgnames=2
 
 
 if filename == 'check_string_for_empty':
-    print ('####I can tell that no argument was given and I can deal with that here.')
+    print ('#### No argument was given')
 else :
-    print ('####You nailed it!####')
+    print ('#### Filename entered correctly ####')
 
+    # Shorten filename, otherwise it causes errors on windows systems
+    # typical filename: KGCF14D_S2_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt.rep.s.csv
+    tmpfile=filename
+    tmpfile=tmpfile.replace("_complete_genome","")
+    tmpfile=tmpfile.replace(".ndp.lc","")
+    tmpfile=tmpfile.replace(".trm.s","")
+    tmpfile=tmpfile.replace(".mq30.01mm","")
+    tmpfile=tmpfile.replace(".dup.bam","")
+    tmpfile=tmpfile.replace(".rep.s.csv","")
+    tmpfile=tmpfile.replace(".dup_cov_window","")
+    tmpfile=tmpfile.replace(".txt.filt","")
+    tmpfile=tmpfile.replace(".csv","")
+    outfile=tmpfile
 
-
-#WHERE AM I???
-#DO I HAVE A TSV FILE? #####IS IT A TSV?????############
-
+    #DO I HAVE A TSV FILE? #####IS IT A TSV?????############
     dirpath = os.getcwd()
-    print("####Current directory is : " + dirpath)
-    print("####Current file path is : " + dirpath +"/" + filename)
+    print("INFO: Current directory is : " + dirpath)
+    print("INFO: Current file path is : " + dirpath +"/" + filename)
+    #Panda_input_file=pd.read_csv("{}/{}".format(dirpath,filename),delimiter="\t")
     Panda_input_file=pd.read_csv("{}/{}".format(dirpath,filename),delimiter="\t")
-    print("filename",filename)
-    fileitself=filename.split("/")[-1]
+    #fileitself=outfile.split("/")[-1]
     #FN.head(1)
 
-#############MAKE NEW DIRECTORIES
-    wocdirpath="{}/wochenende_png_files".format(dirpath)
-    newdirpath="{}/wochenende_png_files/{}".format(dirpath,fileitself)
-    mightdirpath="{}/wochenende_png_files/{}/potentially_present".format(dirpath,fileitself)
-    newdirpathSC="{}/wochenende_png_files/{}/probably_present".format(dirpath,fileitself)
+    # Files summary
+    print("INFO: Input filename: "+ str(filename))
+    print("INFO: Output filename: %s" % outfile)
+    #print("Output filename2: %s" % fileitself)
+
+
+    #############MAKE NEW DIRECTORIES
+    wocdirpath="{}/images".format(dirpath)
+    newdirpath="{}/images/{}".format(dirpath,outfile)
+    mightdirpath="{}/images/{}/perhaps_present".format(dirpath,outfile)
+    newdirpathSC="{}/images/{}/prob_present".format(dirpath,outfile)
 
 
     try:
@@ -161,7 +191,11 @@ else :
 #   GENBANKID.write("GenBank_ID\tGenus\tSpecies\tStrain\tStrain_info\tScore\tYes_or_No")
 
 
+
+    #This section starts a big loop over each chromosome found in the file of input windows.
+
     for i in set(Panda_input_file["# chrom"]):
+
 
 #########################################Read Counts################################
 #__________________________________________________________________________________#
@@ -171,6 +205,26 @@ else :
         B1minread=min(small["readCount"])
         B1maxStart=max(small["chromStart"])
         B1minStart=min(small["chromStart"])
+
+
+        # Shorten filename, otherwise it causes errors on windows systems
+        # typical filename: KGCF14D_S2_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt.rep.s.csv
+        tmpfile=i
+        tmpfile=tmpfile.replace("complete_genome","")
+        tmpfile=tmpfile.replace("complete","")
+        tmpfile=tmpfile.replace("sequence","")
+        tmpfile=tmpfile.replace("chromosome","")
+        tmpfile=tmpfile.replace(".ndp.lc","")
+        tmpfile=tmpfile.replace(".trm.s","")
+        tmpfile=tmpfile.replace(".mq30.01mm","")
+        tmpfile=tmpfile.replace(".dup.bam","")
+        tmpfile=tmpfile.replace(".rep.s.csv","")
+        tmpfile=tmpfile.replace(".dup_cov_window","")
+        tmpfile=tmpfile.replace(".txt.filt","")
+        tmpfile=tmpfile.replace(".csv","")
+        tmpfile=tmpfile.replace("__","_")
+        i=tmpfile
+
 
         #########################################MEAN COVERAGE################################
         #____________________________________________________________________________________#
@@ -264,7 +318,7 @@ else :
         std_describe=2
         min_describe=3
         Q1_describe=4             #Those are more or less describing a panda.describe() function input
-        Q2_desctibe=5             #Not used
+        Q2_describe=5             #Not used
         Q3_describe=6
         max_describe=7
 
@@ -275,14 +329,14 @@ else :
             passedQ1F=small[small["meanCoverage"]>=Q1].shape[0]
             passedQ1=(passedQ1F*100)/small["meanCoverage"].shape[0]
             #Not needed , we have calculated it before if.
-        #    Mean_2SD=small.describe()["meanCoverage"][mean_describe]-(2*small.describe()["meanCoverage"][std_describe])
+            #Mean_2SD=small.describe()["meanCoverage"][mean_describe]-(2*small.describe()["meanCoverage"][std_describe])
             passedMSF=small[small["meanCoverage"]>=Mean_2SD].shape[0]
             passedMS=(passedMSF*100)/small["meanCoverage"].shape[0]
 
-#Many figures and their titles describing the bins are showing that normal destribution is not followed always but Poisson seems more accurate distribution
-# in order to describe our data.
+            #Many figures and their titles describing the bins are showing that normal destribution is not followed always but Poisson seems more accurate distribution
+            # in order to describe our data.
 
-# a new column into Score.txt file would be added in regards to which distribution is followed in the future.
+            # a new column into Score.txt file would be added in regards to which distribution is followed in the future.
 
             if passedMS>=100:
                # print("Normal Distribution??")
@@ -417,7 +471,8 @@ else :
             RMMC=round(B1maxcove2)
 
             if   Scoreforlowmean>=Scorelimit and B1mincove>=Scorelimitforminormax and len(small['meanCoverage']>=minWindowsNeeded):
-                fig.savefig('{}/{}_MC_RCSCORED{}.png'.format(newdirpathSC,i,RS),dpi=my_dpi*multipdpi)
+                #fig.savefig('{}/{}_MC_RCSCORED{}.png'.format(newdirpathSC,i,RS),dpi=my_dpi*multipdpi)
+                fig.savefig('{}/{}_{}.png'.format(newdirpathSC,i,RS),dpi=my_dpi*multipdpi)
                 GENBANKID.write('\n%s'%(organism0))
 
 #                if Scoreforlowmean>AnotherScorelimit:
@@ -428,7 +483,8 @@ else :
 
             #needs names.+ FOLDER NAMES******************************
             elif Scoreforlowmean>=Scorelimit and B1mincove<Scorelimitforminormax and len(small['meanCoverage']>=minWindowsNeeded):
-                fig.savefig('{}/{}_MC_RC_BDSC_Might{}.png'.format(mightdirpath,i,RMMC),dpi=my_dpi*multipdpi)
+                #fig.savefig('{}/{}_MC_RC_BDSC_Might{}.png'.format(mightdirpath,i,RMMC),dpi=my_dpi*multipdpi)
+                fig.savefig('{}/{}_{}.png'.format(mightdirpath,i,RMMC),dpi=my_dpi*multipdpi)
 #                if Scoreforlowmean>=AnotherScorelimit:
                     #f_score.write('%s\t%s\t---------->>>>>>YES<<<<<<----------\n' % (organism, Scoreforlowmeantxt))
                 f_score.write('\n%s\t%s\t%s\t%s\t%s\t%s\t---------->>>>>>YES<<<<<<----------\t---------->>>>>>YES<<<<<<----------' % (organism0,organism1,organism2,organism3,organism4, Scoreforlowmeantxt))
@@ -436,7 +492,8 @@ else :
 #                    f_score.write('\n%s\t%s\t%s\t%s\t%s\t%s\tNO\tNO' % (organism0,organism1,organism2,organism3,organism4, Scoreforlowmeantxt))
 
             elif Scoreforlowmean<Scorelimit and B1maxcove2>=Scorelimitforminormax and len(small['meanCoverage']>=minWindowsNeeded):
-                fig.savefig('{}/{}_MC_RC_BDSC_Might{}.png'.format(mightdirpath,i,RMMC),dpi=my_dpi*multipdpi)
+                #fig.savefig('{}/{}_MC_RC_BDSC_Might{}.png'.format(mightdirpath,i,RMMC),dpi=my_dpi*multipdpi)
+                fig.savefig('{}/{}_{}.png'.format(mightdirpath,i,RMMC),dpi=my_dpi*multipdpi)
 #                if Scoreforlowmean>=AnotherScorelimit:
                     #f_score.write('%s\t%s\t---------->>>>>>YES<<<<<<----------\n' % (organism, Scoreforlowmeantxt))
                 f_score.write('\n%s\t%s\t%s\t%s\t%s\t%s\tNO\t---------->>>>>>YES<<<<<<----------' % (organism0,organism1,organism2,organism3,organism4, Scoreforlowmeantxt))
@@ -463,31 +520,9 @@ else :
             plt.close("all")
 
 
-    print("###########__Worked out well for Mean Coverage & Read Counts___########")
+    print("########### File completed #######")
 f_score.close()
-print("DONE -- You figured it out  \t*\t*\t*\t*\t* \n\n")
+print("Wochenende plot script completed  \t*\t*\t*\t*\t* \n\n")
 #print(i[11:])
 
 
-#from scipy.cluster import hierarchy
-#print(newdirpathSC)
-# Data set
-#print('{}/Scored.csv'.format(newdirpathSC))
-
-
-
-
-#tableofScores=pd.read_csv('{}/Scores.csv'.format(newdirpathSC),delimiter="\t")
-
-
-
-
-
-# Calculate the distance between each sample
-#Z = hierarchy.linkage(tableofScores["Scores"], 'Genus')
-#print(tableofScores["GenBank_ID"])
-
-
-
-# Plot with Custom leaves
-#hierarchy.dendrogram(Z, leaf_rotation=90, leaf_font_size=8, labels=df.index)

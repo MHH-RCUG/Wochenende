@@ -12,7 +12,9 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
-1.6.5 add new ref 2019_10_meta_human_univec
+1.6.7 add new viral ref EZV0_1_database2_cln.fasta
+1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
+1.6.5 add new ref 2019_10_meta_human_univec, improve helper scripts
 1.6.4 solve bam.txt mq30 problems
 1.6.3 generalize conda to avoid specific filesystem
 1.6.2 make more general for new users, improve initial error messages
@@ -36,7 +38,7 @@ import shutil
 import argparse
 import time
 
-version = "1.6.5 - Apr 2020"
+version = "1.6.7 - Apr 2020"
 
 ##############################
 # CONFIGURATION
@@ -68,6 +70,7 @@ path_refseq_dict = {
     "2019_01_meta" : "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
     "2019_10_meta_human" : "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
     "2019_10_meta_human_univec" : "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
+    "2020_03_meta_human" : "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
     "2019_01_meta_mouse" : "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
     "2019_01_meta_mouse_ASF_OMM" : "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
     "2019_01_meta_mouse_ASF" : "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
@@ -84,6 +87,7 @@ path_refseq_dict = {
     "ss11": "/lager2/rcug/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
     "PA14": "/lager2/rcug/seqres/PA/bwa/NC_008463.fna",
     "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
+    "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
     "testdb": "testdb/ref.fa",
 }
 # Adapters - edit as appropriate
@@ -792,6 +796,7 @@ def main(args, sys_argv):
                                  args.threads, args.readType)
         currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
         currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
+        currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         currentFile = runFunc("runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False)
         currentFile = runFunc("runGetUnmappedReads", runGetUnmappedReads, currentFile, False)
 
