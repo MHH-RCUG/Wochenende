@@ -37,9 +37,18 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 4. Optional reporting step to normalize the extracted read counts  (see reporting below)
 `sbatch run_Wochenende_reporting_SLURM.sh`
 
+### Tutorial
+
+Once you've got the tools installed and tested, you can look at or run the commands in the tutorial in the subdirectory `tutorial`.
+
 ### General usage
 
 ```
+Warning, this usage is just an example and might be slightly out of date. 
+
+Run this with: 
+python3 run_Wochenende.py
+
 Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
 Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer with help from many further contributors
 version: 1.6.2 - Mar 2020
