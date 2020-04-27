@@ -110,7 +110,7 @@ conda env create -f env.wochenende.yml
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
 4. Important! Edit the configuration section of `run_Wochenende.py` to set the paths to the tools, tmp directory and reference sequences.
-5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.17.4 pandas==0.24.2 matplotlib==3.0.3`
+5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.12.1 numpy-base==1.15.0 pandas==0.23.4 matplotlib==2.2.2`
 6. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
 7. Optional: run the tests, see below.
