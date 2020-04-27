@@ -1,9 +1,7 @@
 #!/bin/bash
-# Colin Davenport, Jan 2020
+# Colin Davenport, April 2020
 
 # Operates on window output files from runbatch_sambamba_depth.sh
-# Keep all lines without Where col3 is greater than X (currently 200). Good for idxstats files eg metagenomics
-
 # sorted descending in col5 for within experiment clarity and to find regions with excessive counts 
 # eg false positives, illumina adapters in assemblies etc
 

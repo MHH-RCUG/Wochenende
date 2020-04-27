@@ -1,0 +1,93 @@
+#######################
+## Dr. Colin Davenport
+## Wochenende pipeline: bacterial metagenome commands. April  2020
+## Intended to find bacteria
+######################
+
+#################
+# Start: Input files in *fastq.gz or fastq must be in same folder. 
+# Script get_covid19_scripts_wochenende.sh must be present
+################
+
+
+
+# Segment 1, preparation, rename, run pipeline
+
+#0 
+cp /mnt/ngsnfs/tools/dev/covid19_wochenende/get_covid19_scripts_wochenende.sh .
+
+#1 (or copy the scripts manually to the folder containing your FASTQ data.
+bash get_covid19_scripts_wochenende.sh
+
+#2
+srun gunzip *.fastq.gz
+rename 's/_001//g' *.fastq
+
+
+#3 - Run Pipeline, wait 1-2h ? Format required: data_R1.fastq and data_R2.fastq, even for long reads
+bash runbatch_sbatch_Wochenende.sh 
+
+
+################
+###### STOP HERE, wait ca 1-2 hr until Wochenende complete #########
+################
+
+# Segment2 - QC, plotting, 
+#5
+bash runbatch_metagen_awk_filter.sh
+
+#6
+bash runbatch_sambamba_depth.sh
+
+
+##############
+###### STOP HERE, wait ca 10-20m for SLURM jobs to finish  #########
+################
+
+
+## 7 Plots
+bash runbatch_metagen_window_filter.sh
+cp *window.txt* plots && cd plots
+bash runbatch_wochenende_plot.sh
+
+
+# 8 Reporting
+cd ../reporting/
+cp ../*.bam.txt .
+bash runbatch_Wochenende_reporting.sh
+mkdir unsorted && mkdir bam_txt
+#mv *rep.us* unsorted 
+#mv *.bam.txt bam_txt
+
+
+
+# 9 Check csv output using pcsv / OpenOffice / less -S etc (see rcug globalenv). Section optional!
+
+#pcsv KGCF14D_S2_R1.ndp.lc.trm.s.bam.txt.rep.s.csv			# Relatively raw file, no filtering of poorly mapped reads, no duplicate filter and allows any number of mismatches (~<10) 
+#pcsv KGCF14D_S2_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt.rep.s.csv	# Recommended well filtered file
+
+
+
+# 10 Make XLSX in directory reporting
+
+bash runbatch_csv_to_xlsx.sh
+
+
+
+
+
+####################
+# Tasks completed.
+####################
+
+############
+Now Copy to users
+###########
+
+Directories
+* plots 
+* reporting
+
+
+Files
+* multiqc.html

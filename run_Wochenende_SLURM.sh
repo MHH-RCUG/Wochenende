@@ -62,8 +62,17 @@ cpus=12
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
 # Uncomment/adapt the line only you want to run
 
+
+
+
+
+# 2020_03 reference
+python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+
+
+
 ## 2019 10 October metagenomes
-python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # without prinseq
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --no_fastqc --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 # with fastp
@@ -88,7 +97,12 @@ python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --alig
 #python3 run_Wochenende.py --metagenome nci_viruses --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 ## 2020 03 NCI viruses only - no mq30.  Use with unmapped reads only after removing human + bact
 #python3 run_Wochenende.py --metagenome nci_viruses --threads $cpus --aligner bwamem --no_abra --remove_mismatching --readType SE --debug --force_restart $fastq
+# EZV viruses
+#python3 run_Wochenende.py --metagenome ezv_viruses --threads $cpus --aligner bwamem --no_abra --readType SE --no_prinseq --debug --force_restart $fastq
 
+
+# Univec added for exclusion of contamination
+#python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 
 
