@@ -293,6 +293,7 @@ wochenende_plot.py: error: the following arguments are required: filename1
 
 ### Wochenende_plot output
 
+Wochenende_plot creates one subdirectory per input file. These contain png images of taxa which are probabably (high score, largely based on consistent evenness of coverage and high mean coverage) or perhaps present (need manual review). Confident attributions to taxa depends strongly on the number of reads assigned to bacterial taxa (low in airway metagenomes, higher in for example stool samples).  
 
 
 
