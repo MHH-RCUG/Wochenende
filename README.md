@@ -1,13 +1,13 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
-Wochenende runs alignment of either single ended or paired end short reads against a reference sequence. It is simple (python script), portable and has many optional steps. 
+Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is simple (python script), portable and has many optional steps. 
 
 Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
 - pre alignment duplicate removal (perldup)
 - pre alignment poor sequence removal (Prinseq - used for single ended reads only)
 - trimming (Trimmomatic or fastp)
-- alignment (bwa mem or minimap2)
+- alignment (bwa mem, minimap2 or ngmlr)
 - SAM-> BAM conversion (samtools and sambamba)
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
