@@ -1,13 +1,13 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
-Wochenende runs alignment of either single ended or paired end short reads against a reference sequence. It is simple (python script), portable and has many optional steps. 
+Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is simple (python script), portable and has many optional steps. 
 
 Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
 - pre alignment duplicate removal (perldup)
 - pre alignment poor sequence removal (Prinseq - used for single ended reads only)
 - trimming (Trimmomatic or fastp)
-- alignment (bwa mem or minimap2)
+- alignment (bwa mem, minimap2 or ngmlr)
 - SAM-> BAM conversion (samtools and sambamba)
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
@@ -37,9 +37,18 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 4. Optional reporting step to normalize the extracted read counts  (see reporting below)
 `sbatch run_Wochenende_reporting_SLURM.sh`
 
+### Tutorial
+
+Once you've got the tools installed and tested, you can look at or run the commands in the tutorial in the subdirectory `tutorial`.
+
 ### General usage
 
 ```
+Warning, this usage is just an example and might be slightly out of date. 
+
+Run this with: 
+python3 run_Wochenende.py
+
 Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
 Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer with help from many further contributors
 version: 1.6.2 - Mar 2020
@@ -110,7 +119,7 @@ conda env create -f env.wochenende.yml
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
 4. Important! Edit the configuration section of `run_Wochenende.py` to set the paths to the tools, tmp directory and reference sequences.
-5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.17.4 pandas==0.24.2 matplotlib==3.0.3`
+5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.12.1 numpy-base==1.15.0 pandas==0.23.4 matplotlib==2.2.2`
 6. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
 7. Optional: run the tests, see below.
@@ -183,7 +192,7 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 # Wochenende_plot.py output (png images)
 - wochenende_png_files/
 - wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/
-- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/potentially_present/  
+- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/perhaps_present/  
 - wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/probably_present/
 
 
@@ -284,6 +293,7 @@ wochenende_plot.py: error: the following arguments are required: filename1
 
 ### Wochenende_plot output
 
+Wochenende_plot creates one subdirectory per input file. These contain png images of taxa which are probabably (high score, largely based on consistent evenness of coverage and high mean coverage) or perhaps present (need manual review). Confident attributions to taxa depends strongly on the number of reads assigned to bacterial taxa (low in airway metagenomes, higher in for example stool samples).  
 
 
 
