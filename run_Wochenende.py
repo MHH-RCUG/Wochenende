@@ -12,6 +12,8 @@ TODOs:
   and test this vs alternatives to Trimmomatic, eg
 
 Changelog
+1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ?
+1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
 1.6.7 add new viral ref EZV0_1_database2_cln.fasta
 1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
 1.6.5 add new ref 2019_10_meta_human_univec, improve helper scripts
@@ -38,7 +40,7 @@ import shutil
 import argparse
 import time
 
-version = "1.6.7 - Apr 2020"
+version = "1.6.9 - June 2020"
 
 ##############################
 # CONFIGURATION
@@ -589,6 +591,22 @@ def runMQ30(stage_infile):
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
+def getAverageReadLengthBAM(bamfile):
+    # samtools stats reads_R1.ndp.lc.trm.s.bam | grep 'average length'
+    # SN      average length: 144
+    readLength = 0
+    calcReadLength = [path_samtools, 'stats', bamfile]
+    samtools_cmd1 = ' ' .join(calcReadLength)
+    try:
+        tmpString = os.system(samtools_cmd1)
+        # Split output and get read length as last field after ": "
+        readLength = tmpString.rpartition(': ')[-1]
+    except:
+        print ("######Error getting average read length. Use 75 ##################################")
+        readLength = 75
+    print("Read length returned: " + str(readLength))
+    return readLength
+
 def runBamtools(stage_infile):
     # Keep only reads with 0 or 1 mismatch
     stage = "Keep only reads with 0 or 1 mismatch - for metagenomics"
@@ -622,6 +640,55 @@ def runBamtools(stage_infile):
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
+
+
+
+def runBamtoolsAdaptive(stage_infile):
+
+    #################################### Under development and not used yet ##############
+
+    # Keep only reads with max 1 mismatch per 20bp of read (eg 3 for 75bp, 7 for 150bp)
+    stage = "Keep only reads with max 1 mismatch per 30bp of read (eg 2 for 75bp, 5 for 150bp). Maximum 7 mismatches. Intended for specific alignments in metagenomics"
+    prefix = stage_infile.replace(".bam","")
+
+    # Get size
+    avReadLength = 0
+    avReadLength = getAverageReadLengthBAM(stage_infile)
+    print ("########################################")
+    print ("## INFO: Average read length: " + str(avReadLength))
+    print ("########################################")
+
+
+    stage_outfile = prefix + '.mmrem.bam'
+    tmpfile0 = prefix + '.0mm.tmp.bam'
+    tmpfile1 = prefix + '.1mm.tmp.bam'
+    keep0mm = [path_bamtools, 'filter', '-in', stage_infile, '-out', tmpfile0, '-tag', 'NM:0']
+    keep1mm = [path_bamtools, 'filter', '-in', stage_infile, '-out', tmpfile1, '-tag', 'NM:1']
+    bam_merge = [path_samtools, 'merge', '-@', IOthreadsConstant, stage_outfile, tmpfile0, tmpfile1]
+    bamtools_cmd1 = ' ' .join(keep0mm)
+    bamtools_cmd2 = ' ' .join(keep1mm)
+    merge = ' ' .join(bam_merge)
+
+
+    try:
+        # could not get subprocess.run, .call etc to work with "&&"
+        #print(bamtools_cmd)
+        #os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 && bam_merge = path_samtools merge -@ IO>
+        os.system(bamtools_cmd1)
+        os.system(bamtools_cmd2)
+        os.system(merge)
+        os.remove(tmpfile0)
+        os.remove(tmpfile1)
+
+    except:
+        print ("########################################")
+        print ("############ Error with BAMtools adaptive commands")
+        print ("########################################")
+        sys.exit(1)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
 
 
 def markDups(stage_infile):
@@ -809,6 +876,9 @@ def main(args, sys_argv):
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
+            #currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
+            #currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
+            #currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
             currentFile = runFunc("markDups", markDups, currentFile, True)
@@ -854,6 +924,7 @@ def main(args, sys_argv):
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
         if args.remove_mismatching:
             currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+            #currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
