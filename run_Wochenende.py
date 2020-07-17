@@ -7,10 +7,9 @@ Author: Dr. Colin Davenport
 Author: Fabian Friedrich
 Author: Keerthi Sannareddy
 
-TODOs:
-- See Github issues for TODOs
 
 Changelog
+1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
 1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ?
 1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
@@ -40,7 +39,7 @@ import shutil
 import argparse
 import time
 
-version = "1.7.0 - July 2020"
+version = "1.7.1 - July 2020"
 
 ##############################
 # CONFIGURATION
@@ -94,8 +93,9 @@ path_refseq_dict = {
 }
 # Adapters - edit as appropriate
 ea_adapter_fasta = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
-adapter_fasta = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
+adapter_truseq = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
 adapter_fastp = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
+adapter_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
 ## Other
 path_tmpdir = "/ngsssd1/rcug/tmp/"
 
@@ -437,7 +437,7 @@ def runFastUniq(stage_infile):
     return stage_outfile
 
 
-def runTMTrimming(stage_infile):
+def runTMTrimming(stage_infile, adapter_file):
     # adapter and quality trimming - single end
     stage = "Trimming with Trimmomatic - SE"
     stage_outfile = stage_infile
@@ -453,7 +453,7 @@ def runTMTrimming(stage_infile):
         "-phred33",
         stage_infile,
         stage_outfile,
-        "ILLUMINACLIP:" + adapter_fasta + ":2:30:10",
+        "ILLUMINACLIP:" + adapter_file + ":2:30:10",
         "LEADING:3",
         "TRAILING:3",
         "SLIDINGWINDOW:4:15",
@@ -464,7 +464,7 @@ def runTMTrimming(stage_infile):
     return stage_outfile
 
 
-def runTMTrimmingPE(stage_infile):
+def runTMTrimmingPE(stage_infile, adapter_file):
     # adapter and quality trimming - paired end
     stage = "Trimming with Trimmomatic - PE"
     stage_outfile = stage_infile
@@ -484,7 +484,7 @@ def runTMTrimmingPE(stage_infile):
         tmpfile1,
         deriveRead2Name(stage_outfile),
         tmpfile2,
-        "ILLUMINACLIP:" + adapter_fasta + ":2:30:10",
+        "ILLUMINACLIP:" + adapter_file + ":2:30:10",
         "LEADING:3",
         "TRAILING:3",
         "SLIDINGWINDOW:4:15",
@@ -507,7 +507,7 @@ def runEATrimming(stage_infile):
         "-f",
         "-o",
         stage_outfile,
-        ea_adqapter_fasta,
+        ea_adapter_fasta,
         stage_infile,
     ]
     runStage(stage, trimCmd)
@@ -1130,7 +1130,12 @@ def main(args, sys_argv):
                 "runFastpSE", runFastpSE, currentFile, True, args.threads
             )
         if not args.longread and not args.fastp:
-            currentFile = runFunc("runTMTrimming", runTMTrimming, currentFile, True)
+            # Use either nextera or (default) truseq/ ultraII adapter files
+            if args.nextera:
+                currentFile = runFunc("runTMTrimming", runTMTrimming, currentFile, True, adapter_nextera)
+            else:
+                currentFile = runFunc("runTMTrimming", runTMTrimming, currentFile, True, adapter_truseq)
+
         # if not args.longread:
         # currentFile = runFunc("runEATrimming", runEATrimming, currentFile, True)
         currentFile = runFunc(
@@ -1208,7 +1213,11 @@ def main(args, sys_argv):
                 deriveRead2Name(currentFile),
                 args.threads,
             )
-        currentFile = runFunc("runTMTrimmingPE", runTMTrimmingPE, currentFile, True)
+        # Trimming: use either nextera or (default) truseq/ ultraII adapter files
+        if args.nextera:
+             currentFile = runFunc("runTMTrimmingPE", runTMTrimmingPE, currentFile, True, adapter_nextera)
+        else:
+             currentFile = runFunc("runTMTrimmingPE", runTMTrimmingPE, currentFile, True, adapter_truseq)
         # currentFile = runFunc("runEATrimming", runEATrimming, currentFile, True)
         currentFile = runFunc(
             "runAligner",
@@ -1310,12 +1319,21 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--threads", help="Number of cores, default = 16", action="store", default="16"
+        "--threads",
+        help="Number of cores",
+        action="store",
+        default="16"
     )
 
     parser.add_argument(
         "--fastp",
-        help="Use fastp instead of fastqc and trimmomatic",
+        help="Use tool fastp instead of fastqc and trimmomatic",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--nextera",
+        help="Attempt to remove Illumina Nextera adapters and transposase sequence (default is Illumina Ultra II adapters, but Illumina Nextera more common in future)",
         action="store_true",
     )
 
@@ -1335,7 +1353,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--no_prinseq",
-        help="Skips prinseq step for low_complexity sequence removal.",
+        help="Skips prinseq step (low_complexity sequence removal)",
         action="store_true",
     )
 

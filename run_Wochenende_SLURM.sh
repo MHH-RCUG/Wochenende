@@ -42,15 +42,16 @@ conda activate wochenende >> /dev/null
 #--aligner bwamem
 #--aligner minimap2
 #--aligner ngmlr
-#--no_abra
-#--mq30
+#--nextera  - remove Nextera adapters with Trimmomatic, not default Ultra II / Truseq adapters
+#--no_abra  - no read realignment
+#--mq30     - remove reads with a mapping quality of less than 30
 #--readType SE
 #--readType PE
 #--debug
 #--force_restart
 #--remove_mismatching
 #--no_duplicate_removal
-#--no_prinseq
+#--no_prinseq   - do not filter out initial reads using prinseq
 #--no_fastqc
 #--testWochenende - runs the test scripts with test reads vs a testDB and checks if all seems well.
 #--fastp - fastp is recommended as an alternative trimmer to Trimmomatic if you are having adapter problems
@@ -65,7 +66,9 @@ cpus=12
 
 
 # 2020_03 reference
-python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching --readType SE --debug --force_restart $fastq
 
 
 
