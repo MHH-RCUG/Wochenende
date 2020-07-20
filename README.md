@@ -19,7 +19,7 @@ Features include (see programs listed below at the bottom of this page)
 
 ## Platforms
 
-Wochenende has currently (Feb 2020) only been tested on Ubuntu Linux 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment and Python3.6+ is critical to get things working.
+Wochenende has currently (July 2020) only been tested on Ubuntu Linux 20.04 and 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment and Python3.6+ is critical to get things working.
 
 
 ## Usage 
