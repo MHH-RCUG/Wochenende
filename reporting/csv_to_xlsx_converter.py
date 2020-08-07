@@ -59,7 +59,7 @@ def main():
         # convert to Excel
         df.to_excel(file.replace('.csv', '.xlsx'), index=None, header=False)
 
-    elif ("rep.s" in str(file)):
+    elif (".rep." in str(file)):
         # used for Wochenende reporting output
         df = pandas.read_csv(file)
         # convert to Excel
