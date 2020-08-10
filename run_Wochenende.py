@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.7.3 use bamtools more efficiently to filter mismatches (not adaptíve to read length, but parameter enabled)
 1.7.2 add ngmlr --min-residues 0.70, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
@@ -41,7 +42,7 @@ import argparse
 import time
 
 
-version = "1.7.2 - August 2020"
+version = "1.7.3 - August 2020"
 
 ##############################
 # CONFIGURATION
@@ -869,6 +870,50 @@ def runBamtools(stage_infile):
     return stage_outfile
 
 
+def runBamtoolsFixed(stage_infile, numberMismatches):
+    # Keep only reads with x mismatches. Intended for short reads with fixed read lengths, not variable length long reads
+    stage = "Keep only reads with x mismatches (default 3) - for metagenomics"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".mm.bam"
+
+    #"tag" : "NM:<4"
+    mmList = [
+          '\"NM:<',
+          numberMismatches,
+          '\"'
+    ]
+    mmString = "".join(mmList)
+
+    filterMismatchesCmd = [
+        path_bamtools,
+        "filter",
+        "-in",
+        stage_infile,
+        "-out",
+        stage_outfile,
+        "-tag",
+        mmString
+    ]
+    bamtools_cmd1 = " ".join(filterMismatchesCmd)
+    print("bamtools cmd" + bamtools_cmd1)
+
+    try:
+        # could not get subprocess.run, .call etc to work with "&&"
+        # print(bamtools_cmd)
+        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 &>
+        os.system(bamtools_cmd1)
+
+    except:
+        print("########################################")
+        print("############ Error with BAMtools runBamtoolsFixed commands")
+        print("########################################")
+        sys.exit(1)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+
+
 def runBamtoolsAdaptive(stage_infile):
 
     #################################### Under development and not used yet ##############
@@ -1124,7 +1169,9 @@ def main(args, sys_argv):
 
     print("Meta/genome selected: " + args.metagenome)
 
+    ##############
     # Single ended input reads
+    ##############
     if args.readType == "SE":
         if not args.longread and not args.no_fastqc:
             currentFile = runFunc("runFastQC", runFastQC, currentFile, False)
@@ -1170,8 +1217,10 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
-        if args.remove_mismatching and not args.longread:
-            currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+#        if args.remove_mismatching and not args.longread:
+        if args.remove_mismatching:
+            #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
@@ -1198,7 +1247,10 @@ def main(args, sys_argv):
         currentFile = runFunc("runBAMindex5", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
 
+
+    #############
     # Paired end input reads. Long reads cannot be paired end (true 2020).
+    #############
     elif args.readType == "PE":
         print("Input File 1 : " + currentFile)
         print("Input File 2 : " + deriveRead2Name(currentFile))
@@ -1247,7 +1299,8 @@ def main(args, sys_argv):
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
         if args.remove_mismatching:
-            currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+            #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
@@ -1382,8 +1435,9 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--remove_mismatching",
-        help="Remove reads with 2 or more mismatches (via the NM bam tag)",
-        action="store_true",
+        help="Remove reads with less than x mismatches (via the NM bam tag). Default 3. Argument required.",
+        action="store",
+        default="3",
     )
 
     parser.add_argument(
