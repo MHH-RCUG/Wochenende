@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.7.2 add ngmlr --min-residues 0.70, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
 1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ?
@@ -39,7 +40,8 @@ import shutil
 import argparse
 import time
 
-version = "1.7.1 - July 2020"
+
+version = "1.7.2 - August 2020"
 
 ##############################
 # CONFIGURATION
@@ -521,6 +523,9 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     ngmlrMinIdentity = (
         0.85  # Aligner ngmlr only: minimum identity (fraction) of read to reference
     )
+    ngmlrMinResidues = (
+        0.70  # Aligner ngmlr only: minimum aligned residues (fraction) of read to reference
+    )
 
     stage = "Alignment"
     print("######  " + stage + "  ######")
@@ -554,6 +559,8 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
             "ont",
             "-i",
             str(ngmlrMinIdentity),
+            "-R",
+            str(ngmlrMinResidues),
             "-t",
             str(noThreads),
             "-r",
