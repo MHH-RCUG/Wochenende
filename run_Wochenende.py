@@ -688,6 +688,17 @@ def runBAMsort(stage_infile):
         stage_outfile,
     ]
     runStage(stage, samtoolsSortCmd)
+
+    # Delete unsorted BAM file
+    rmUnsortedBamCmd = ["rm", stage_infile]
+    rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
+
+    try:
+        os.system(rmUnsortedBamCmdStr)
+    except:
+        print("Error removing unsorted bam file")
+        sys.exit(1)
+
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
@@ -895,7 +906,7 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
         mmString
     ]
     bamtools_cmd1 = " ".join(filterMismatchesCmd)
-    print("bamtools cmd" + bamtools_cmd1)
+    print("Bamtools fixed cmd: " + bamtools_cmd1)
 
     try:
         # could not get subprocess.run, .call etc to work with "&&"
