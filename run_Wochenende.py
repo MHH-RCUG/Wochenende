@@ -1218,7 +1218,7 @@ def main(args, sys_argv):
 #        if args.remove_mismatching and not args.longread:
         if args.remove_mismatching:
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
-            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True)
+            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
@@ -1298,7 +1298,7 @@ def main(args, sys_argv):
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
         if args.remove_mismatching:
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
-            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True)
+            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
         if not args.no_duplicate_removal:
             currentFile = runFunc("markDups", markDups, currentFile, True)
