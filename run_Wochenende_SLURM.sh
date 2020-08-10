@@ -18,9 +18,6 @@
 # set name of job
 #SBATCH --job-name=Wochenende
 
-# mail alert at start, end and abortion of execution
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=<mail_address_for_slurm>
 
 echo "Input file: " $1
 fastq=$1
@@ -40,7 +37,7 @@ conda activate wochenende >> /dev/null
 # --threads 12
 #--longread (implies aligner is not bwa-mem, no prinseq, no duplicate removal)
 #--aligner bwamem
---aligner minimap2
+#--aligner minimap2
 #--aligner ngmlr
 #--nextera  - remove Nextera adapters with Trimmomatic, not default Ultra II / Truseq adapters
 #--no_abra  - no read realignment
@@ -49,7 +46,7 @@ conda activate wochenende >> /dev/null
 #--readType PE
 #--debug
 #--force_restart
-#--remove_mismatching 3
+#--remove_mismatching 3 (remove those reads with 3 or more mismatches)
 #--no_duplicate_removal
 #--no_prinseq   - do not filter out initial reads using prinseq
 #--no_fastqc
@@ -69,7 +66,7 @@ cpus=12
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --readType SE --debug --force_restart $fastq
-python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner ngmlr --longread --no_abra --mq30 --remove_mismatching 25 --readType SE --debug --force_restart $fastq
+python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner ngmlr --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --force_restart $fastq
 
 
 
