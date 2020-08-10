@@ -878,10 +878,11 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
 
     #"tag" : "NM:<4"
     mmList = [
-          "NM:<",
-          numberMismatches
+          '\"NM:<',
+          numberMismatches,
+          '\"'
     ]
-    mmString = str(mmList)
+    mmString = "".join(mmList)
 
     filterMismatchesCmd = [
         path_bamtools,
@@ -889,11 +890,12 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
         "-in",
         stage_infile,
         "-out",
-        tmpfile1,
+        stage_outfile,
         "-tag",
-        mmList
+        mmString
     ]
     bamtools_cmd1 = " ".join(filterMismatchesCmd)
+    print("bamtools cmd" + bamtools_cmd1)
 
     try:
         # could not get subprocess.run, .call etc to work with "&&"
