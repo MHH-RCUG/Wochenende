@@ -52,6 +52,7 @@ conda activate wochenende >> /dev/null
 #--no_fastqc
 #--testWochenende - runs the test scripts with test reads vs a testDB and checks if all seems well.
 #--fastp - fastp is recommended as an alternative trimmer to Trimmomatic if you are having adapter problems
+#--trim_galore - trim_galore is the best adapter trimmer for nextera reads
 
 cpus=12
 
@@ -64,9 +65,9 @@ cpus=12
 
 # 2020_03 reference
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
-#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
+python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --trim-galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --readType SE --debug --force_restart $fastq
-python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner ngmlr --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner ngmlr --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --force_restart $fastq
 
 
 
