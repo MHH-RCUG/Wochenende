@@ -133,7 +133,7 @@ stage_infile = ""
 fileList = []
 global IOthreadsConstant
 IOthreadsConstant = "8"
-trim_galore_min_quality = 20
+trim_galore_min_quality = "20"
 global args
 
 
@@ -322,16 +322,26 @@ def runTrimGaloreSE(stage_infile, noThreads, nextera):
         "--cores " + noThreads,
         "--2colour " + trim_galore_min_quality,
         stage_infile,
-        " > ",
+        #" > ",
+        #stage_outfile,
+    ]
+    rename_cmd = [
+        #trim_galore creates prefix_trimmed.fq . Rename this to outfile
+        "mv" ,
+        prefix + "_trimmed.fq",
         stage_outfile,
     ]
     #runStage(stage, trim_galore_cmd)
     trimGaloreCmdStr = " ".join(trim_galore_cmd)
+    renameStr = " ".join(rename_cmd)
 
     try:
         # could not get subprocess.run, .call etc to work with pipes and redirect '>'
         print("trimGaloreCmdStr: " + trimGaloreCmdStr)
+        print("renameStr: " + renameStr)
         os.system(trimGaloreCmdStr)
+        os.system(renameStr)
+
 
     except:
         print("Error running trim_galore")
