@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-A whole genome/metagenome analysis pipeline in Python3
+Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich
@@ -9,11 +9,13 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.7.5 add trim_galore trimmer for nextera (SE reads only so far)
+1.7.4 add correct fasta files for fastp trimming
 1.7.3 use bamtools more efficiently to filter mismatches (not adaptíve to read length, but parameter enabled)
-1.7.2 add ngmlr --min-residues 0.70, prefer to default 0.25
+1.7.2 add ngmlr --min-residues cutoff, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
-1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ?
+1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? 
 1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
 1.6.7 add new viral ref EZV0_1_database2_cln.fasta
 1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
@@ -31,7 +33,13 @@ Changelog
 1.2 add --no-prinseq option to cancel prinseq read exclusion
 1.2 add generation of unaligned reads (function runGetUnmappedReads) in FASTQ format
 1.0 add reporting
-
+0.6 add Minimap2
+0.5 improve argument parsing and checks
+0.4 use on genomics and metagenomics with awk filter script
+0.3 add bwa-mem
+0.21 add tool functions
+0.2 add references
+0.1 initial commits
 """
 
 import sys
@@ -42,7 +50,7 @@ import argparse
 import time
 
 
-version = "1.7.3 - August 2020"
+version = "1.7.5 - August 2020"
 
 ##############################
 # CONFIGURATION
@@ -66,15 +74,17 @@ path_java = "java"
 path_abra_jar = "/mnt/ngsnfs/tools/abra2/abra2_latest.jar"
 path_minimap2 = "minimap2"
 path_ngmlr = "ngmlr"
+path_trim_galore = "trim_galore"
+
 ## Paths to reference seqs. Edit as appropriate!
 path_refseq_dict = {
+    "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
     "2016_06_1p_genus": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
     "2016_06_1p_spec_corrected": "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
     "2016_06_1p_spec": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
     "2019_01_meta": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
     "2019_10_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
     "2019_10_meta_human_univec": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
-    "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
     "2019_01_meta_mouse": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
     "2019_01_meta_mouse_ASF_OMM": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
     "2019_01_meta_mouse_ASF": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
@@ -94,11 +104,14 @@ path_refseq_dict = {
     "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
     "testdb": "testdb/ref.fa",
 }
-# Adapters - edit as appropriate
+# Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
 ea_adapter_fasta = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
 adapter_truseq = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
-adapter_fastp = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
 adapter_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
+adapter_fastp_solid = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
+adapter_fastp_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
+adapter_fastp_general = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
+
 ## Other
 path_tmpdir = "/ngsssd1/rcug/tmp/"
 
@@ -109,7 +122,7 @@ path_tmpdir = "/ngsssd1/rcug/tmp/"
 
 print("Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline")
 print(
-    "Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors"
+    "Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors"
 )
 print("version: " + version)
 print()
@@ -120,6 +133,7 @@ stage_infile = ""
 fileList = []
 global IOthreadsConstant
 IOthreadsConstant = "8"
+trim_galore_min_quality = "20"
 global args
 
 
@@ -150,6 +164,11 @@ def check_arguments(args):
     if args.fastp and args.longread:
         print("ERROR: Combination of '--fastp' and '--longread' is not allowed.")
         sys.exit(1)
+
+    if args.nextera and args.longread:
+        print("ERROR: Combination of '--nextera' and '--longread' is not allowed.")
+        sys.exit(1)
+
     return args
 
 
@@ -282,7 +301,93 @@ def runAfterQC(stage_infile):
     return stage_outfile
 
 
-def runFastpSE(stage_infile, noThreads):
+
+def runTrimGaloreSE(stage_infile, noThreads, nextera):
+    # use for Nextera - single end reads
+    stage = "TrimGalore - SE"
+    print("######  " + stage + "  ######")
+    prefix = stage_infile.replace(".fastq", "")
+    stage_outfile = prefix + ".trm.fastq"
+    trimNextera=""
+    if nextera:
+        trimNextera = "--nextera"
+    trim_galore_cmd = [
+	#trim_galore --nextera --dont_gzip --cores 12 --2colour 20  x_R1.fastq > out_R1.fastq
+        path_trim_galore,
+        trimNextera,
+        "--dont_gzip ",
+        "--length 36 ",
+        "--suppress_warn ",
+#        "--adapter_fasta=" + adapter_path,
+        "--cores " + noThreads,
+        "--2colour " + trim_galore_min_quality,
+        stage_infile,
+        #" > ",
+        #stage_outfile,
+    ]
+    rename_cmd = [
+        #trim_galore creates prefix_trimmed.fq . Rename this to outfile
+        "mv" ,
+        prefix + "_trimmed.fq",
+        stage_outfile,
+    ]
+    #runStage(stage, trim_galore_cmd)
+    trimGaloreCmdStr = " ".join(trim_galore_cmd)
+    renameStr = " ".join(rename_cmd)
+
+    try:
+        # could not get subprocess.run, .call etc to work with pipes and redirect '>'
+        print("trimGaloreCmdStr: " + trimGaloreCmdStr)
+        print("renameStr: " + renameStr)
+        os.system(trimGaloreCmdStr)
+        os.system(renameStr)
+
+
+    except:
+        print("Error running trim_galore")
+        sys.exit(1)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+
+#################### TODO !!!!!!!!!!!!!!!! Have never done this for TrimGalore AND how does it do PE output? 
+def runTrimGalorePE(stage_infile, noThreads, adapter_path):
+    # use for Nextera - paired end reads
+    stage = "TrimGalore - PE TODO!!"
+    print("######  " + stage + "  ######")
+    prefix = stage_infile.replace(".fastq", "")
+    stage_outfile = prefix + ".trm.fastq"
+    trim_galore_cmd = [
+        path_trim_galore,
+        #trim_galore --nextera --dont_gzip --cores 12 --2colour 20  x_R1.fastq
+        "--nextera",
+        "--dont_gzip",
+        "--length 36",
+        "--suppress_warn ",
+#        "--adapter_fasta=" + adapter_path,
+        "--cores " + noThreads,
+        "--2colour " + trim_galore_min_quality,
+        stage_infile,
+        " > ",
+        stage_outfile,
+    ]
+    #runStage(stage, trim_galore_cmd)
+    trimGaloreCmdStr = " ".join(trim_galore_cmd)
+    try:
+        # could not get subprocess.run, .call etc to work with pipes and redirect '>'
+        print("trimGaloreCmdStr: " + trimGaloreCmdStr)
+        os.system(trimGaloreCmdStr)
+    except:  
+        print("Error running trim_galore")
+        sys.exit(1)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+
+
+def runFastpSE(stage_infile, noThreads, adapter_path):
     # all-in-one FASTQ-preprocessor - single end reads
     stage = "fastp - SE"
     print("######  " + stage + "  ######")
@@ -292,8 +397,8 @@ def runFastpSE(stage_infile, noThreads):
         path_fastp,
         "--in1=" + stage_infile,
         "--out1=" + stage_outfile,
-        "--length_required=40",
-        "--adapter_fasta=" + adapter_fastp,
+        "--length_required=36",
+        "--adapter_fasta=" + adapter_path,
         "--cut_front",
         "--cut_window_size=5",
         "--cut_mean_quality=15",
@@ -306,7 +411,7 @@ def runFastpSE(stage_infile, noThreads):
     return stage_outfile
 
 
-def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
+def runFastpPE(stage_infile_1, stage_infile_2, noThreads, adapter_path):
     # all-in-one FASTQ-preprocessor - paired end reads
     stage = "fastp - PE"
     print("######  " + stage + "  ######")
@@ -318,8 +423,8 @@ def runFastpPE(stage_infile_1, stage_infile_2, noThreads):
         "--out1=" + stage_outfile,
         "--in2=" + stage_infile_2,
         "--out2=" + deriveRead2Name(stage_outfile),
-        "--length_required=40",
-        "--adapter_fasta=" + adapter_fastp,
+        "--length_required=36",
+        "--adapter_fasta=" + adapter_path,
         "--cut_front",
         "--cut_window_size=5",
         "--cut_mean_quality=15",
@@ -688,6 +793,17 @@ def runBAMsort(stage_infile):
         stage_outfile,
     ]
     runStage(stage, samtoolsSortCmd)
+
+    # Delete unsorted BAM file
+    rmUnsortedBamCmd = ["rm", stage_infile]
+    rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
+
+    try:
+        os.system(rmUnsortedBamCmdStr)
+    except:
+        print("Error removing unsorted bam file")
+        sys.exit(1)
+
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
@@ -895,7 +1011,7 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
         mmString
     ]
     bamtools_cmd1 = " ".join(filterMismatchesCmd)
-    print("bamtools cmd" + bamtools_cmd1)
+    print("Bamtools fixed cmd: " + bamtools_cmd1)
 
     try:
         # could not get subprocess.run, .call etc to work with "&&"
@@ -1167,6 +1283,16 @@ def main(args, sys_argv):
         currentFile = inputFastq
     createTmpDir(path_tmpdir)
 
+    # default adapters: truseq, NEB indices
+    adapter_path = adapter_truseq
+    #if args.nextera:
+    #	adapter_path = adapter_fastp_nextera
+    #if args.solid: # args.solid does not exist
+    #    adapter_path = adapter_fastp_solid
+    if args.nextera:
+        adapter_path = adapter_fastp_general
+
+
     print("Meta/genome selected: " + args.metagenome)
 
     ##############
@@ -1181,7 +1307,11 @@ def main(args, sys_argv):
             currentFile = runFunc("runPrinseq", runPrinseq, currentFile, True)
         if args.fastp and not args.longread:
             currentFile = runFunc(
-                "runFastpSE", runFastpSE, currentFile, True, args.threads
+                "runFastpSE", runFastpSE, currentFile, True, args.threads, adapter_path
+            )
+        if args.trim_galore:
+            currentFile = runFunc(
+                "runTrimGaloreSE", runTrimGaloreSE, currentFile, True, args.threads, args.nextera
             )
         if not args.longread and not args.fastp:
             # Use either nextera or (default) truseq/ ultraII adapter files
@@ -1380,7 +1510,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--threads",
-        help="Number of cores",
+        help="Number of threads to use",
         action="store",
         default="16"
     )
@@ -1397,11 +1527,18 @@ if __name__ == "__main__":
         action="store_true",
     )
 
+    parser.add_argument(
+        "--trim_galore",
+        help="Use trim_galore read trimmer. Effective for Nextera adapters and transposase sequence",
+        action="store_true",
+    )
+
+
     parser.add_argument("--debug", help="Report all files", action="store_true")
 
     parser.add_argument(
         "--longread",
-        help="Only do steps relevant for long PacBio/ONT reads eg. no trimming, alignment & bam conversion",
+        help="Only do steps relevant for long PacBio/ONT reads eg. no dup removal, no trimming, just alignment and bam conversion",
         action="store_true",
     )
 
