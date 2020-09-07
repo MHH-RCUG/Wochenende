@@ -6,12 +6,13 @@ Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
 - pre alignment duplicate removal (perldup)
 - pre alignment poor sequence removal (Prinseq - used for single ended reads only)
-- trimming (Trimmomatic or fastp)
+- trimming (Trimmomatic or fastp or trim galore or ea-utils)
 - alignment (bwa mem, minimap2 or ngmlr)
 - SAM-> BAM conversion (samtools and sambamba)
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
 - Post-alignment duplicate removal (Picard)
+- Removal reads with x mismatches (bamtools)
 - Realignment (Abra2)
 - MD tag marking (Samtools)
 - Normalization (to Reads per Million Reads etc, see Reporting below for details)
@@ -50,15 +51,17 @@ Run this with:
 python3 run_Wochenende.py
 
 Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
-Wochenende was created by Dr. Colin Davenport and Tobias Scheithauer with help from many further contributors
-version: 1.6.2 - Mar 2020
+Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors
+version: 1.7.5 - August 2020
 
 usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2,ngmlr}]
                          [--readType {PE,SE}]
-                         [--metagenome {2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,testdb}]
-                         [--threads THREADS] [--fastp] [--debug] [--longread]
+                         [--metagenome {2020_03_meta_human,2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,ezv_viruses,testdb}]
+                         [--threads THREADS] [--fastp] [--nextera]
+                         [--trim_galore] [--debug] [--longread]
                          [--no_duplicate_removal] [--no_prinseq] [--no_fastqc]
-                         [--no_abra] [--mq30] [--remove_mismatching]
+                         [--no_abra] [--mq30]
+                         [--remove_mismatching REMOVE_MISMATCHING]
                          [--force_restart] [--testWochenende]
                          fastq
 
@@ -68,29 +71,35 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --aligner {bwamem,minimap2,ngmlr}
-                        Aligner to use, either bwamem, ngmlr minimap2. Usage
-                        of minimap2 and ngmlr currently optimized for nanopore
-                        data only.
+                        Aligner to use, either bwamem, ngmlr or minimap2.
+                        Usage of minimap2 and ngmlr currently optimized for
+                        nanopore data only.
   --readType {PE,SE}    Single end or paired end data
-  --metagenome {2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,testdb}
+  --metagenome {2020_03_meta_human,2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,ezv_viruses,testdb}
                         Meta/genome reference to use
-  --threads THREADS     Number of cores, default = 16
-  --fastp               Use fastp instead of fastqc and trimmomatic
+  --threads THREADS     Number of threads to use
+  --fastp               Use tool fastp instead of fastqc and trimmomatic
+  --nextera             Attempt to remove Illumina Nextera adapters and
+                        transposase sequence (default is Illumina Ultra II
+                        adapters, but Illumina Nextera more common in future)
+  --trim_galore         Use trim_galore read trimmer. Effective for Nextera
+                        adapters and transposase sequence
   --debug               Report all files
   --longread            Only do steps relevant for long PacBio/ONT reads eg.
-                        no trimming, alignment & bam conversion
+                        no dup removal, no trimming, just alignment and bam
+                        conversion
   --no_duplicate_removal
                         Skips steps for duplicate removal. Recommended for
                         amplicon sequencing.
-  --no_prinseq          Skips prinseq step for low_complexity sequence
-                        removal.
+  --no_prinseq          Skips prinseq step (low_complexity sequence removal)
   --no_fastqc           Skips FastQC quality control step.
   --no_abra             Skips steps for Abra realignment. Recommended for
                         metagenome and amplicon analysis.
   --mq30                Remove reads with mapping quality less than 30.
                         Recommended for metagenome and amplicon analysis.
-  --remove_mismatching  Remove reads with 2 or more mismatches (via the NM bam
-                        tag)
+  --remove_mismatching REMOVE_MISMATCHING
+                        Remove reads with less than x mismatches (via the NM
+                        bam tag). Default 3. Argument required.
   --force_restart       Force restart, without regard to existing progress
   --testWochenende      Run pipeline tests vs testdb, needs the subdirectory
                         testdb, default false
@@ -99,7 +108,6 @@ We recommend using bioconda for the installation of the tools. Remember to run
 'conda activate <environment name>' before you start if you are using
 bioconda. Details about the installation are available on
 https://github.com/MHH-RCUG/Wochenende#installation
-
 
 ```
 
@@ -133,6 +141,7 @@ conda env update -f env.wochenende.yml
 ## List of Tools used or optional in the pipeline
 
 - [ABRA2](https://github.com/mozack/abra2)
+- [bamtools](https://github.com/pezmaster31/bamtools)
 - [BWA](https://github.com/lh3/bwa)
 - [fastp](https://github.com/OpenGene/fastp)
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
@@ -143,8 +152,9 @@ conda env update -f env.wochenende.yml
 - [PRINSEQ](http://prinseq.sourceforge.net/)
 - [sambamba](https://github.com/biod/sambamba)
 - [samtools](https://github.com/samtools/samtools)
+- [trim_galore](https://github.com/FelixKrueger/TrimGalore)
 - [trimmomatic](https://github.com/timflutre/trimmomatic)
-- [bamtools](https://github.com/pezmaster31/bamtools)
+
 
 
 
