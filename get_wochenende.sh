@@ -3,7 +3,7 @@
 # A helper script to copy Wochenende scripts/directory to the current path.
 
 # change as appropriate
-path_we=/mnt/ngsnfs/tools/dev/wochenende
+path_we=/mnt/ngsnfs/tools/dev/Wochenende
 
 cp $path_we/README* .
 cp $path_we/*.sh .

@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.7.6 add 2020_09 massive reference with all bacterial strains.
 1.7.5 add trim_galore trimmer for nextera (SE reads only so far)
 1.7.4 add correct fasta files for fastp trimming
 1.7.3 use bamtools more efficiently to filter mismatches (not adaptíve to read length, but parameter enabled)
@@ -50,7 +51,7 @@ import argparse
 import time
 
 
-version = "1.7.5 - August 2020"
+version = "1.7.6 - October 2020"
 
 ##############################
 # CONFIGURATION
@@ -76,8 +77,9 @@ path_minimap2 = "minimap2"
 path_ngmlr = "ngmlr"
 path_trim_galore = "trim_galore"
 
-## Paths to reference seqs. Edit as appropriate!
+## Paths to reference seqs. Edit as appropriate to add new!
 path_refseq_dict = {
+    "2020_09_massiveref_human": "/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa",
     "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
     "2016_06_1p_genus": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
     "2016_06_1p_spec_corrected": "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
@@ -112,7 +114,7 @@ adapter_fastp_solid = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapter
 adapter_fastp_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
 adapter_fastp_general = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
 
-## Other
+## Path to temp directory, edit for your server
 path_tmpdir = "/ngsssd1/rcug/tmp/"
 
 ##############################
@@ -1517,7 +1519,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--fastp",
-        help="Use tool fastp instead of fastqc and trimmomatic",
+        help="Use fastp trimmer instead of fastqc and trimmomatic",
         action="store_true",
     )
 
