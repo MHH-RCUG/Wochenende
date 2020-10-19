@@ -3,4 +3,4 @@
 
 conda activate wochenende
 
-python3 run_Wochenende.py --metagenome testdb --testWochenende testdb/reads_R1.fastq --force_restart
+python3 run_Wochenende.py --metagenome testdb --testWochenende ../testdb/reads_R1.fastq --force_restart

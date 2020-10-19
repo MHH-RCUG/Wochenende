@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.7.7 update tests after moving to subdir
 1.7.6 add 2020_09 massive reference with all bacterial strains.
 1.7.5 add trim_galore trimmer for nextera (SE reads only so far)
 1.7.4 add correct fasta files for fastp trimming
@@ -51,7 +52,7 @@ import argparse
 import time
 
 
-version = "1.7.6 - October 2020"
+version = "1.7.7 - October 2020"
 
 ##############################
 # CONFIGURATION
@@ -929,6 +930,7 @@ def getAverageReadLengthBAM(bamfile):
 
 
 def runBamtools(stage_infile):
+    # Method deprecated and will be removed, see flexible method runBamtoolsFixed instead
     # Keep only reads with 0 or 1 mismatch
     stage = "Keep only reads with 0 or 1 mismatch - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
@@ -1251,7 +1253,7 @@ def runTests(stage_infile):
 
     print("\n\nTest bam.txt file contents")
     tempFile = ""
-    tempFile = "testdb/reads_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt"
+    tempFile = "testdb/reads_R1.ndp.lc.trm.s.mq30.mm.dup.bam.txt"
     with open(tempFile, mode="r") as f:
         f.seek(0)
         testList = f.readlines()
