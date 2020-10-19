@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.7.8 Test samtools markdup as replacement for sambamba markdup because of 16k max ref seqs problem
 1.7.7 update tests after moving to subdir
 1.7.6 add 2020_09 massive reference with all bacterial strains.
 1.7.5 add trim_galore trimmer for nextera (SE reads only so far)
@@ -26,7 +27,7 @@ Changelog
 1.6.3 generalize conda to avoid specific filesystem
 1.6.2 make more general for new users, improve initial error messages
 1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem with --split-prefix temp_name
-1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
+1.6   add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
 1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
 1.5 restructure wochenende_reporting, requires Python3.6+
 1.4 add wochenende_plot.py file plotting
@@ -52,7 +53,7 @@ import argparse
 import time
 
 
-version = "1.7.7 - October 2020"
+version = "1.7.8 - October 2020"
 
 ##############################
 # CONFIGURATION
@@ -1106,7 +1107,8 @@ def runBamtoolsAdaptive(stage_infile):
 
 
 def markDups(stage_infile):
-    # duplicate removal in bam
+    # Will be deprecated as fails on 16k+ reference sequences
+    # duplicate removal using sambamba
     stage = "Sambamba mark duplicates"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".dup.bam"
@@ -1126,6 +1128,31 @@ def markDups(stage_infile):
     runStage(stage, markDupsCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
+
+
+
+def markDupsSamtools(stage_infile):
+    # duplicate removal in bam using Samtools
+    stage = "Samtools mark duplicates"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".dup.bam"
+    #samtools markdup -@ 8 -r  --output-fmt BAM Pa_4B_S7_R1.ndp.lc.trm.s.bam out_remove.bam
+    stMarkDupsCmd = [
+        path_samtools,
+        "markdup",
+        "-r",
+        "-@",
+        IOthreadsConstant,
+        "--output-fmt",
+        "BAM",
+        stage_infile,
+        stage_outfile,
+    ]
+    runStage(stage, stMarkDupsCmd)
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+
 
 
 def runIDXstats(stage_infile):
@@ -1362,7 +1389,8 @@ def main(args, sys_argv):
             # currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
-            currentFile = runFunc("markDups", markDups, currentFile, True)
+            #currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
@@ -1437,7 +1465,9 @@ def main(args, sys_argv):
             currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
         if not args.no_duplicate_removal:
-            currentFile = runFunc("markDups", markDups, currentFile, True)
+            #currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
+
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
             currentFile = runFunc(

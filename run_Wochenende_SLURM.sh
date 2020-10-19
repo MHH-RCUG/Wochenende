@@ -63,8 +63,8 @@ cpus=12
 
 
 # 2020_09 massive reference
-#python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
-python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --force_restart $fastq
+python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner minimap2 --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --force_restart $fastq
 
 
