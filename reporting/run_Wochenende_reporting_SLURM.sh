@@ -32,24 +32,25 @@ bamtxt=$1
 # Activate env on cluster node
 conda activate wochenende
 
+#2020
+#ref="/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa"
 ref="/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa"
-#ref2016=/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa
-#ref_nov18=/ngsssd1/tuem_mp/refseq2018/f_all_refgenomes_2018/all_refgenomes_2018.fasta
-#ref_jan19=/ngsssd1/tuem_mp/refseqs/refseq2019_Jan/e_all_refseqs_Jan2019/all_kingdoms_refseq_2019_Jan_final.fasta
-#ref_jan19=/ngsssd1/tuem_mp/refseqs/refseq2019_Jan/e_all_refseqs_Jan2019/all_kingdoms_refseq_2019_Jan_final.fasta
-#ref_test19=/ngsssd1/tuem_mp/refseqs/refseq2019_Jan/e_all_refseqs_Jan2019/reference_file_without_PseudomonasAeruginosa/all_kingdoms_refseq_2019_Jan_final_withoutPA.fasta
-
-
-#ref="/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa"
-#ref="/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa"
-#ref="/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa"
 #2019
+#ref_jan19="/ngsssd1/tuem_mp/refseqs/refseq2019_Jan/e_all_refseqs_Jan2019/all_kingdoms_refseq_2019_Jan_final.fasta"
+#ref_test19="/ngsssd1/tuem_mp/refseqs/refseq2019_Jan/e_all_refseqs_Jan2019/reference_file_without_PseudomonasAeruginosa/all_kingdoms_refseq_2019_Jan_final_withoutPA.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/mm10_plus_OMM.fasta"
+#pre2019
+#ref2016="/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa"
+#ref_nov18="/ngsssd1/tuem_mp/refseq2018/f_all_refgenomes_2018/all_refgenomes_2018.fasta"
+#ref="/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa"
+#ref="/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa"
+#ref="/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa"
+
 #genomes
 #ref="/lager2/rcug/seqres/HS/bwa/hg19.fa"
 #ref="/lager2/rcug/seqres/HS/bwa/GRCh37.fa"
