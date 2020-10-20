@@ -5,8 +5,6 @@
 # Run filter: Keep all lines in the bam.txt where column 3 (reads aligned)
 # is greater than X (here probably 20, or 200). Good for idxstats files i.e. bam.txt files from Wochenende
 
-# Quick cleanup, only keep *.dup.bam.txt
-rm *.01mm.bam.txt *.01mm.dup.calmd.bam.txt *.mq30.bam.txt
 
 
 # Run multiqc
