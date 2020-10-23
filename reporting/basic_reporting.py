@@ -8,7 +8,7 @@ TODOs
 - add plots
 - normalization model for Solid
 Changelog
-1.5 comment out pysam as can cause miniconda cryptic error and currently unused (used in slow BAM methods only), bugfix RPMM calculation
+1.5 comment out pysam as can cause miniconda cryptic error and currently unused (used in slow BAM methods only), bugfix RPMM
 1.4 add version, reduce output file name length. reporting -> rep, sorted -> s etc
 1.3 restructured the script
 1.2 bugfix reads_per_human_cell
@@ -140,13 +140,14 @@ def compute_res_df(res_df, sequencer):
     # if sequencer == 'solid': res_df = solid_normalization(res_df)
 
     # calculating reads_per_million_ref_bases
-    res_df['reads_per_million_ref_bases'] = res_df['read_count'] / (res_df['chr_length'] / 1000000).round(2)
+    res_df['reads_per_million_ref_bases'] = res_df['read_count'] / (res_df['chr_length'] / 1000000).round(5)
 
     # calculating reads_per_million_reads_in_experiment
-    res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum() / 1000000).round(2)
+    res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum() / 1000000).round(5)
 
     # total normalization RPMM. Corrected
-    res_df['RPMM'] = res_df['read_count'] / ((res_df['chr_length'] / 1000000) * (res_df['read_count'].sum() / 1000000)).round(2)
+
+    res_df['RPMM'] = res_df['read_count'] / ((res_df['chr_length'] / 1000000) * (res_df['read_count'].sum() / 1000000)).round(5)
 
     # calculating bacteria per human cell
     res_df = bacteria_per_human_cell(res_df)
@@ -155,9 +156,9 @@ def compute_res_df(res_df, sequencer):
 
 
 def export_res(res_df, output):
-    res_df.to_csv(f'{output}.rep.us.csv', sep=',', float_format='%.1f', index=False)
+    res_df.to_csv(f'{output}.rep.us.csv', sep=',', float_format='%.5f', index=False)
     res_df_filtered_and_sorted = res_df.loc[res_df['read_count'] >= 20].sort_values(by='RPMM', ascending=False)
-    res_df_filtered_and_sorted.to_csv(f'{output}.rep.s.csv', sep=',', float_format='%.1f', index=False)
+    res_df_filtered_and_sorted.to_csv(f'{output}.rep.s.csv', sep=',', float_format='%.5f', index=False)
 
 
 ###################################
