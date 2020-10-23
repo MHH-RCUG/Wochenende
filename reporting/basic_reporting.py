@@ -8,6 +8,7 @@ TODOs
 - add plots
 - normalization model for Solid
 Changelog
+1.5 comment out pysam as can cause miniconda cryptic error and currently unused (used in slow BAM methods only), bugfix RPMM
 1.4 add version, reduce output file name length. reporting -> rep, sorted -> s etc
 1.3 restructured the script
 1.2 bugfix reads_per_human_cell
@@ -18,12 +19,12 @@ Changelog
 import sys
 import os
 from Bio import SeqIO, SeqUtils
-import pysam
+#import pysam
 import pandas as pd
 import click
 
 
-version = 1.4
+version = 1.5
 
 ###################################
 # functions
@@ -145,6 +146,7 @@ def compute_res_df(res_df, sequencer):
     res_df['reads_per_million_reads_in_experiment'] = res_df['read_count'] / (res_df['read_count'].sum() / 1000000).round(5)
 
     # total normalization RPMM. Corrected
+
     res_df['RPMM'] = res_df['read_count'] / ((res_df['chr_length'] / 1000000) * (res_df['read_count'].sum() / 1000000)).round(5)
 
     # calculating bacteria per human cell

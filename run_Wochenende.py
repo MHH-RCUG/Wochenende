@@ -9,6 +9,9 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.7.8 Test samtools markdup as replacement for sambamba markdup because of 16k max ref seqs problem
+1.7.7 update tests after moving to subdir
+1.7.6 add 2020_09 massive reference with all bacterial strains.
 1.7.5 add trim_galore trimmer for nextera (SE reads only so far)
 1.7.4 add correct fasta files for fastp trimming
 1.7.3 use bamtools more efficiently to filter mismatches (not adaptíve to read length, but parameter enabled)
@@ -24,7 +27,7 @@ Changelog
 1.6.3 generalize conda to avoid specific filesystem
 1.6.2 make more general for new users, improve initial error messages
 1.6.1 solve ngmlr bugs, solve minimap2 @SQ problem with --split-prefix temp_name
-1.6 add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
+1.6   add ngmlr aligner, --longreads now omits Picard remove_dups by default (fails)
 1.5.1 improve SOLiD adapter removal with fastp - configure var adapter_fastp
 1.5 restructure wochenende_reporting, requires Python3.6+
 1.4 add wochenende_plot.py file plotting
@@ -50,7 +53,7 @@ import argparse
 import time
 
 
-version = "1.7.5 - August 2020"
+version = "1.7.8 - October 2020"
 
 ##############################
 # CONFIGURATION
@@ -76,8 +79,9 @@ path_minimap2 = "minimap2"
 path_ngmlr = "ngmlr"
 path_trim_galore = "trim_galore"
 
-## Paths to reference seqs. Edit as appropriate!
+## Paths to reference seqs. Edit as appropriate to add new!
 path_refseq_dict = {
+    "2020_09_massiveref_human": "/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa",
     "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
     "2016_06_1p_genus": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
     "2016_06_1p_spec_corrected": "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
@@ -112,7 +116,7 @@ adapter_fastp_solid = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapter
 adapter_fastp_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
 adapter_fastp_general = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
 
-## Other
+## Path to temp directory, edit for your server
 path_tmpdir = "/ngsssd1/rcug/tmp/"
 
 ##############################
@@ -927,6 +931,7 @@ def getAverageReadLengthBAM(bamfile):
 
 
 def runBamtools(stage_infile):
+    # Method deprecated and will be removed, see flexible method runBamtoolsFixed instead
     # Keep only reads with 0 or 1 mismatch
     stage = "Keep only reads with 0 or 1 mismatch - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
@@ -1102,7 +1107,8 @@ def runBamtoolsAdaptive(stage_infile):
 
 
 def markDups(stage_infile):
-    # duplicate removal in bam
+    # Will be deprecated as fails on 16k+ reference sequences
+    # duplicate removal using sambamba
     stage = "Sambamba mark duplicates"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".dup.bam"
@@ -1122,6 +1128,31 @@ def markDups(stage_infile):
     runStage(stage, markDupsCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
+
+
+
+def markDupsSamtools(stage_infile):
+    # duplicate removal in bam using Samtools
+    stage = "Samtools mark duplicates"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".dup.bam"
+    #samtools markdup -@ 8 -r  --output-fmt BAM Pa_4B_S7_R1.ndp.lc.trm.s.bam out_remove.bam
+    stMarkDupsCmd = [
+        path_samtools,
+        "markdup",
+        "-r",
+        "-@",
+        IOthreadsConstant,
+        "--output-fmt",
+        "BAM",
+        stage_infile,
+        stage_outfile,
+    ]
+    runStage(stage, stMarkDupsCmd)
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+
 
 
 def runIDXstats(stage_infile):
@@ -1249,7 +1280,7 @@ def runTests(stage_infile):
 
     print("\n\nTest bam.txt file contents")
     tempFile = ""
-    tempFile = "testdb/reads_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt"
+    tempFile = "testdb/reads_R1.ndp.lc.trm.s.mq30.mm.dup.bam.txt"
     with open(tempFile, mode="r") as f:
         f.seek(0)
         testList = f.readlines()
@@ -1358,7 +1389,8 @@ def main(args, sys_argv):
             # currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
-            currentFile = runFunc("markDups", markDups, currentFile, True)
+            #currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
@@ -1433,7 +1465,9 @@ def main(args, sys_argv):
             currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
         if not args.no_duplicate_removal:
-            currentFile = runFunc("markDups", markDups, currentFile, True)
+            #currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
+
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
             currentFile = runFunc(
@@ -1517,7 +1551,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--fastp",
-        help="Use tool fastp instead of fastqc and trimmomatic",
+        help="Use fastp trimmer instead of fastqc and trimmomatic",
         action="store_true",
     )
 
