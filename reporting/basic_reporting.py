@@ -8,7 +8,7 @@ TODOs
 - add plots
 - normalization model for Solid
 Changelog
-1.5 comment out pysam as can cause miniconda cryptic error and currently unused (used in slow BAM methods only), bugfix RPMM calculation
+1.5 comment out pysam as can cause miniconda cryptic error and currently unused (used in slow BAM methods only), bugfix RPMM
 1.4 add version, reduce output file name length. reporting -> rep, sorted -> s etc
 1.3 restructured the script
 1.2 bugfix reads_per_human_cell
