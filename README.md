@@ -264,13 +264,6 @@ Options:
 
 #### Preparing the data from BAM files
 
-Either run the three preparation scripts all together with wochenende_posthoc_filter.sh
-```
-bash wochenende_posthoc_filter.sh
-```
-
-Or run each stage manually:
-
 First generate the data files for wochenende_plot.py
 
 ```
