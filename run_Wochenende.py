@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.8.0 Add name sorting and fixmates for PE reads
 1.7.8 Test samtools markdup as replacement for sambamba markdup because of 16k max ref seqs problem
 1.7.7 update tests after moving to subdir
 1.7.6 add 2020_09 massive reference with all bacterial strains.
@@ -801,7 +802,6 @@ def runBAMsort(stage_infile):
     # Delete unsorted BAM file
     rmUnsortedBamCmd = ["rm", stage_infile]
     rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
-
     try:
         os.system(rmUnsortedBamCmdStr)
     except:
@@ -811,6 +811,54 @@ def runBAMsort(stage_infile):
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
+def runBAMsortByName(stage_infile):
+    # Name sort BAM prior to fixmate, used in PE workflow 
+    stage = "Name-sort BAM"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".ns.bam"
+    samtoolsNameSortCmd = [
+        path_samtools,
+        "sort",
+        "-n",
+        "-@",
+        IOthreadsConstant,
+        stage_infile,
+        "-o",
+        stage_outfile,
+    ]
+    runStage(stage, samtoolsNameSortCmd)
+
+    # Delete unsorted BAM file
+    rmUnsortedBamCmd = ["rm", stage_infile]
+    rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
+    try:
+        os.system(rmUnsortedBamCmdStr)
+    except:
+        print("Error removing unsorted bam file in function runBAMsortByName")
+        sys.exit(1)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+
+def runFixmate(stage_infile):
+    # fix mates prior to PE duplicate removal, used in PE workflow 
+    stage = "Samtools Fix mates"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".fix.bam"
+    samtoolsNameSortCmd = [
+        path_samtools,
+        "fixmate",
+        "-r",
+        "-@",
+        IOthreadsConstant,
+        stage_infile,
+        "-o",
+        stage_outfile,
+    ]
+    runStage(stage, samtoolsNameSortCmd)
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
 
 def runBAMindex(stage_infile):
     # Stage output not used further in flow
@@ -1450,6 +1498,14 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
+        # PE reads need name sorted reads which went through fixmate before duplicate marking
+        currentFile = runFunc("runBAMsortByName", runBAMsortByName, currentFile, True)
+        currentFile = runFunc("runFixmate", runFixmate, currentFile, True)
+        if not args.no_duplicate_removal:
+            #currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
+
+        # Now try resort by position as with SE reads
         currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
         currentFile = runFunc(
@@ -1464,9 +1520,6 @@ def main(args, sys_argv):
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
             currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
-        if not args.no_duplicate_removal:
-            #currentFile = runFunc("markDups", markDups, currentFile, True)
-            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
