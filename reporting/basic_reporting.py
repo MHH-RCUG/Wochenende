@@ -49,7 +49,7 @@ def check_arguments(input_file, reference, sequencer):
 
     # check if refseq file exist and if it is the correct file format
     if os.path.isfile(reference):
-        if not reference.endswith('.fasta') and not reference.endswith('.fa'):
+        if not reference.endswith('.fasta') and not reference.endswith('.fa') and not reference.endswith('.fna'):
             click.echo(f'The input file {reference} \t has a wrong file format.\nType --help for help')
             sys.exit()
     else:

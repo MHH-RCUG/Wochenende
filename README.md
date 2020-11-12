@@ -11,7 +11,7 @@ Features include (see programs listed below at the bottom of this page)
 - SAM-> BAM conversion (samtools and sambamba)
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
-- Post-alignment duplicate removal (Picard)
+- Post-alignment duplicate removal (Samtools from v1.7.8, Sambamba)
 - Removal reads with x mismatches (bamtools)
 - Realignment (Abra2)
 - MD tag marking (Samtools)
@@ -264,13 +264,6 @@ Options:
 
 #### Preparing the data from BAM files
 
-Either run the three preparation scripts all together with wochenende_posthoc_filter.sh
-```
-bash wochenende_posthoc_filter.sh
-```
-
-Or run each stage manually:
-
 First generate the data files for wochenende_plot.py
 
 ```
@@ -306,6 +299,9 @@ wochenende_plot.py: error: the following arguments are required: filename1
 Wochenende_plot creates one subdirectory per input file. These contain png images of taxa which are probabably (high score, largely based on consistent evenness of coverage and high mean coverage) or perhaps present (need manual review). Confident attributions to taxa depends strongly on the number of reads assigned to bacterial taxa (low in airway metagenomes, higher in for example stool samples).  
 
 
+### Known bugs
+
+RPMM bug: fixed in v1.7.8. In October 2020 a bug in the Wochenende_reporting script was found which calculated the RPMM column incorrectly. Please recalculate your reporting statistics if you use this feature. Thanks to @sannareddyk and colleagues at Leibniz University Hannover.
 
 ### Running software tests
 
@@ -338,4 +334,4 @@ Thanks to:
 
 @Nijerik Wochenende reporting
 
-@sannareddyk Bug testing, updates
+@sannareddyk Bug testing, updates, evaluation

@@ -29,8 +29,8 @@ for i in *dup.bam; do
 	#srun -c 8 sambamba depth window -t 8 -w 10000 --overlap=5000 -c 0.00001 ${sec_input}_coo.bam > ${sec_input}_cov_window.txt
 
 done
+wait
 
-sleep 1500
 
-#sambamba sort Sample2_S2_R1_001.ndp.lc.trm.s.mq30.01mm.dup_Prevotella_jejuni_reads.bam -o Sample2_S2_R1_001.ndp.lc.trm.s.mq30.01mm.dup_Prevotella_jejuni_reads_coo.bam
-#sambamba depth window -t 8 -w 100000 --overlap=5000 Sample2_S2_R1_001.ndp.lc.trm.s.mq30.01mm.dup_Prevotella_jejuni_reads_coo.bam > Sample2_S2_R1_001.ndp.lc.trm.s.mq30.01mm.dup_Prevotella_jejuni_reads_coo_window.bam
+#echo "Starting sleep phase 1500s. If jobs done on SLURM then the wait command worked, and you can Ctrl-C out of this"
+#sleep 1500
