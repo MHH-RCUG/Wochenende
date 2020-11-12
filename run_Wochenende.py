@@ -783,7 +783,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     return stage_outfile
 
 
-def runBAMsort(stage_infile):
+def runBAMsort(stage_infile, readType):
     # Ministage runStage(stage, bwaCmd)
     stage = "Sort BAM"
     prefix = stage_infile.replace(".bam", "")
@@ -799,19 +799,20 @@ def runBAMsort(stage_infile):
     ]
     runStage(stage, samtoolsSortCmd)
 
-    # Delete unsorted BAM file
-    rmUnsortedBamCmd = ["rm", stage_infile]
-    rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
-    try:
-        os.system(rmUnsortedBamCmdStr)
-    except:
-        print("Error removing unsorted bam file")
-        sys.exit(1)
+    if readType == "SE":
+        # Delete unsorted BAM file
+        rmUnsortedBamCmd = ["rm", stage_infile]
+        rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
+        try:
+            os.system(rmUnsortedBamCmdStr)
+        except:
+            print("Error removing unsorted bam file")
+            sys.exit(1)
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
-def runBAMsortByName(stage_infile):
+def runBAMsortByName(stage_infile, readType):
     # Name sort BAM prior to fixmate, used in PE workflow 
     stage = "Name-sort BAM"
     prefix = stage_infile.replace(".bam", "")
@@ -828,14 +829,15 @@ def runBAMsortByName(stage_infile):
     ]
     runStage(stage, samtoolsNameSortCmd)
 
-    # Delete unsorted BAM file
-    rmUnsortedBamCmd = ["rm", stage_infile]
-    rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
-    try:
-        os.system(rmUnsortedBamCmdStr)
-    except:
-        print("Error removing unsorted bam file in function runBAMsortByName")
-        sys.exit(1)
+    if readType == "SE":
+        # Delete unsorted BAM file
+        rmUnsortedBamCmd = ["rm", stage_infile]
+        rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
+        try:
+            os.system(rmUnsortedBamCmdStr)
+        except:
+            print("Error removing unsorted bam file in function runBAMsortByName")
+            sys.exit(1)
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
@@ -850,10 +852,10 @@ def runFixmate(stage_infile):
         path_samtools,
         "fixmate",
         "-r",
+        "-m",
         "-@",
         IOthreadsConstant,
         stage_infile,
-        "-o",
         stage_outfile,
     ]
     runStage(stage, samtoolsNameSortCmd)
@@ -1411,7 +1413,7 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
-        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
+        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True, args.readType)
         currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         currentFile = runFunc(
@@ -1502,11 +1504,12 @@ def main(args, sys_argv):
         currentFile = runFunc("runBAMsortByName", runBAMsortByName, currentFile, True)
         currentFile = runFunc("runFixmate", runFixmate, currentFile, True)
         if not args.no_duplicate_removal:
+            # using deprecated sambamba version as samtools version fails
             #currentFile = runFunc("markDups", markDups, currentFile, True)
             currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
 
-        # Now try resort by position as with SE reads
-        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
+        # Now try re-sort by position as with SE reads
+        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True, args.readType)
         currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
         currentFile = runFunc(
             "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
