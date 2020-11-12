@@ -797,10 +797,8 @@ def runBAMsort(stage_infile, readType):
         "-o",
         stage_outfile,
     ]
-    print("DEBUG_INFO: RUNNING runBAMsort")
     runStage(stage, samtoolsSortCmd)
-    print("DEBUG_INFO: COMPLETED runBAMsort")
-
+    
     if readType == "SE":
         # Delete unsorted BAM file
         rmUnsortedBamCmd = ["rm", stage_infile]
@@ -1527,7 +1525,7 @@ def main(args, sys_argv):
         
         # Now try re-sort by position as with SE reads
         currentFile = runFunc("runBAMsort2", runBAMsort, currentFile, True, args.readType)
-        currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
+        currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
         if not args.no_duplicate_removal:
             # use either deprecated sambamba version or the samtools version
             #currentFile = runFunc("markDups", markDups, currentFile, True)
@@ -1535,7 +1533,6 @@ def main(args, sys_argv):
 
         # Now try re-sort by position as with SE reads
         #currentFile = runFunc("runBAMsortx", runBAMsort, currentFile, True, args.readType)
-        #currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
         currentFile = runFunc(
             "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
         )
@@ -1544,6 +1541,8 @@ def main(args, sys_argv):
         )
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
+            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+
         if args.remove_mismatching:
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
             currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
@@ -1562,8 +1561,8 @@ def main(args, sys_argv):
         currentFile = runFunc(
             "calmd", calmd, currentFile, True, path_refseq_dict.get(args.metagenome)
         )
-        currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+        currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
+        currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
     else:
         print(
