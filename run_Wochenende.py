@@ -54,7 +54,7 @@ import argparse
 import time
 
 
-version = "1.7.8 - October 2020"
+version = "1.8.0 - November 2020"
 
 ##############################
 # CONFIGURATION
