@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.8.0 Add name sorting and fixmates for PE reads
 1.7.8 Test samtools markdup as replacement for sambamba markdup because of 16k max ref seqs problem
 1.7.7 update tests after moving to subdir
 1.7.6 add 2020_09 massive reference with all bacterial strains.
@@ -53,7 +54,7 @@ import argparse
 import time
 
 
-version = "1.7.8 - October 2020"
+version = "1.8.0 - November 2020"
 
 ##############################
 # CONFIGURATION
@@ -782,8 +783,8 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     return stage_outfile
 
 
-def runBAMsort(stage_infile):
-    # Ministage runStage(stage, bwaCmd)
+def runBAMsort(stage_infile, readType):
+    # runBAMsort
     stage = "Sort BAM"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".s.bam"
@@ -797,20 +798,69 @@ def runBAMsort(stage_infile):
         stage_outfile,
     ]
     runStage(stage, samtoolsSortCmd)
-
-    # Delete unsorted BAM file
-    rmUnsortedBamCmd = ["rm", stage_infile]
-    rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
-
-    try:
-        os.system(rmUnsortedBamCmdStr)
-    except:
-        print("Error removing unsorted bam file")
-        sys.exit(1)
+    
+    if readType == "SE":
+        # Delete unsorted BAM file
+        rmUnsortedBamCmd = ["rm", stage_infile]
+        rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
+        try:
+            os.system(rmUnsortedBamCmdStr)
+        except:
+            print("Error removing unsorted bam file")
+            sys.exit(1)
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
+def runBAMsortByName(stage_infile, readType):
+    # Name sort BAM prior to fixmate, used in PE workflow 
+    stage = "Name sort BAM"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".ns.bam"
+    samtoolsNameSortCmd = [
+        path_samtools,
+        "sort",
+        "-n",
+        "-@",
+        IOthreadsConstant,
+        stage_infile,
+        "-o",
+        stage_outfile,
+    ]
+    runStage(stage, samtoolsNameSortCmd)
+
+    if readType == "SE":
+        # Delete unsorted BAM file
+        rmUnsortedBamCmd = ["rm", stage_infile]
+        rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
+        try:
+            os.system(rmUnsortedBamCmdStr)
+        except:
+            print("Error removing unsorted bam file in function runBAMsortByName")
+            sys.exit(1)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+
+def runFixmate(stage_infile):
+    # fix mates prior to PE duplicate removal, used in PE workflow 
+    stage = "Samtools Fix mates"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".fix.bam"
+    samtoolsNameSortCmd = [
+        path_samtools,
+        "fixmate",
+        "-r",
+        "-m",
+        "-@",
+        IOthreadsConstant,
+        stage_infile,
+        stage_outfile,
+    ]
+    runStage(stage, samtoolsNameSortCmd)
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
 
 def runBAMindex(stage_infile):
     # Stage output not used further in flow
@@ -852,26 +902,45 @@ def runSamtoolsFlagstat(stage_infile):
     return 0
 
 
-def runGetUnmappedReads(stage_infile):
+def runGetUnmappedReads(stage_infile, readType):
     # Stage output not used further in flow
     stage = "Get unmapped reads from BAM"
     print("######  " + stage + "  ######")
     unmappedFastq = [stage_infile, ".unmapped.fastq"]
     unmappedFastqString = ""
     unmappedFastqString = "".join(unmappedFastq)
-    samtoolsGetUnmappedCmd = [
-        path_samtools,
-        "view",
-        "-f",
-        "4",
-        stage_infile,
-        "|",
-        path_samtools,
-        "bam2fq",
-        "-",
-        ">",
-        unmappedFastqString,
-    ]
+    if readType == "SE":
+        samtoolsGetUnmappedCmd = [
+            path_samtools,
+            "view",
+            "-f",
+            "4",
+            stage_infile,
+            "|",
+            path_samtools,
+            "bam2fq",
+            "-",
+            ">",
+            unmappedFastqString,
+        ]
+    if readType == "PE":
+        # complex, 3 types, only deal with cases where both PE reads unmapped -u -f 12 -F 256 
+        samtoolsGetUnmappedCmd = [
+            path_samtools,
+            "view",
+            "-u",
+            "-f",
+            "12",
+            "-F",
+            "256",
+            stage_infile,
+            "|",
+            path_samtools,
+            "bam2fq",
+            "-0",
+            unmappedFastqString,
+            "-",
+        ]
     print(" ".join(samtoolsGetUnmappedCmd))
     samtoolsGetUnmappedCmdString = " ".join(samtoolsGetUnmappedCmd)
     print(samtoolsGetUnmappedCmdString)
@@ -1363,14 +1432,14 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
-        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
+        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True, args.readType)
         currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         currentFile = runFunc(
             "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
         )
         currentFile = runFunc(
-            "runGetUnmappedReads", runGetUnmappedReads, currentFile, False
+            "runGetUnmappedReads", runGetUnmappedReads, currentFile, False, args.readType
         )
 
         if args.mq30:
@@ -1450,23 +1519,34 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
-        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True)
-        currentFile = runFunc("runBAMindex", runBAMindex, currentFile, False)
+        # PE reads need name sorted reads which went through fixmate before duplicate marking
+        currentFile = runFunc("runBAMsortByName1", runBAMsortByName, currentFile, True, args.readType)
+        currentFile = runFunc("runFixmate", runFixmate, currentFile, True)
+        
+        # Now try re-sort by position as with SE reads
+        currentFile = runFunc("runBAMsort2", runBAMsort, currentFile, True, args.readType)
+        currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
+        if not args.no_duplicate_removal:
+            # use either deprecated sambamba version or the samtools version
+            #currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
+
+        # Now try re-sort by position as with SE reads
+        #currentFile = runFunc("runBAMsortx", runBAMsort, currentFile, True, args.readType)
         currentFile = runFunc(
             "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
         )
         currentFile = runFunc(
-            "runGetUnmappedReads", runGetUnmappedReads, currentFile, False
+            "runGetUnmappedReadsPE", runGetUnmappedReads, currentFile, False, args.readType
         )
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
+            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+
         if args.remove_mismatching:
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
             currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
-        if not args.no_duplicate_removal:
-            #currentFile = runFunc("markDups", markDups, currentFile, True)
-            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
@@ -1481,8 +1561,8 @@ def main(args, sys_argv):
         currentFile = runFunc(
             "calmd", calmd, currentFile, True, path_refseq_dict.get(args.metagenome)
         )
-        currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+        currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
+        currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
     else:
         print(
