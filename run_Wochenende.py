@@ -1548,6 +1548,7 @@ def main(args, sys_argv):
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
             currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
+            currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
@@ -1562,8 +1563,8 @@ def main(args, sys_argv):
         currentFile = runFunc(
             "calmd", calmd, currentFile, True, path_refseq_dict.get(args.metagenome)
         )
-        currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
+        currentFile = runFunc("runBAMindex5", runBAMindex, currentFile, False)
+        currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
 
     else:
         print(
