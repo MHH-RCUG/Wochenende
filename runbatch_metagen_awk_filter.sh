@@ -8,7 +8,7 @@
 
 
 # Run multiqc
-multiqc -f .
+#multiqc -f .
 
 # Get mapping stats
 out=mapped_percent.txt
