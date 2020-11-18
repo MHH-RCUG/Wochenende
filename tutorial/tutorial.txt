@@ -16,10 +16,12 @@
 #0 
 cp /mnt/ngsnfs/tools/dev/covid19_wochenende/get_covid19_scripts_wochenende.sh .
 
-#1 (or copy the scripts manually to the folder containing your FASTQ data.
-bash get_covid19_scripts_wochenende.sh
+#1 edit the location path_we in the following script, then run it to collect the Wochenende files and directories needed.
+nano get_wochenende.sh 
+bash get_wochenende.sh
+(or copy the scripts manually to the folder containing your FASTQ data)
 
-#2
+#2. Wochenende needs sample names like sputum_R1.fastq and sputum_R2.fastq to run correctly.
 srun gunzip *.fastq.gz
 rename 's/_001//g' *.fastq
 
