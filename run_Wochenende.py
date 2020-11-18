@@ -1522,7 +1522,10 @@ def main(args, sys_argv):
         # PE reads need name sorted reads which went through fixmate before duplicate marking
         currentFile = runFunc("runBAMsortByName1", runBAMsortByName, currentFile, True, args.readType)
         currentFile = runFunc("runFixmate", runFixmate, currentFile, True)
-        
+        currentFile = runFunc(
+            "runSamtoolsFlagstat1", runSamtoolsFlagstat, currentFile, False
+        )
+
         # Now try re-sort by position as with SE reads
         currentFile = runFunc("runBAMsort2", runBAMsort, currentFile, True, args.readType)
         currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
@@ -1531,10 +1534,8 @@ def main(args, sys_argv):
             #currentFile = runFunc("markDups", markDups, currentFile, True)
             currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
 
-        # Now try re-sort by position as with SE reads
-        #currentFile = runFunc("runBAMsortx", runBAMsort, currentFile, True, args.readType)
         currentFile = runFunc(
-            "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
+            "runSamtoolsFlagstat2", runSamtoolsFlagstat, currentFile, False
         )
         currentFile = runFunc(
             "runGetUnmappedReadsPE", runGetUnmappedReads, currentFile, False, args.readType
@@ -1547,6 +1548,7 @@ def main(args, sys_argv):
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
             currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
+            currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         if not args.no_abra:
@@ -1561,8 +1563,8 @@ def main(args, sys_argv):
         currentFile = runFunc(
             "calmd", calmd, currentFile, True, path_refseq_dict.get(args.metagenome)
         )
-        currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
-        currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
+        currentFile = runFunc("runBAMindex5", runBAMindex, currentFile, False)
+        currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
 
     else:
         print(

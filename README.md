@@ -40,7 +40,7 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 
 ### Tutorial
 
-Once you've got the tools installed and tested, you can look at or run the commands in the tutorial in the subdirectory `tutorial`.
+Once you've got the tools installed and tested, you can look at or run the commands in the tutorial in the subdirectory `tutorial`. https://github.com/MHH-RCUG/Wochenende/blob/master/tutorial/tutorial.txt
 
 ### General usage
 
