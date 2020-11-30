@@ -8,9 +8,10 @@
 
 
 # Run multiqc
+echo "INFO:  Running multiqc"
 #multiqc -f .
 
-# Get mapping stats
+# Collate mapping stats
 out=mapped_percent.txt
 echo "INFO:  Generating Wochenende mapping stats to $out"
 echo "Wochenende mapping stats" > $out
@@ -28,14 +29,5 @@ for i in `find . -name "*.bam.txt"`
         do
 	awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv
 done
-
-## Filter2:
-# Unsorted to maintain row comparability over experiments.
-# Paste output together with paste -d"" unsort1.csv unsort2.csv > summary.csv
-#for i in `find . -name "*.bam.txt"`
-#        do
-#        awk -F "\t" '$3>=20' $i > $i.filt.unsort.csv
-#done
-
 
 echo "INFO:  Script completed"
