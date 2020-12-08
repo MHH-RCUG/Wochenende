@@ -3,7 +3,7 @@
 # Check window coverage on Wochenende sorted dup.bam output
 # Use output for Python script to check coverage distribution
 
-for i in *dup.bam; do
+for i in *calmd.bam; do
 	input=$i
 	sec_input=${input%%.bam}
 	#sec_in_bam=${input%%.bam}
@@ -31,6 +31,3 @@ for i in *dup.bam; do
 done
 wait
 
-
-#echo "Starting sleep phase 1500s. If jobs done on SLURM then the wait command worked, and you can Ctrl-C out of this"
-#sleep 1500
