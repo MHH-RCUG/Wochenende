@@ -123,6 +123,8 @@ OR
 ```
 cd wochenende
 conda env create -f env.wochenende.yml
+# or if you have problems remove the previous and try this:
+conda env create -f env.wochenende.minimal.yml
 ```
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
