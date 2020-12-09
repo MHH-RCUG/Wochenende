@@ -9,6 +9,7 @@ Author: Keerthi Sannareddy
 
 
 Changelog
+1.8.1 Move mq30 filter (makes big changes) to after mm and duplicate filtering
 1.8.0 Add name sorting and fixmates for PE reads
 1.7.8 Test samtools markdup as replacement for sambamba markdup because of 16k max ref seqs problem
 1.7.7 update tests after moving to subdir
@@ -54,7 +55,7 @@ import argparse
 import time
 
 
-version = "1.8.0 - November 2020"
+version = "1.8.1 - December 2020"
 
 ##############################
 # CONFIGURATION
@@ -1442,11 +1443,6 @@ def main(args, sys_argv):
             "runGetUnmappedReads", runGetUnmappedReads, currentFile, False, args.readType
         )
 
-        if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
-
 #        if args.remove_mismatching and not args.longread:
         if args.remove_mismatching:
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
@@ -1462,6 +1458,11 @@ def main(args, sys_argv):
             currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
+
+        if args.mq30:
+            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
+            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
         if not args.no_abra and not args.longread:
             currentFile = runFunc(
@@ -1540,9 +1541,6 @@ def main(args, sys_argv):
         currentFile = runFunc(
             "runGetUnmappedReadsPE", runGetUnmappedReads, currentFile, False, args.readType
         )
-        if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
 
         if args.remove_mismatching:
             #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
@@ -1551,6 +1549,14 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
+
+
+        if args.mq30:
+            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
+            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+
+        currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+
         if not args.no_abra:
             currentFile = runFunc(
                 "abra",

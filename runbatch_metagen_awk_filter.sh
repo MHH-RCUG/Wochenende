@@ -3,16 +3,17 @@
 # Run multiqc report
 # Collect mapping stats from flagstat
 # Run filter: Keep all lines in the bam.txt where column 3 (reads aligned)
-# is greater than X (here probably 20, or 200). Good for idxstats files i.e. bam.txt files from Wochenende
+# is greater than X (here probably 20). Good for idxstats files i.e. bam.txt files from Wochenende
 
 
 
 # Run multiqc
+echo "INFO:  Running multiqc"
 #multiqc -f .
 
-# Get mapping stats
-out=mapped_percent.txt
+# Collate mapping stats
 echo "INFO:  Generating Wochenende mapping stats to $out"
+out=mapped_percent.txt
 echo "Wochenende mapping stats" > $out
 for z in `ls *flagstat.txt`
 	do
@@ -28,14 +29,5 @@ for i in `find . -name "*.bam.txt"`
         do
 	awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv
 done
-
-## Filter2:
-# Unsorted to maintain row comparability over experiments.
-# Paste output together with paste -d"" unsort1.csv unsort2.csv > summary.csv
-#for i in `find . -name "*.bam.txt"`
-#        do
-#        awk -F "\t" '$3>=20' $i > $i.filt.unsort.csv
-#done
-
 
 echo "INFO:  Script completed"

@@ -18,15 +18,14 @@
 # set name of job
 #SBATCH --job-name=Wochenende
 
-
-echo "Input file: " $1
-fastq=$1
-
 # Add miniconda3 to PATH
 . /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 
 # Activate env on cluster node
 conda activate wochenende >> /dev/null
+
+echo "Input file: " $1
+fastq=$1
 
 
 ### IMPORTANT
@@ -62,7 +61,7 @@ cpus=12
 
 
 
-# 2020_09 massive reference
+# 2020_09 massive reference - requires ca 120GB RAM per process, set #SBATCH --mem 450000 and #SBATCH --cpus-per-task 24
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra        --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
@@ -70,7 +69,7 @@ cpus=12
 
 
 # 2020_03 reference
-#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner ngmlr --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
@@ -93,7 +92,7 @@ cpus=12
 ## 2019 01 January metagenomes
 #python3 run_Wochenende.py --metagenome 2019_01_meta --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
-python3 run_Wochenende.py --metagenome 2019_01_meta_mouse --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2019_01_meta_mouse --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_ASF_OMM --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_ASF --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2019_01_meta_mouse_OMM --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq

@@ -5,7 +5,7 @@
 #Author: Konstantinos Sifakis
 #Script made: Jan 2020-Feb 2020
 #Script made for: MHH - RCUG
-# Plot coverage data after the wochenende_posthoc_filter.sh sambamba coverage step of the Wochenende pipeline.
+# Plot coverage data after the runbatch_sambamba_depth.sh sambamba coverage step of the Wochenende pipeline.
 # Create some png files,one txt that includes the organisms that seem related
 # and a tsv file with information from tsv file that was given.
 # Usage: python3 wochenende_plot.py dup.calmd_cov_window.txt.filt.csv
@@ -42,8 +42,8 @@ warnings.filterwarnings("ignore",category=UserWarning)
 parser = argparse.ArgumentParser(description='Plot coverage data after the wochenende_posthoc_filter.sh sambamba coverage step of the Wochenende pipeline. Creates png files of absolute and mean coverage per taxon, and a statistical overview file.')
 parser.add_argument('filename1',default='check_string_for_empty',
                     help='Usage: python3 wochenende_plot.py dup.calmd_cov_window.txt.filt.csv')
-parser.add_argument('--minMeanCov', default=1,
-                     help='''The minimum mean coverage. Default: 1 
+parser.add_argument('--minMeanCov', default=0.2,
+                     help='''The minimum mean coverage. Default: 0.2
 			This does not affect the score. After the score has been calculated, this number will be the threshold for both bad scored and good scored taxa.\n
 			## Case1: Poor scoring that have a maximum score above this minMeanCov value -> Images go to folder potentially_present.\n
 			## Case2: Poor scoring will have a maximum score below or equal to this minMeanCov value -> Images will not be printed (unless --createAllPngs is given).\n
