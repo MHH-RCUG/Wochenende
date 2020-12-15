@@ -1,9 +1,14 @@
 #!/bin/bash
 # Colin Davenport, December 2020
 
-# Operates on Wochenende output files (eg BAM, bam.txt files)
+
+echo "WORK IN PROGRESS ! (Dec 2020). May not completely work for all steps, still useful."
+
+
+# Operates on Wochenende output files (eg BAM and bam.txt files)
 # Postprocess all files 
 # Run following tools
+# - sambamba depth
 # - Wochenende reporting
 # - Haybaler
 # - cleanup directories 
@@ -47,10 +52,10 @@ echo "INFO: Completed Sambamba depth and filtering"
 echo "INFO: Started Wochenende reporting"
 cd reporting
 cp ../*.bam.txt .
-srun bash runbatch_Wochenende_reporting.sh &
+bash runbatch_Wochenende_reporting.sh
 wait
 echo "INFO: Sleeping for " $sleeptimer " * 10"
-sleep $sleeptimer
+sleep $((sleeptimer*10))
 echo "INFO: Completed Wochenende reporting"
 
 echo "INFO: Start Haybaler"
@@ -61,6 +66,8 @@ bash run_haybaler.sh
 wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
+
+echo "INFO: Start csv to xlsx conversion"
 bash runbatch_csv_to_xlsx.sh
 wait
 echo "INFO: Sleeping for " $sleeptimer
@@ -88,7 +95,8 @@ echo "INFO: Completed Wochenende plot"
 echo "INFO: Start cleanup reporting"
 cd $bamDir
 cd reporting
-rm -rf txt csv xlsx
+mkdir reporting_$RANDOM
+mv txt csv xlsx reporting_$RANDOM 
 mkdir txt csv xlsx
 mv *.txt txt
 mv *.csv csv
@@ -96,5 +104,5 @@ mv *.xlsx xlsx
 cd $bamDir
 echo "INFO: Completed cleanup reporting"
 
-echo "INFO: Completed Wochenende_postprocess"
+echo "INFO: ########### Completed Wochenende_postprocess #############"
 
