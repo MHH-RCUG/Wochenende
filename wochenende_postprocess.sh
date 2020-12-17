@@ -54,8 +54,12 @@ cd reporting
 cp ../*.bam.txt .
 bash runbatch_Wochenende_reporting.sh
 wait
-echo "INFO: Sleeping for " $sleeptimer " * 10"
-sleep $((sleeptimer*10))
+echo "INFO: Sleeping for " $sleeptimer
+sleep $sleeptimer
+#echo "INFO: Sleeping for " $sleeptimer " * 10"
+#sleep $((sleeptimer*10))
+
+
 echo "INFO: Completed Wochenende reporting"
 
 echo "INFO: Start Haybaler"
