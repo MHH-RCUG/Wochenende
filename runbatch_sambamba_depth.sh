@@ -11,7 +11,7 @@ for i in *calmd.bam; do
 	window=100000
 	overlap=50000
 	covMax=999999999
-	threads=8
+	threads=1
 	queue=short
 
 	# Sort - coo means coordinate sorting
@@ -30,4 +30,3 @@ for i in *calmd.bam; do
 
 done
 wait
-
