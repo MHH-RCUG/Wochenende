@@ -18,7 +18,6 @@ if [ $analysisCount != "1" ]; then
         echo "ERROR: Stop the script now and check run_Wochenende_SLURM.sh"
         echo "#############################################"
         exit
-        
 fi
 
 # Remember to check specified a) refseq b) threads c) adapters
