@@ -5,10 +5,10 @@ Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich
-Author: Keerthi Sannareddy
 
 
 Changelog
+1.8.2 Check number of uncommented lines = 1 in run_Wochenende_SLURM.sh from start script runbatch_sbatch_Wochenende.sh.
 1.8.1 Move mq30 filter (makes big changes) to after mm and duplicate filtering
 1.8.0 Add name sorting and fixmates for PE reads
 1.7.8 Test samtools markdup as replacement for sambamba markdup because of 16k max ref seqs problem
@@ -55,7 +55,7 @@ import argparse
 import time
 
 
-version = "1.8.1 - December 2020"
+version = "1.8.2 - January 2021"
 
 ##############################
 # CONFIGURATION
