@@ -63,7 +63,7 @@ cpus=12
 
 # 2020_09 massive reference - requires ca 120GB RAM per process, set #SBATCH --mem 450000 and #SBATCH --cpus-per-task 24
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra        --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
-python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner minimap2 --no_abra --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 
@@ -116,6 +116,7 @@ python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --alig
 #python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 
 # Genomes
+#python3 run_Wochenende.py --metagenome ecoli --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome PA14 --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --longread --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --readType PE --no_duplicate_removal --debug --force_restart --no_prinseq $fastq

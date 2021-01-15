@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 
 
 Changelog
+1.8.3 add ecoli ref
 1.8.2 Check number of uncommented lines = 1 in run_Wochenende_SLURM.sh from start script runbatch_sbatch_Wochenende.sh.
 1.8.1 Move mq30 filter (makes big changes) to after mm and duplicate filtering
 1.8.0 Add name sorting and fixmates for PE reads
@@ -106,6 +107,7 @@ path_refseq_dict = {
     "zf10": "/lager2/rcug/seqres/DR/bwa/GRCz10.fa",
     "ss11": "/lager2/rcug/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
     "PA14": "/lager2/rcug/seqres/PA/bwa/NC_008463.fna",
+    "ecoli": "/lager2/rcug/seqres/EC/bwa/ecoli_K_12_MG1655.fasta",
     "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
     "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
     "testdb": "testdb/ref.fa",
