@@ -56,7 +56,7 @@ import argparse
 import time
 
 
-version = "1.8.2 - January 2021"
+version = "1.8.3 - January 2021"
 
 ##############################
 # CONFIGURATION
