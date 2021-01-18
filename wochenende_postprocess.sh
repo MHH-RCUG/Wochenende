@@ -2,6 +2,7 @@
 # Colin Davenport, December 2020
 
 
+echo "Remember to "
 echo "WORK IN PROGRESS ! (Dec 2020). May not completely work for all steps, still useful."
 
 
@@ -63,6 +64,7 @@ sleep $sleeptimer
 echo "INFO: Completed Wochenende reporting"
 
 echo "INFO: Start Haybaler"
+conda activate ont
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 mv output output_$RANDOM 
