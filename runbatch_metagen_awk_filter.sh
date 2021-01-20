@@ -12,7 +12,7 @@ echo "INFO:  Running multiqc"
 #multiqc -f .
 
 # Collate mapping stats
-out=mapped_percent.txt
+out="mapped_percent.txt"
 echo "INFO:  Generating Wochenende mapping stats to $out"
 echo "Wochenende mapping stats" > $out
 for z in `ls *flagstat.txt`
