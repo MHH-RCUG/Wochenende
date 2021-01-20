@@ -45,7 +45,7 @@ fastq=$1
 #--readType PE
 #--debug
 #--force_restart
-#--remove_mismatching 3 (remove those reads with 3 or more mismatches)
+#--remove_mismatching 3 (remove those reads with 3 or more mismatches) # questionable for very long reads
 #--no_duplicate_removal
 #--no_prinseq   - do not filter out low complexity initial reads using prinseq (default in this file after 2020_11)
 #--no_fastqc
@@ -71,7 +71,7 @@ cpus=12
 # 2020_03 reference
 python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
-#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --readType SE --debug --no_prinseq --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner ngmlr --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
 
 
@@ -81,9 +81,9 @@ python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --alig
 # with fastp
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
 # longread with ngmlr aligner
-#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner ngmlr --mq30 --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner ngmlr --mq30 --remove_mismatching 250 --readType SE --debug --force_restart $fastq
 # longread with minimap2 aligner
-#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner minimap2 --mq30 --readType SE --debug --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner minimap2 --mq30  --remove_mismatching 250 --readType SE --debug --force_restart $fastq
 
 ## 2019 10 October metagenomes with Univec contamination
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
@@ -118,7 +118,7 @@ python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --alig
 # Genomes
 #python3 run_Wochenende.py --metagenome ecoli --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome PA14 --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
-#python3 run_Wochenende.py --metagenome hg19 --threads $cpus --longread --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome hg19 --threads $cpus --longread --remove_mismatching 250 --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --readType PE --no_duplicate_removal --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome GRCh37 --threads $cpus --readType PE --aligner bwamem --no_duplicate_removal --no_abra --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome mm10 --threads $cpus --readType PE --aligner bwamem --force_restart --no_prinseq $fastq
