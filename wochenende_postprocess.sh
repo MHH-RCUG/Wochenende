@@ -104,7 +104,8 @@ echo "INFO: Completed Haybaler"
 echo "INFO: Started Wochenende plot"
 cd $bamDir
 cd plots
-cp ../*window.txt ../*window.txt.filt.csv .
+cp ../*_window.txt . 
+cp ../*_window.txt.filt.csv .
 bash runbatch_wochenende_plot.sh >/dev/null 2>&1
 #wait
 echo "INFO: Sleeping for " $sleeptimer
