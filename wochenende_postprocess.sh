@@ -83,7 +83,7 @@ echo "INFO: Start Haybaler"
 conda activate ont
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
-mv output output_$rand_number
+#mv output output_$rand_number
 bash run_haybaler.sh >/dev/null 2>&1
 wait
 echo "INFO: Sleeping for " $sleeptimer
@@ -119,11 +119,11 @@ echo "INFO: Start cleanup reporting"
 cd $bamDir
 cd reporting
 mkdir reporting_$rand_number
-mv txt csv xlsx reporting_$rand_number 
+#mv txt csv xlsx reporting_$rand_number 
 mkdir txt csv xlsx
-mv *.txt txt
-mv *.csv csv
-mv *.xlsx xlsx
+#mv *.txt txt
+#mv *.csv csv
+#mv *.xlsx xlsx
 cd $bamDir
 echo "INFO: Completed cleanup reporting"
 
