@@ -1,21 +1,23 @@
 #!/bin/bash
-# Colin Davenport
+# Colin Davenport, Sophia Poertner
 
-version="0.1 Jan 2021"
-echo "Version: " $version
-echo "Remember to run this using the wochenende conda environment"
-echo "WORK IN PROGRESS ! . May not completely work for all steps, still useful."
+version="0.11 Jan 2021"
+#0.11 - add variable for random 
+#0.10 - initial work
 
 
-# Operates on Wochenende output files (eg BAM and bam.txt files)
-# Postprocess all files 
-# Makes sure directories plots and reporting exist
-# Run following tools
-# - sambamba depth
-# - Wochenende reporting
-# - Haybaler
-# - cleanup directories 
-# - Wochenende plot 
+echo "INFO: Version: " $version
+echo "INFO: Remember to run this using the ont2 or haybaler conda environment"
+echo "INFO: WORK IN PROGRESS ! . May not completely work for all steps, still useful."
+echo "INFO: Operates on Wochenende output files (eg BAM and bam.txt files)"
+echo "INFO: Postprocess all files" 
+echo "INFO:  Makes sure directories plots and reporting exist"
+echo "INFO:  Run following stages"
+echo "INFO:  - sambamba depth"
+echo "INFO:  - Wochenende reporting"
+echo "INFO:  - Haybaler"
+echo "INFO:  - cleanup directories "
+echo "INFO:  - Wochenende plot"
 
 
 # Setup conda and directories
@@ -29,6 +31,8 @@ conda activate wochenende
 sleeptimer=12
 #sleeptimer=120
 
+# Cleanup previous results to a directory with a random name. Number calculated here.
+rand_number=$RANDOM
 
 ### Check if required directories exist ###
 if [ ! -d "reporting" ] 
@@ -79,8 +83,8 @@ echo "INFO: Start Haybaler"
 conda activate ont
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
-mv output output_$RANDOM 
-bash run_haybaler.sh
+mv output output_$rand_number
+bash run_haybaler.sh >/dev/null 2>&1
 wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
@@ -113,8 +117,8 @@ echo "INFO: Completed Wochenende plot"
 echo "INFO: Start cleanup reporting"
 cd $bamDir
 cd reporting
-mkdir reporting_$RANDOM
-mv txt csv xlsx reporting_$RANDOM 
+mkdir reporting_$rand_number
+mv txt csv xlsx reporting_$rand_number 
 mkdir txt csv xlsx
 mv *.txt txt
 mv *.csv csv
