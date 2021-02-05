@@ -65,7 +65,7 @@ wait
 echo "INFO: Completed Sambamba depth and filtering"
 
 
-# Run reporting and haybaler
+# Run reporting 
 echo "INFO: Started Wochenende reporting"
 cd reporting
 cp ../*.bam.txt .
@@ -76,13 +76,15 @@ sleep $sleeptimer
 #echo "INFO: Sleeping for " $sleeptimer " * 10"
 #sleep $((sleeptimer*10))
 
-
 echo "INFO: Completed Wochenende reporting"
 
+
+# Run haybaler
 echo "INFO: Start Haybaler"
 conda activate ont
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
+cp $haybaler_dir/*.R .
 #mv output output_$rand_number
 bash run_haybaler.sh >/dev/null 2>&1
 wait
