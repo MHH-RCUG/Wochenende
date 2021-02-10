@@ -1,23 +1,25 @@
 #!/bin/bash
 # Colin Davenport, Sophia Poertner
 
-version="0.11 Jan 2021"
+version="0.12 Feb 2021"
+#0.12 - make prerequisite docs clearer
 #0.11 - add variable for random 
 #0.10 - initial work
 
 
+echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting and reporting" 
 echo "INFO: Version: " $version
-echo "INFO: Remember to run this using the ont2 or haybaler conda environment"
+echo "INFO: Remember to run this using the ont2 or haybaler conda environment if available"
 echo "INFO: WORK IN PROGRESS ! . May not completely work for all steps, still useful."
 echo "INFO: Operates on Wochenende output files (eg BAM and bam.txt files)"
-echo "INFO: Postprocess all files" 
-echo "INFO:  Makes sure directories plots and reporting exist"
-echo "INFO:  Run following stages"
+echo "INFO:  eg. run get_wochenende.sh to get the relevant files"
+echo "INFO:  Make sure the directories plots and reporting exist and are filled"
+echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler"
-echo "INFO:  - cleanup directories "
 echo "INFO:  - Wochenende plot"
+echo "INFO:  - cleanup directories "
 
 
 # Setup conda and directories
