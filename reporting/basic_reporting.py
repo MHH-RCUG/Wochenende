@@ -3,11 +3,13 @@ A reporting script for the results of the Wochenende Pipeline
 Author: Tobias Scheithauer, August 2018
 Author: Erik Wessels, October 2019
 Author: Fabian Charly Friedrich, February 2020
+Author: Colin Davenport
 
 TODOs
-- add plots
-- normalization model for Solid
+
 Changelog
+1.5.2 lint with tool black
+1.5.1 add debug switch for printing, otherwise in quiet mode.
 1.5 comment out pysam as can cause miniconda cryptic error and currently unused (used in slow BAM methods only), bugfix RPMM
 1.4 add version, reduce output file name length. reporting -> rep, sorted -> s etc
 1.3 restructured the script
@@ -24,7 +26,7 @@ import pandas as pd
 import click
 
 
-version = 1.5
+version = "1.5.1"
 
 ###################################
 # functions
@@ -41,19 +43,19 @@ def check_arguments(input_file, reference, sequencer):
     # check if input file exist and if it is the correct file format
     if os.path.isfile(input_file):
         if not input_file.endswith('.bam.txt') and not input_file.endswith('.bam'):
-            click.echo(f'The input file {input_file} \t has a wrong file format.\nType --help for help')
+            click.echo(f'The input file {input_file} \t has a incorrect file format.\nType --help for help')
             sys.exit()
     else:
-        click.echo(f'The input file {input_file} \t does not exists\nType --help for help')
+        click.echo(f'The input file {input_file} \t does not exist\nType --help for help')
         sys.exit()
 
     # check if refseq file exist and if it is the correct file format
     if os.path.isfile(reference):
         if not reference.endswith('.fasta') and not reference.endswith('.fa') and not reference.endswith('.fna'):
-            click.echo(f'The input file {reference} \t has a wrong file format.\nType --help for help')
+            click.echo(f'The input file {reference} \t has a incorrect file format.\nType --help for help')
             sys.exit()
     else:
-        click.echo(f'The input file {reference} \t does not exists\nType --help for help')
+        click.echo(f'The input file {reference} \t does not exist\nType --help for help')
         sys.exit()
     # check the sequencer
     if not sequencer == 'illumina' and not sequencer == 'solid':
@@ -167,10 +169,9 @@ def export_res(res_df, output):
 @click.command()
 @click.option('--input_file', '-i', help='File in .bam.txt or .bam format from the Wochenende pipeline output')
 @click.option('--reference', '-r', help='File in .fasta format has to be the reference used by the Wochenende pipeline')
-@click.option('--sequencer', '-s', default='illumina', help='Sequencer technology used only solid and illumina are available, only illumina is supported, default: illumina ')
+@click.option('--sequencer', '-s', default='illumina', help='Sequencer technology used. Only solid and illumina are available, only illumina is supported, default: illumina ')
 @click.option('--output_name', '-o', default='report', help='Name for the output file(sample name), default report')
 def main(input_file, reference, sequencer, output_name):
-    print(version)
     """
     This Python3.6 script can be used to report the results of the Wochenende pipeline.
     The .bam.txt file as input is recommended (fast).
@@ -180,9 +181,14 @@ def main(input_file, reference, sequencer, output_name):
 
     Reports for solid sequencing data are not supported, a special GC normalisation model has to be implemented first.
     """
+    # Set debug = True to print debugging info such as input file, reference, sequencer
+    debug = False
+    if debug:
+        print(version)
 
     check_arguments(input_file, reference, sequencer)
-    print_start(input_file, reference, sequencer)
+    if debug:
+        print_start(input_file, reference, sequencer)
     res_df = create_res_df(input_file, reference)
     res_df = compute_res_df(res_df, sequencer)
     export_res(res_df, output_name)
