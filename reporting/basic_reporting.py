@@ -8,6 +8,7 @@ Author: Colin Davenport
 TODOs
 
 Changelog
+1.5.3 docs and comments improved
 1.5.2 lint with tool black
 1.5.1 add debug switch for printing, otherwise in quiet mode.
 1.5 comment out pysam as can cause miniconda cryptic error and currently unused (used in slow BAM methods only), bugfix RPMM
@@ -27,7 +28,7 @@ import pandas as pd
 import click
 
 
-version = "1.5.2"
+version = "1.5.3"
 
 ###################################
 # functions
@@ -212,8 +213,7 @@ def compute_res_df(res_df, sequencer):
         res_df["read_count"].sum() / 1000000
     ).round(5)
 
-    # total normalization RPMM. Corrected
-
+    # total normalization RPMM. Corrected in autumn 2020 after bug found.
     res_df["RPMM"] = res_df["read_count"] / (
         (res_df["chr_length"] / 1000000) * (res_df["read_count"].sum() / 1000000)
     ).round(5)
