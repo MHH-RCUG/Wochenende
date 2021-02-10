@@ -26,7 +26,7 @@ import pandas as pd
 import click
 
 
-version = "1.5.1"
+version = "1.5.2"
 
 ###################################
 # functions
