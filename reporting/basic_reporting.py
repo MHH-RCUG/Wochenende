@@ -241,18 +241,18 @@ def export_res(res_df, output):
 @click.option(
     "--input_file",
     "-i",
-    help="File in .bam.txt or .bam format from the Wochenende pipeline output",
+    help="File in .bam.txt (recommended) or .bam format (slow) from the Wochenende pipeline output",
 )
 @click.option(
     "--reference",
     "-r",
-    help="File in .fasta format has to be the reference used by the Wochenende pipeline",
+    help="File in .fasta format. This must be the reference used by the Wochenende pipeline",
 )
 @click.option(
     "--sequencer",
     "-s",
     default="illumina",
-    help="Sequencer technology used. Only solid and illumina are available, only illumina is supported, default: illumina ",
+    help="Sequencer technology used. Only illumina is supported (prev. SOLiD), default: illumina ",
 )
 @click.option(
     "--output_name",
@@ -264,7 +264,7 @@ def main(input_file, reference, sequencer, output_name):
     """
     This Python3.6 script can be used to report the results of the Wochenende pipeline.
     The .bam.txt file as input is recommended (fast).
-    The .bam file will take longer and  generate more information.
+    The .bam file will take longer and generate more information.
 
     The column reads_per_human_cell is only for metagenomes from human hosts.
 
