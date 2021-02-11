@@ -116,8 +116,12 @@ path_refseq_dict = {
 ea_adapter_fasta = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
 adapter_truseq = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
 adapter_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-adapter_fastp_solid = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
-adapter_fastp_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
+adapter_fastp_solid = (
+    "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
+)
+adapter_fastp_nextera = (
+    "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
+)
 adapter_fastp_general = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
 
 ## Path to temp directory, edit for your server
@@ -309,37 +313,36 @@ def runAfterQC(stage_infile):
     return stage_outfile
 
 
-
 def runTrimGaloreSE(stage_infile, noThreads, nextera):
     # use for Nextera - single end reads
     stage = "TrimGalore - SE"
     print("######  " + stage + "  ######")
     prefix = stage_infile.replace(".fastq", "")
     stage_outfile = prefix + ".trm.fastq"
-    trimNextera=""
+    trimNextera = ""
     if nextera:
         trimNextera = "--nextera"
     trim_galore_cmd = [
-	#trim_galore --nextera --dont_gzip --cores 12 --2colour 20  x_R1.fastq > out_R1.fastq
+        # trim_galore --nextera --dont_gzip --cores 12 --2colour 20  x_R1.fastq > out_R1.fastq
         path_trim_galore,
         trimNextera,
         "--dont_gzip ",
         "--length 36 ",
         "--suppress_warn ",
-#        "--adapter_fasta=" + adapter_path,
+        #        "--adapter_fasta=" + adapter_path,
         "--cores " + noThreads,
         "--2colour " + trim_galore_min_quality,
         stage_infile,
-        #" > ",
-        #stage_outfile,
+        # " > ",
+        # stage_outfile,
     ]
     rename_cmd = [
-        #trim_galore creates prefix_trimmed.fq . Rename this to outfile
-        "mv" ,
+        # trim_galore creates prefix_trimmed.fq . Rename this to outfile
+        "mv",
         prefix + "_trimmed.fq",
         stage_outfile,
     ]
-    #runStage(stage, trim_galore_cmd)
+    # runStage(stage, trim_galore_cmd)
     trimGaloreCmdStr = " ".join(trim_galore_cmd)
     renameStr = " ".join(rename_cmd)
 
@@ -350,7 +353,6 @@ def runTrimGaloreSE(stage_infile, noThreads, nextera):
         os.system(trimGaloreCmdStr)
         os.system(renameStr)
 
-
     except:
         print("Error running trim_galore")
         sys.exit(1)
@@ -359,7 +361,7 @@ def runTrimGaloreSE(stage_infile, noThreads, nextera):
     return stage_outfile
 
 
-#################### TODO !!!!!!!!!!!!!!!! Have never done this for TrimGalore AND how does it do PE output? 
+#################### TODO !!!!!!!!!!!!!!!! Have never done this for TrimGalore AND how does it do PE output?
 def runTrimGalorePE(stage_infile, noThreads, adapter_path):
     # use for Nextera - paired end reads
     stage = "TrimGalore - PE TODO!!"
@@ -368,31 +370,30 @@ def runTrimGalorePE(stage_infile, noThreads, adapter_path):
     stage_outfile = prefix + ".trm.fastq"
     trim_galore_cmd = [
         path_trim_galore,
-        #trim_galore --nextera --dont_gzip --cores 12 --2colour 20  x_R1.fastq
+        # trim_galore --nextera --dont_gzip --cores 12 --2colour 20  x_R1.fastq
         "--nextera",
         "--dont_gzip",
         "--length 36",
         "--suppress_warn ",
-#        "--adapter_fasta=" + adapter_path,
+        #        "--adapter_fasta=" + adapter_path,
         "--cores " + noThreads,
         "--2colour " + trim_galore_min_quality,
         stage_infile,
         " > ",
         stage_outfile,
     ]
-    #runStage(stage, trim_galore_cmd)
+    # runStage(stage, trim_galore_cmd)
     trimGaloreCmdStr = " ".join(trim_galore_cmd)
     try:
         # could not get subprocess.run, .call etc to work with pipes and redirect '>'
         print("trimGaloreCmdStr: " + trimGaloreCmdStr)
         os.system(trimGaloreCmdStr)
-    except:  
+    except:
         print("Error running trim_galore")
         sys.exit(1)
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
-
 
 
 def runFastpSE(stage_infile, noThreads, adapter_path):
@@ -637,9 +638,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     ngmlrMinIdentity = (
         0.85  # Aligner ngmlr only: minimum identity (fraction) of read to reference
     )
-    ngmlrMinResidues = (
-        0.70  # Aligner ngmlr only: minimum aligned residues (fraction) of read to reference
-    )
+    ngmlrMinResidues = 0.70  # Aligner ngmlr only: minimum aligned residues (fraction) of read to reference
 
     stage = "Alignment"
     print("######  " + stage + "  ######")
@@ -801,7 +800,7 @@ def runBAMsort(stage_infile, readType):
         stage_outfile,
     ]
     runStage(stage, samtoolsSortCmd)
-    
+
     if readType == "SE":
         # Delete unsorted BAM file
         rmUnsortedBamCmd = ["rm", stage_infile]
@@ -815,8 +814,9 @@ def runBAMsort(stage_infile, readType):
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
+
 def runBAMsortByName(stage_infile, readType):
-    # Name sort BAM prior to fixmate, used in PE workflow 
+    # Name sort BAM prior to fixmate, used in PE workflow
     stage = "Name sort BAM"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".ns.bam"
@@ -847,7 +847,7 @@ def runBAMsortByName(stage_infile, readType):
 
 
 def runFixmate(stage_infile):
-    # fix mates prior to PE duplicate removal, used in PE workflow 
+    # fix mates prior to PE duplicate removal, used in PE workflow
     stage = "Samtools Fix mates"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".fix.bam"
@@ -864,6 +864,7 @@ def runFixmate(stage_infile):
     runStage(stage, samtoolsNameSortCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
+
 
 def runBAMindex(stage_infile):
     # Stage output not used further in flow
@@ -927,7 +928,7 @@ def runGetUnmappedReads(stage_infile, readType):
             unmappedFastqString,
         ]
     if readType == "PE":
-        # complex, 3 types, only deal with cases where both PE reads unmapped -u -f 12 -F 256 
+        # complex, 3 types, only deal with cases where both PE reads unmapped -u -f 12 -F 256
         samtoolsGetUnmappedCmd = [
             path_samtools,
             "view",
@@ -1069,12 +1070,8 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".mm.bam"
 
-    #"tag" : "NM:<4"
-    mmList = [
-          '\"NM:<',
-          numberMismatches,
-          '\"'
-    ]
+    # "tag" : "NM:<4"
+    mmList = ['"NM:<', numberMismatches, '"']
     mmString = "".join(mmList)
 
     filterMismatchesCmd = [
@@ -1085,7 +1082,7 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
         "-out",
         stage_outfile,
         "-tag",
-        mmString
+        mmString,
     ]
     bamtools_cmd1 = " ".join(filterMismatchesCmd)
     print("Bamtools fixed cmd: " + bamtools_cmd1)
@@ -1104,7 +1101,6 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
-
 
 
 def runBamtoolsAdaptive(stage_infile):
@@ -1202,13 +1198,12 @@ def markDups(stage_infile):
     return stage_outfile
 
 
-
 def markDupsSamtools(stage_infile):
     # duplicate removal in bam using Samtools
     stage = "Samtools mark duplicates"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".dup.bam"
-    #samtools markdup -@ 8 -r  --output-fmt BAM Pa_4B_S7_R1.ndp.lc.trm.s.bam out_remove.bam
+    # samtools markdup -@ 8 -r  --output-fmt BAM Pa_4B_S7_R1.ndp.lc.trm.s.bam out_remove.bam
     stMarkDupsCmd = [
         path_samtools,
         "markdup",
@@ -1223,8 +1218,6 @@ def markDupsSamtools(stage_infile):
     runStage(stage, stMarkDupsCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
-
-
 
 
 def runIDXstats(stage_infile):
@@ -1388,13 +1381,12 @@ def main(args, sys_argv):
 
     # default adapters: truseq, NEB indices
     adapter_path = adapter_truseq
-    #if args.nextera:
-    #	adapter_path = adapter_fastp_nextera
-    #if args.solid: # args.solid does not exist
+    # if args.nextera:
+    # 	adapter_path = adapter_fastp_nextera
+    # if args.solid: # args.solid does not exist
     #    adapter_path = adapter_fastp_solid
     if args.nextera:
         adapter_path = adapter_fastp_general
-
 
     print("Meta/genome selected: " + args.metagenome)
 
@@ -1414,14 +1406,23 @@ def main(args, sys_argv):
             )
         if args.trim_galore:
             currentFile = runFunc(
-                "runTrimGaloreSE", runTrimGaloreSE, currentFile, True, args.threads, args.nextera
+                "runTrimGaloreSE",
+                runTrimGaloreSE,
+                currentFile,
+                True,
+                args.threads,
+                args.nextera,
             )
         if not args.longread and not args.fastp:
             # Use either nextera or (default) truseq/ ultraII adapter files
             if args.nextera:
-                currentFile = runFunc("runTMTrimming", runTMTrimming, currentFile, True, adapter_nextera)
+                currentFile = runFunc(
+                    "runTMTrimming", runTMTrimming, currentFile, True, adapter_nextera
+                )
             else:
-                currentFile = runFunc("runTMTrimming", runTMTrimming, currentFile, True, adapter_truseq)
+                currentFile = runFunc(
+                    "runTMTrimming", runTMTrimming, currentFile, True, adapter_truseq
+                )
 
         # if not args.longread:
         # currentFile = runFunc("runEATrimming", runEATrimming, currentFile, True)
@@ -1435,20 +1436,32 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
-        currentFile = runFunc("runBAMsort", runBAMsort, currentFile, True, args.readType)
+        currentFile = runFunc(
+            "runBAMsort", runBAMsort, currentFile, True, args.readType
+        )
         currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
         currentFile = runFunc(
             "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
         )
         currentFile = runFunc(
-            "runGetUnmappedReads", runGetUnmappedReads, currentFile, False, args.readType
+            "runGetUnmappedReads",
+            runGetUnmappedReads,
+            currentFile,
+            False,
+            args.readType,
         )
 
-#        if args.remove_mismatching and not args.longread:
+        #        if args.remove_mismatching and not args.longread:
         if args.remove_mismatching:
-            #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
-            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
+            # currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+            currentFile = runFunc(
+                "runBamtoolsFixed",
+                runBamtoolsFixed,
+                currentFile,
+                True,
+                args.remove_mismatching,
+            )
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
@@ -1456,8 +1469,10 @@ def main(args, sys_argv):
             # currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
-            #currentFile = runFunc("markDups", markDups, currentFile, True)
-            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
+            # currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc(
+                "markDupsSamtools", markDupsSamtools, currentFile, True
+            )
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
@@ -1480,7 +1495,6 @@ def main(args, sys_argv):
         )
         currentFile = runFunc("runBAMindex5", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
-
 
     #############
     # Paired end input reads. Long reads cannot be paired end (true 2020).
@@ -1508,9 +1522,13 @@ def main(args, sys_argv):
             )
         # Trimming: use either nextera or (default) truseq/ ultraII adapter files
         if args.nextera:
-             currentFile = runFunc("runTMTrimmingPE", runTMTrimmingPE, currentFile, True, adapter_nextera)
+            currentFile = runFunc(
+                "runTMTrimmingPE", runTMTrimmingPE, currentFile, True, adapter_nextera
+            )
         else:
-             currentFile = runFunc("runTMTrimmingPE", runTMTrimmingPE, currentFile, True, adapter_truseq)
+            currentFile = runFunc(
+                "runTMTrimmingPE", runTMTrimmingPE, currentFile, True, adapter_truseq
+            )
         # currentFile = runFunc("runEATrimming", runEATrimming, currentFile, True)
         currentFile = runFunc(
             "runAligner",
@@ -1523,35 +1541,50 @@ def main(args, sys_argv):
             args.readType,
         )
         # PE reads need name sorted reads which went through fixmate before duplicate marking
-        currentFile = runFunc("runBAMsortByName1", runBAMsortByName, currentFile, True, args.readType)
+        currentFile = runFunc(
+            "runBAMsortByName1", runBAMsortByName, currentFile, True, args.readType
+        )
         currentFile = runFunc("runFixmate", runFixmate, currentFile, True)
         currentFile = runFunc(
             "runSamtoolsFlagstat1", runSamtoolsFlagstat, currentFile, False
         )
 
         # Now try re-sort by position as with SE reads
-        currentFile = runFunc("runBAMsort2", runBAMsort, currentFile, True, args.readType)
+        currentFile = runFunc(
+            "runBAMsort2", runBAMsort, currentFile, True, args.readType
+        )
         currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
         if not args.no_duplicate_removal:
             # use either deprecated sambamba version or the samtools version
-            #currentFile = runFunc("markDups", markDups, currentFile, True)
-            currentFile = runFunc("markDupsSamtools", markDupsSamtools, currentFile, True)
+            # currentFile = runFunc("markDups", markDups, currentFile, True)
+            currentFile = runFunc(
+                "markDupsSamtools", markDupsSamtools, currentFile, True
+            )
 
         currentFile = runFunc(
             "runSamtoolsFlagstat2", runSamtoolsFlagstat, currentFile, False
         )
         currentFile = runFunc(
-            "runGetUnmappedReadsPE", runGetUnmappedReads, currentFile, False, args.readType
+            "runGetUnmappedReadsPE",
+            runGetUnmappedReads,
+            currentFile,
+            False,
+            args.readType,
         )
 
         if args.remove_mismatching:
-            #currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
-            currentFile = runFunc("runBamtoolsFixed", runBamtoolsFixed, currentFile, True, args.remove_mismatching)
+            # currentFile = runFunc("runBamtools", runBamtools, currentFile, True)
+            currentFile = runFunc(
+                "runBamtoolsFixed",
+                runBamtoolsFixed,
+                currentFile,
+                True,
+                args.remove_mismatching,
+            )
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
-
 
         if args.mq30:
             currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
@@ -1633,10 +1666,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--threads",
-        help="Number of threads to use",
-        action="store",
-        default="16"
+        "--threads", help="Number of threads to use", action="store", default="16"
     )
 
     parser.add_argument(
@@ -1656,7 +1686,6 @@ if __name__ == "__main__":
         help="Use trim_galore read trimmer. Effective for Nextera adapters and transposase sequence",
         action="store_true",
     )
-
 
     parser.add_argument("--debug", help="Report all files", action="store_true")
 
