@@ -12,10 +12,10 @@ Features include (see programs listed below at the bottom of this page)
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
 - Post-alignment duplicate removal (Samtools from v1.7.8, Sambamba)
-- Removal reads with x mismatches (bamtools)
+- Removal reads with x mismatches (bamtools), adjustable from v1.7.3
 - Realignment (Abra2)
 - MD tag marking (Samtools)
-- Normalization (to Reads per Million Reads etc, see Reporting below for details)
+- Normalization (to Reads per Human cell, Reads Perr Million reads per Million bases etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
 
 
@@ -154,6 +154,7 @@ conda env update -f env.wochenende.yml
 - [ea-utils](https://github.com/ExpressionAnalysis/ea-utils)
 - [FastUniq](https://sourceforge.net/projects/fastuniq/)
 - [Minimap2](https://github.com/lh3/minimap2)
+- [NGMLR](https://github.com/philres/ngmlr)
 - [perldup](https://github.com/richardmleggett/scripts/blob/master/remove_pcr_duplicates.pl) Already copied to dependencies folder with permission. Developed by [Richard Leggett](https://github.com/richardmleggett).
 - [PRINSEQ](http://prinseq.sourceforge.net/)
 - [sambamba](https://github.com/biod/sambamba)
@@ -330,7 +331,7 @@ You should be able to see in the SLURM outfile or standard out if the tests pass
 
 Thanks to:
 
-@B1T0 Main programmer, testing, evaluation, documentation
+@B1T0 Original programmer, testing, evaluation, documentation
 
 @colindaven Concept, programming, updates, integration, maintenance, evaluation, documentation
 
@@ -341,3 +342,5 @@ Thanks to:
 @Nijerik Wochenende reporting
 
 @sannareddyk Bug testing, updates, evaluation
+
+@poer-sophia Code review, testing, maintenance, programming

@@ -1,20 +1,22 @@
 #!/bin/bash
 # Colin Davenport, Sophia Poertner
 
-version="0.13, Feb 2021"
+version="0.14, Feb 2021"
+#0.14 - add haybaler env and use this
 #0.13 - copy filled directory plots and reporting into current directory, if missing
 #0.12 - make prerequisite docs clearer
 #0.11 - add variable for random 
-#0.10 - initial work
+#0.10 - initial commits
 
 
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting and reporting" 
 echo "INFO: Version: " $version
-echo "INFO: Remember to run this using the ont or haybaler conda environment if available"
+echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO: WORK IN PROGRESS ! . May not completely work for all steps, still useful."
-echo "INFO: Operates on Wochenende output files (eg BAM and bam.txt files)"
+echo "INFO:  ####### "
+echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
 echo "INFO:  eg. run get_wochenende.sh to get the relevant files"
-echo "INFO:  Make sure the directories plots and reporting exist and are filled"
+echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende reporting"
@@ -30,14 +32,14 @@ wochenende_dir=/mnt/ngsnfs/tools/dev/Wochenende/
 . /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 conda activate wochenende
 
-# Setup sleep duration
+# Setup sleep duration. Might be useful to set higher for some big projects, where the wait command may fail for some SLURM jobs.
 sleeptimer=12
 #sleeptimer=120
 
-# Cleanup previous results to a directory with a random name. Number calculated here.
+# Cleanup previous results to a directory with a random name which includes a number, calculated here.
 rand_number=$RANDOM
 
-### Check if required directories exist ###
+### Check if required directories exist, copy if missing ###
 if [ ! -d "reporting" ] 
 then
     echo "INFO: Copying directory reporting, as it was missing!" 
@@ -84,7 +86,7 @@ echo "INFO: Completed Wochenende reporting"
 
 # Run haybaler
 echo "INFO: Start Haybaler"
-conda activate ont
+conda activate haybaler
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .

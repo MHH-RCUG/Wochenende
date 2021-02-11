@@ -4,6 +4,7 @@ Author: Tobias Scheithauer, August 2018
 Author: Erik Wessels, October 2019
 Author: Fabian Charly Friedrich, February 2020
 Author: Colin Davenport
+Author: Sophia Poertner
 
 TODOs
 
