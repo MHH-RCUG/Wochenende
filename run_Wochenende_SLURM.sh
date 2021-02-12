@@ -116,6 +116,12 @@ python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --alig
 #python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 
 # Genomes
+#python3 run_Wochenende.py --metagenome strept_halo --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome k_variicola --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome k_oxytoca --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome clost_perf --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome clost_diff --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome citro_freundii --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome ecoli --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome PA14 --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome hg19 --threads $cpus --longread --remove_mismatching 250 --debug --force_restart --no_prinseq $fastq
