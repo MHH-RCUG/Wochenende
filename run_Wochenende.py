@@ -111,6 +111,12 @@ path_refseq_dict = {
     "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
     "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
     "testdb": "testdb/ref.fa",
+    "strept_halo": "/lager2/rcug/seqres/metagenref/bwa/strept_halo.fa",
+    "k_variicola": "/lager2/rcug/seqres/metagenref/bwa/k_variicola.fa",
+    "k_oxytoca": "/lager2/rcug/seqres/metagenref/bwa/k_oxytoca.fa",
+    "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
+    "clost_diff": "/lager2/rcug/seqres/metagenref/bwa/clost_diff.fa",
+    "citro_freundii": "/lager2/rcug/seqres/metagenref/bwa/citro_freundii.fa"
 }
 # Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
 ea_adapter_fasta = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
