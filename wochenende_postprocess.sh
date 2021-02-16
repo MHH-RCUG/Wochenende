@@ -1,7 +1,8 @@
 #!/bin/bash
 # Colin Davenport, Sophia Poertner
 
-version="0.14, Feb 2021"
+version="0.15, Feb 2021"
+#0.15 - check for files to cleanup before moving
 #0.14 - add haybaler env and use this
 #0.13 - copy filled directory plots and reporting into current directory, if missing
 #0.12 - make prerequisite docs clearer
@@ -19,9 +20,9 @@ echo "INFO:  eg. run get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
+echo "INFO:  - Wochenende plot"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler"
-echo "INFO:  - Wochenende plot"
 echo "INFO:  - cleanup directories "
 
 
@@ -58,6 +59,7 @@ echo "INFO: Starting Wochenende_postprocess"
 echo "INFO: Current directory" $bamDir
 sleep 3
 
+
 echo "INFO: Started Sambamba depth"
 bash runbatch_metagen_awk_filter.sh
 wait
@@ -69,6 +71,19 @@ runbatch_metagen_window_filter.sh >/dev/null 2>&1
 wait
 echo "INFO: Completed Sambamba depth and filtering"
 
+
+# Plots
+echo "INFO: Started Wochenende plot"
+cd $bamDir
+cd plots
+cp ../*_window.txt . 
+cp ../*_window.txt.filt.csv .
+bash runbatch_wochenende_plot.sh >/dev/null 2>&1
+#wait
+echo "INFO: Sleeping for " $sleeptimer
+sleep $sleeptimer
+cd $bamDir
+echo "INFO: Completed Wochenende plot"
 
 # Run reporting 
 echo "INFO: Started Wochenende reporting"
@@ -107,18 +122,7 @@ echo "INFO: Completed Haybaler"
 
 
 
-# Plots
-echo "INFO: Started Wochenende plot"
-cd $bamDir
-cd plots
-cp ../*_window.txt . 
-cp ../*_window.txt.filt.csv .
-bash runbatch_wochenende_plot.sh >/dev/null 2>&1
-#wait
-echo "INFO: Sleeping for " $sleeptimer
-sleep $sleeptimer
-cd $bamDir
-echo "INFO: Completed Wochenende plot"
+
 
 
 
@@ -130,9 +134,24 @@ mkdir reporting_$rand_number
 mv txt csv xlsx reporting_$rand_number 
 # make and fill current folders from this run
 mkdir txt csv xlsx
-mv *.txt txt
-mv *.csv csv
-mv *.xlsx xlsx
+
+# cleanup .txt, .csv and .xlsx files if they exists in directory
+count=`ls -1 *.txt 2>/dev/null | wc -l`
+if [ $count != 0 ]
+    then 
+    mv *.txt txt
+fi 
+count=`ls -1 *.csv 2>/dev/null | wc -l`
+if [ $count != 0 ]
+    then 
+    mv *.csv csv
+fi 
+count=`ls -1 *.xlsx 2>/dev/null | wc -l`
+if [ $count != 0 ]
+    then 
+    mv *.xlsx xlsx
+fi 
+
 cd $bamDir
 echo "INFO: Completed cleanup reporting"
 
