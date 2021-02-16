@@ -15,7 +15,7 @@ Features include (see programs listed below at the bottom of this page)
 - Removal reads with x mismatches (bamtools), adjustable from v1.7.3
 - Realignment (Abra2)
 - MD tag marking (Samtools)
-- Normalization (to Reads per Human cell, Reads Perr Million reads per Million bases etc, see Reporting below for details)
+- Normalization (to Reads per Human cell, Reads Per Million reads per Million bases etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
 
 
