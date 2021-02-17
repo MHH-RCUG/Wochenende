@@ -3,3 +3,5 @@ test/promethion*
 test/tmp
 test/slurm-?????.out
 test/slurm-??????.out
+__pycache__
+.DS_Store

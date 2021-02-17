@@ -236,6 +236,20 @@ def addToProgress(func_name, c_file):
 
 
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
+    """
+    Used in the main function to compose the pipeline. Runs a function and adds 
+    it to the progress file.
+
+    Args:
+        func_name (str): The function's name
+        func (fun): The function to run
+        cF (str): the current file to operate on
+        *extraArgs: any additional arguments for the function
+
+    Returns:
+        str: The new current file which is used for the next step. It is defined
+        by the input function.
+    """
     # Run function and add it to the progress file
     with open(progress_file, mode="r") as f:
         done = func_name in "".join(f.readlines())
@@ -248,7 +262,13 @@ def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
 
 
 def runStage(stage, programCommand):
-    # Run a stage of this Pipeline
+    """
+    Run a stage of this Pipeline
+    
+    Args:
+        stage (str): the stage's name
+        programCommand (str): the command to execute as new subprocess
+    """
     print("######  " + stage + "  ######")
     try:
         # print(programCommand)
@@ -1447,9 +1467,7 @@ def main(args, sys_argv):
         )
         currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
-        currentFile = runFunc(
-            "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
-        )
+        currentFile = runFunc("runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False)
         currentFile = runFunc(
             "runGetUnmappedReads",
             runGetUnmappedReads,
