@@ -3,8 +3,8 @@
 
 
 # Author: Konstantinos Sifakis, Sophia Poertner, Colin Davenport
-# Script made: Jan 2020-Feb 2020, DEC 2020-JAN 2020
-# Script made for: MHH - RCUG
+# Script written: Jan 2020-Feb 2020, adapted DEC 2020-JAN 2020
+# Script created for: MHH - RCUG
 # # Plot coverage data after the runbatch_sambamba_depth.sh sambamba coverage step of the Wochenende pipeline.
 # Create some png files,one txt that includes the organisms that seem related
 # and a tsv file with information from tsv file that was given.
@@ -24,11 +24,12 @@ import matplotlib.pyplot as plt
 
 # Changelog
 
+# 0.2.2 change perhaps present to low_med_score and prob_present to high_score
 # 0.2.1 default mean coverage 0.2
 # 0.2 reduce --minMeanCov default from 1.0 to 0.2 after testing, add version.
 # 0.1 initial working script
 
-version = 0.21
+version = "0.2.2"
 
 # use_line_collection should be True
 
@@ -37,7 +38,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # Needed to read file  [ --filename ]  and then [ file directory ] so that file would open as a tsv file
 
 parser = argparse.ArgumentParser(
-    description="Plot coverage data after the wochenende_posthoc_filter.sh sambamba coverage step of the Wochenende "
+    description="Plot coverage data after the sambamba (or wochenende_postprocess.sh) coverage step of the Wochenende "
                 "pipeline. Creates png files of absolute and mean coverage per taxon, and a statistical overview file."
 )
 parser.add_argument(
@@ -48,7 +49,7 @@ parser.add_argument(
 parser.add_argument(
     "--minMeanCov",
     default=0.2,
-    help="""The minimum mean coverage. Default: 0.2 
+    help="""The minimum mean coverage. Default: 0.2
                     This does not affect the score. After the score has been calculated, this number will be the 
                     threshold for both low scored and good scored taxa.\n
                     ## Case1: Poor scoring that have a maximum score above this minMeanCov value -> Images go to folder 
@@ -56,9 +57,9 @@ parser.add_argument(
                     ## Case2: Poor scoring will have a maximum score below or equal to this minMeanCov value -> Images 
                     will not be printed (unless --createAllPngs is given).\n
                     ## Case3: Highly scored taxa that have a minimum score above this minMeanCov value -> Images will 
-                    go to folder probably_present\n
+                    go to folder high_score\n
                     ## Case4: Highly scored taxa that have a minimum score below or equal to this minMeanCov value -> 
-                    Images will go to folder potentially present.\n	
+                    Images will go to folder low_med_score.\n
                     """,
 )
 parser.add_argument(
@@ -123,8 +124,8 @@ def create_directories(dirpath, outfile):
     # make new directories
     images_path = "{}/images".format(dirpath)
     sample_outpath = "{}/images/{}".format(dirpath, outfile)
-    perhaps_path = "{}/images/{}/perhaps_present".format(dirpath, outfile)
-    prob_path = "{}/images/{}/prob_present".format(dirpath, outfile)
+    perhaps_path = "{}/images/{}/low_med_score".format(dirpath, outfile)
+    prob_path = "{}/images/{}/high_score".format(dirpath, outfile)
 
     for path in (images_path, sample_outpath, perhaps_path, prob_path):
         try:
@@ -348,7 +349,7 @@ def write_in_files(scoreforlowmean,
     # are written in the score file for the organisms. Either "yes" or "no" for the columns "Scorelimit>=0.0" and
     # "Might_be_related_to_smthg" ( YES NO/ YES YES/ NO NO/ NO YES )
     # Only if all three are greater than the limit, the GenbankID of the organism is written in the GenBankID.txt.
-    # These are also the plots in the probably directory
+    # These are also the plots in the high_cov directory
     if (
             scoreforlowmean >= Scorelimit
             and min_mean_coverage >= Scorelimitforminormax
@@ -554,7 +555,7 @@ def calculate_scores(
         perhaps_path,
         sample_outpath,
 ):
-    # counting how many organisms are probably, perhaps and probably not present
+    # counting how many organisms are high_score, low_med_score (images created) and probably not present (no image created)
     prob = 0
     perhaps = 0
     other = 0
@@ -811,9 +812,9 @@ def main():
         sample_outpath
     )
     print("organisms in file:", len(set(df_input_file.index.values)))
-    print("probably present organisms:", prob)
-    print("perhaps present organisms:", perhaps)
-    print("other organisms:", other)
+    print("High coverage high scoring organisms:", prob)
+    print("Low medium coverage medium scoring organisms:", perhaps)
+    print("other organisms - no images generated:", other)
     print("########### File completed #######")
     f_score.close()
     print("Wochenende plot script completed")
