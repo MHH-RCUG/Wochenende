@@ -67,7 +67,7 @@ bash runbatch_sambamba_depth.sh >/dev/null 2>&1
 wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
-runbatch_metagen_window_filter.sh >/dev/null 2>&1
+bash runbatch_metagen_window_filter.sh >/dev/null 2>&1
 wait
 echo "INFO: Completed Sambamba depth and filtering"
 
