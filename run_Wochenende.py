@@ -5,9 +5,10 @@ Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich
-
+Author: Sophia Poertner
 
 Changelog
+1.8.4 add new bacterial refs
 1.8.3 add ecoli ref
 1.8.2 Check number of uncommented lines = 1 in run_Wochenende_SLURM.sh from start script runbatch_sbatch_Wochenende.sh.
 1.8.1 Move mq30 filter (makes big changes) to after mm and duplicate filtering
@@ -56,7 +57,7 @@ import argparse
 import time
 
 
-version = "1.8.3 - January 2021"
+version = "1.8.4 - Feb 2021"
 
 ##############################
 # CONFIGURATION
