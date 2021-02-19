@@ -69,7 +69,7 @@ path_afterqc = "/mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py"
 path_fastp = "fastp"
 path_prinseq = "prinseq-lite.pl"
 path_perl = "perl"
-path_perldup = "/mnt/ngsnfs/tools/Wochenende/dependencies/remove_pcr_duplicates.pl"
+path_perldup = "dependencies/remove_pcr_duplicates.pl"
 path_fastuniq = "fastuniq"
 path_trimmomatic = "trimmomatic"
 path_fastq_mcf = "fastq_mcf"
@@ -123,12 +123,8 @@ path_refseq_dict = {
 ea_adapter_fasta = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
 adapter_truseq = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
 adapter_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-adapter_fastp_solid = (
-    "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
-)
-adapter_fastp_nextera = (
-    "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-)
+adapter_fastp_solid = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
+adapter_fastp_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
 adapter_fastp_general = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
 
 ## Path to temp directory, edit for your server
@@ -140,9 +136,9 @@ path_tmpdir = "/ngsssd1/rcug/tmp/"
 
 
 print("Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline")
-print(
-    "Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors"
-)
+print("Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and "
+      "Fabian Friedrich with help from many further contributors "
+      "https://github.com/MHH-RCUG/Wochenende/graphs/contributors")
 print("version: " + version)
 print()
 
