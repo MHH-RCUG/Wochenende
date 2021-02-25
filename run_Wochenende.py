@@ -8,6 +8,8 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.8.6 remove 2016 references as unused
+1.8.5 add 2021_02 ref 2021_02_human_bact_fungi_vir.fa.masked.fa and 2021_02_human_bact_fungi_vir_unmasked.fa (no blacklister)
 1.8.4 add new bacterial refs
 1.8.3 add ecoli ref
 1.8.2 Check number of uncommented lines = 1 in run_Wochenende_SLURM.sh from start script runbatch_sbatch_Wochenende.sh.
@@ -57,7 +59,7 @@ import argparse
 import time
 
 
-version = "1.8.4 - Feb 2021"
+version = "1.8.6 - Feb 2021"
 
 ##############################
 # CONFIGURATION
@@ -85,11 +87,10 @@ path_trim_galore = "trim_galore"
 
 ## Paths to reference seqs. Edit as appropriate to add new!
 path_refseq_dict = {
+    "2021_02_meta_fungi_human_masked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa",
+    "2021_02_meta_fungi_human_unmasked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa",
     "2020_09_massiveref_human": "/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa",
     "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
-    "2016_06_1p_genus": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
-    "2016_06_1p_spec_corrected": "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
-    "2016_06_1p_spec": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
     "2019_01_meta": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
     "2019_10_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
     "2019_10_meta_human_univec": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
