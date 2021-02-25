@@ -120,12 +120,6 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 
 
-
-#2016 2016_06_PPKC_metagenome_test_1p_spec_change
-#python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus  --readType SE --debug --no_prinseq --force_restart $fastq
-#python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus --aligner bwamem --no_abra --mq30 --readType SE --debug --no_prinseq --force_restart $fastq
-#python3 run_Wochenende.py --metagenome 2016_06_1p_spec_corrected --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
-
 # Genomes
 #python3 run_Wochenende.py --metagenome strept_halo --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome k_variicola --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
