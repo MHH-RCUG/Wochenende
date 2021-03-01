@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.8.8 add MQ20 mapping quality option 
 1.8.7 add Clostridium botulinum ref
 1.8.6 remove 2016 references as unused
 1.8.5 add 2021_02 ref 2021_02_human_bact_fungi_vir.fa.masked.fa and 2021_02_human_bact_fungi_vir_unmasked.fa (no blacklister)
@@ -60,7 +61,7 @@ import argparse
 import time
 
 
-version = "1.8.7 - Mar 2021"
+version = "1.8.8 - Mar 2021"
 
 ##############################
 # CONFIGURATION
@@ -972,24 +973,25 @@ def runGetUnmappedReads(stage_infile, readType):
     return 0
 
 
-def runMQ30(stage_infile):
-    # Remove reads with less than MQ30
-    stage = "Remove MQ30 reads"
+def runMappingQualityFilter(stage_infile, mapping_quality_integer):
+    # Remove reads with less than MQ20/30
+    stage = "Remove MQ20/30 reads"
     prefix = stage_infile.replace(".bam", "")
-    stage_outfile = prefix + ".mq30.bam"
-    samtoolsMQ30Cmd = [
+    stage_outfile = prefix + ".mq" + mapping_quality_integer + ".bam"
+    samtoolsMQCmd = [
         path_samtools,
         "view",
         "-@",
         IOthreadsConstant,
         "-b",
         "-q",
-        "30",
+        #"30",
+        mapping_quality_integer,
         stage_infile,
         "-o",
         stage_outfile,
     ]
-    runStage(stage, samtoolsMQ30Cmd)
+    runStage(stage, samtoolsMQCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
@@ -1475,8 +1477,8 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
-            # currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
-            # currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+            # currentFile = runFunc("runBAMindex12", runBAMindex, currentFile, False)
+            # currentFile = runFunc("runIDXstats12", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
             # currentFile = runFunc("markDups", markDups, currentFile, True)
@@ -1486,10 +1488,15 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, 20, True)
+            currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, 30, True)
+            currentFile = runFunc("runBAMindex10", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats10", runIDXstats, currentFile, False)
 
         if not args.no_abra and not args.longread:
             currentFile = runFunc(
@@ -1596,9 +1603,13 @@ def main(args, sys_argv):
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, 20, True)
+            currentFile = runFunc("runBAMindex6", runBAMindex, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, 30, True)
+            currentFile = runFunc("runBAMindex7", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
