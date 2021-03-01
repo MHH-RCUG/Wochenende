@@ -977,7 +977,7 @@ def runMappingQualityFilter(stage_infile, mapping_quality_integer):
     # Remove reads with less than MQ20/30
     stage = "Remove MQ20/30 reads"
     prefix = stage_infile.replace(".bam", "")
-    stage_outfile = prefix + ".mq" + mapping_quality_integer + ".bam"
+    stage_outfile = prefix + ".mq" + str(mapping_quality_integer) + ".bam"
     samtoolsMQCmd = [
         path_samtools,
         "view",
