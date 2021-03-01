@@ -32,6 +32,9 @@ bamtxt=$1
 # Activate env on cluster node
 conda activate wochenende
 
+#2021
+#ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
+#ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa
 #2020
 #ref="/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa"
 ref="/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa"
@@ -44,12 +47,7 @@ ref="/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa"
 #ref="/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta"
 #ref="/lager2/rcug/seqres/metagenref/bwa/mm10_plus_OMM.fasta"
-#pre2019
-#ref2016="/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa"
-#ref_nov18="/ngsssd1/tuem_mp/refseq2018/f_all_refgenomes_2018/all_refgenomes_2018.fasta"
-#ref="/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa"
-#ref="/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa"
-#ref="/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa"
+
 
 #genomes
 #ref="/lager2/rcug/seqres/HS/bwa/hg19.fa"
