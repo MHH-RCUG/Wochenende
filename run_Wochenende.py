@@ -1739,6 +1739,12 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "--mq20",
+        help="Remove reads with mapping quality less than 20. Recommended for metagenome and amplicon analysis. Less stringent than MQ30.",
+        action="store_true",
+    )
+
+    parser.add_argument(
         "--mq30",
         help="Remove reads with mapping quality less than 30. Recommended for metagenome and amplicon analysis.",
         action="store_true",

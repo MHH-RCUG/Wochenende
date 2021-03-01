@@ -40,13 +40,15 @@ fastq=$1
 #--aligner ngmlr
 #--nextera  - remove Nextera adapters with Trimmomatic, not default Ultra II / Truseq adapters
 #--no_abra  - no read realignment
+#--mq20     - remove reads with a mapping quality of less than 20. Less stringent than MQ30
 #--mq30     - remove reads with a mapping quality of less than 30
-#--readType SE
-#--readType PE
+#--readType SE - single ended reads
+#--readType PE - paired end reads
 #--debug
 #--force_restart
 #--remove_mismatching 3 (remove those reads with 3 or more mismatches) # questionable for very long reads
-#--no_duplicate_removal
+#--remove_mismatching 250 (remove those reads with 250 or more mismatches) # for long reads set to ~10% of median read length.    
+#--no_duplicate_removal  - do not remove duplicate reads
 #--no_prinseq   - do not filter out low complexity initial reads using prinseq (default in this file after 2020_11)
 #--no_fastqc
 #--testWochenende - runs the test scripts with test reads vs a testDB and checks if all seems well.

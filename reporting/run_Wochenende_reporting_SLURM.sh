@@ -5,7 +5,7 @@
 #SBATCH -p normal
 
 # set run on x MB node only
-#SBATCH --mem 20000
+#SBATCH --mem 40000
 
 # set run on bigmem node only
 #SBATCH --cpus-per-task 4
@@ -33,11 +33,11 @@ bamtxt=$1
 conda activate wochenende
 
 #2021
-#ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
+ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
 #ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa
 #2020
 #ref="/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa"
-ref="/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa"
+#ref="/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa"
 #2019
 #ref_jan19="/ngsssd1/tuem_mp/refseqs/refseq2019_Jan/e_all_refseqs_Jan2019/all_kingdoms_refseq_2019_Jan_final.fasta"
 #ref_test19="/ngsssd1/tuem_mp/refseqs/refseq2019_Jan/e_all_refseqs_Jan2019/reference_file_without_PseudomonasAeruginosa/all_kingdoms_refseq_2019_Jan_final_withoutPA.fasta"
