@@ -23,7 +23,7 @@ done
 
 
 echo "INFO:  Filtering and sorting  Wochenende output bam.txt files"
-## Filter: $3>= means column3 must have 20 or more reads
+## Filter: $3>= means column3 (no. reads assigned to taxon) must have 20 or more reads
 # Sorted descending in column 3 for within experiment clarity 
 for i in `find . -name "*.bam.txt"`
         do

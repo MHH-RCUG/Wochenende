@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.8.7 add Clostridium botulinum ref
 1.8.6 remove 2016 references as unused
 1.8.5 add 2021_02 ref 2021_02_human_bact_fungi_vir.fa.masked.fa and 2021_02_human_bact_fungi_vir_unmasked.fa (no blacklister)
 1.8.4 add new bacterial refs
@@ -59,7 +60,7 @@ import argparse
 import time
 
 
-version = "1.8.6 - Feb 2021"
+version = "1.8.7 - Mar 2021"
 
 ##############################
 # CONFIGURATION
@@ -116,8 +117,9 @@ path_refseq_dict = {
     "strept_halo": "/lager2/rcug/seqres/metagenref/bwa/strept_halo.fa",
     "k_variicola": "/lager2/rcug/seqres/metagenref/bwa/k_variicola.fa",
     "k_oxytoca": "/lager2/rcug/seqres/metagenref/bwa/k_oxytoca.fa",
-    "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
+    "clost_bot": "/lager2/rcug/seqres/metagenref/bwa/clost_bot.fa",
     "clost_diff": "/lager2/rcug/seqres/metagenref/bwa/clost_diff.fa",
+    "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
     "citro_freundii": "/lager2/rcug/seqres/metagenref/bwa/citro_freundii.fa"
 }
 # Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
