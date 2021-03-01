@@ -125,6 +125,7 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 #python3 run_Wochenende.py --metagenome strept_halo --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome k_variicola --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome k_oxytoca --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome clost_bot --threads $cpus --readType PE  --aligner bwamem --mq30 --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome clost_perf --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome clost_diff --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome citro_freundii --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq

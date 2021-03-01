@@ -1604,11 +1604,11 @@ def main(args, sys_argv):
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
 
         if args.mq20:
-            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, 20, True)
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, True, 20)
             currentFile = runFunc("runBAMindex6", runBAMindex, currentFile, False)
 
         if args.mq30:
-            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, 30, True)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, True, 30)
             currentFile = runFunc("runBAMindex7", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
