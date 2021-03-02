@@ -4,6 +4,7 @@
 version="0.15, Feb 2021"
 
 #Changelog
+#0.16 - TODO Use environment variables for haybaler and wochenende installations
 #0.15 - check for files to cleanup before moving
 #0.14 - add haybaler env and use this
 #0.13 - copy filled directory plots and reporting into current directory, if missing

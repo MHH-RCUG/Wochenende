@@ -26,7 +26,7 @@ Changelog
 1.7.2 add ngmlr --min-residues cutoff, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
-1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? 
+1.6.9 TODO WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? - 
 1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
 1.6.7 add new viral ref EZV0_1_database2_cln.fasta
 1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
