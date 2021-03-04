@@ -4,6 +4,7 @@
 version="0.15, Feb 2021"
 
 #Changelog
+#0.16 - TODO Use environment variables for haybaler and wochenende installations
 #0.15 - check for files to cleanup before moving
 #0.14 - add haybaler env and use this
 #0.13 - copy filled directory plots and reporting into current directory, if missing
@@ -18,7 +19,7 @@ echo "INFO: Remember to run this using the haybaler conda environment if availab
 echo "INFO: WORK IN PROGRESS ! . May not completely work for all steps, still useful."
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
-echo "INFO:  eg. run get_wochenende.sh to get the relevant files"
+echo "INFO:  eg. run bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
@@ -108,7 +109,7 @@ cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .
 #mv output output_$rand_number
-bash run_haybaler.sh >/dev/null 2>&1
+bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer

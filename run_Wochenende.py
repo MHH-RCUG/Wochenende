@@ -8,6 +8,8 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.8.9 write ref to file reporting/ref.tmp, so don't need to set the correct refseq in run_Wochenende_reporting_SLURM.sh
+1.8.8 add MQ20 mapping quality option 
 1.8.7 add Clostridium botulinum ref
 1.8.6 remove 2016 references as unused
 1.8.5 add 2021_02 ref 2021_02_human_bact_fungi_vir.fa.masked.fa and 2021_02_human_bact_fungi_vir_unmasked.fa (no blacklister)
@@ -25,7 +27,7 @@ Changelog
 1.7.2 add ngmlr --min-residues cutoff, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
-1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? 
+1.6.9 TODO WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? - 
 1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
 1.6.7 add new viral ref EZV0_1_database2_cln.fasta
 1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
@@ -60,7 +62,7 @@ import argparse
 import time
 
 
-version = "1.8.7 - Mar 2021"
+version = "1.8.9 - Mar 2021"
 
 ##############################
 # CONFIGURATION
@@ -238,6 +240,12 @@ def addToProgress(func_name, c_file):
         f.writelines(progress_lines)
     return progress_lines[1].replace("\n", "")
 
+
+def createReftmpFile(args):
+    # Write refseq as one line (overwrite) in file reporting/ref.tmp
+    with open("reporting/ref.tmp", mode="w") as f:
+        f.write(path_refseq_dict.get(args.metagenome))
+    
 
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
     # Run function and add it to the progress file
@@ -972,24 +980,25 @@ def runGetUnmappedReads(stage_infile, readType):
     return 0
 
 
-def runMQ30(stage_infile):
-    # Remove reads with less than MQ30
-    stage = "Remove MQ30 reads"
+def runMappingQualityFilter(stage_infile, mapping_quality_integer):
+    # Remove reads with less than MQ20/30
+    stage = "Remove MQ20/30 reads"
     prefix = stage_infile.replace(".bam", "")
-    stage_outfile = prefix + ".mq30.bam"
-    samtoolsMQ30Cmd = [
+    stage_outfile = prefix + ".mq" + str(mapping_quality_integer) + ".bam"
+    samtoolsMQCmd = [
         path_samtools,
         "view",
         "-@",
         IOthreadsConstant,
         "-b",
         "-q",
-        "30",
+        #"30",
+        mapping_quality_integer,
         stage_infile,
         "-o",
         stage_outfile,
     ]
-    runStage(stage, samtoolsMQ30Cmd)
+    runStage(stage, samtoolsMQCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
@@ -1382,6 +1391,9 @@ def main(args, sys_argv):
     global progress_file
     progress_file = args.fastq + "progress.tmp"
     currentFile = createProgressFile(args)
+    print("Meta/genome selected: " + args.metagenome)
+    # write Meta/genome ref to file
+    createReftmpFile(args)
     threads = args.threads
     global inputFastq
     inputFastq = args.fastq
@@ -1398,7 +1410,7 @@ def main(args, sys_argv):
     if args.nextera:
         adapter_path = adapter_fastp_general
 
-    print("Meta/genome selected: " + args.metagenome)
+
 
     ##############
     # Single ended input reads
@@ -1414,7 +1426,7 @@ def main(args, sys_argv):
             currentFile = runFunc(
                 "runFastpSE", runFastpSE, currentFile, True, args.threads, adapter_path
             )
-        if args.trim_galore:
+        if args.trim_galore and not args.longread:
             currentFile = runFunc(
                 "runTrimGaloreSE",
                 runTrimGaloreSE,
@@ -1475,8 +1487,8 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
-            # currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
-            # currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+            # currentFile = runFunc("runBAMindex12", runBAMindex, currentFile, False)
+            # currentFile = runFunc("runIDXstats12", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
             # currentFile = runFunc("markDups", markDups, currentFile, True)
@@ -1486,10 +1498,15 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, True, "20")
+            currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, True, "30")
+            currentFile = runFunc("runBAMindex10", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats10", runIDXstats, currentFile, False)
 
         if not args.no_abra and not args.longread:
             currentFile = runFunc(
@@ -1596,9 +1613,13 @@ def main(args, sys_argv):
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, True, "20")
+            currentFile = runFunc("runBAMindex6", runBAMindex, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, True, "30")
+            currentFile = runFunc("runBAMindex7", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
@@ -1724,6 +1745,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--no_abra",
         help="Skips steps for Abra realignment. Recommended for metagenome and amplicon analysis.",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--mq20",
+        help="Remove reads with mapping quality less than 20. Recommended for metagenome and amplicon analysis. Less stringent than MQ30.",
         action="store_true",
     )
 
