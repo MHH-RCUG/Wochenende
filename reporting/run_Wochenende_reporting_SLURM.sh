@@ -32,8 +32,14 @@ bamtxt=$1
 # Activate env on cluster node
 conda activate wochenende
 
+
+# read reference path from ref.tmp file in the reporting (current) directory 
+ref=$(<ref.tmp)
+echo "$ref"
+
+# Following will then by obsolete when the file reporting/ref.tmp is filled
 #2021
-ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
+#ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
 #ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa
 #2020
 #ref="/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa"
@@ -60,6 +66,7 @@ ref=/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
 #ref="/lager2/rcug/seqres/DR/bwa/GRCz10.fa"
 #ref="/lager2/rcug/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa"
 #ref="/lager2/rcug/seqres/PA/bwa/NC_008463.fna"
+
 
 
 # Run script

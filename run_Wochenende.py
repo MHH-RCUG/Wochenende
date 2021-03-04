@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.8.9 TODO write ref to file reporting/ref.tmp, so don't need to set this in run_Wochenende_reporting_SLURM.sh
 1.8.8 add MQ20 mapping quality option 
 1.8.7 add Clostridium botulinum ref
 1.8.6 remove 2016 references as unused
@@ -239,6 +240,12 @@ def addToProgress(func_name, c_file):
         f.writelines(progress_lines)
     return progress_lines[1].replace("\n", "")
 
+
+def createReftmpFile(args):
+    # Write refseq as one line (overwrite) in file reporting/ref.tmp
+    with open("reporting/ref.tmp", mode="w") as f:
+        f.write(path_refseq_dict.get(args.metagenome))
+    
 
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
     # Run function and add it to the progress file
@@ -1384,6 +1391,9 @@ def main(args, sys_argv):
     global progress_file
     progress_file = args.fastq + "progress.tmp"
     currentFile = createProgressFile(args)
+    print("Meta/genome selected: " + args.metagenome)
+    # write Meta/genome ref to file
+    createReftmpFile(args)
     threads = args.threads
     global inputFastq
     inputFastq = args.fastq
@@ -1400,7 +1410,7 @@ def main(args, sys_argv):
     if args.nextera:
         adapter_path = adapter_fastp_general
 
-    print("Meta/genome selected: " + args.metagenome)
+
 
     ##############
     # Single ended input reads
@@ -1416,7 +1426,7 @@ def main(args, sys_argv):
             currentFile = runFunc(
                 "runFastpSE", runFastpSE, currentFile, True, args.threads, adapter_path
             )
-        if args.trim_galore:
+        if args.trim_galore and not args.longread:
             currentFile = runFunc(
                 "runTrimGaloreSE",
                 runTrimGaloreSE,

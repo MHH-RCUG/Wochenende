@@ -19,7 +19,7 @@ echo "INFO: Remember to run this using the haybaler conda environment if availab
 echo "INFO: WORK IN PROGRESS ! . May not completely work for all steps, still useful."
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
-echo "INFO:  eg. run get_wochenende.sh to get the relevant files"
+echo "INFO:  eg. run bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
