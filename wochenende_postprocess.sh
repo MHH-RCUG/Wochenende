@@ -109,7 +109,7 @@ cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .
 #mv output output_$rand_number
-bash run_haybaler.sh >/dev/null 2>&1
+bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
