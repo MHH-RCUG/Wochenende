@@ -8,7 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
-1.8.9 TODO write ref to file reporting/ref.tmp, so don't need to set this in run_Wochenende_reporting_SLURM.sh
+1.8.9 write ref to file reporting/ref.tmp, so don't need to set the correct refseq in run_Wochenende_reporting_SLURM.sh
 1.8.8 add MQ20 mapping quality option 
 1.8.7 add Clostridium botulinum ref
 1.8.6 remove 2016 references as unused
@@ -62,7 +62,7 @@ import argparse
 import time
 
 
-version = "1.8.8 - Mar 2021"
+version = "1.8.9 - Mar 2021"
 
 ##############################
 # CONFIGURATION
