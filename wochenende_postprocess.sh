@@ -104,6 +104,23 @@ echo "INFO: Completed Wochenende reporting"
 
 # Run haybaler
 echo "INFO: Start Haybaler"
+mkdir haybaler
+count_mq30=`ls -1 *mq30.bam*us*.csv 2>/dev/null | wc -l`
+count_dup=`ls -1 *dup.bam*us*.csv 2>/dev/null | wc -l`
+count=`ls -1 *.bam*us*.csv 2>/dev/null | wc -l`
+if [ $count_mq30 != 0 ]
+    then
+    cp *mq30.bam*us*.csv haybaler
+elif [ $count_dup != 0 ]
+    then
+    cp *dup.bam*us*.csv haybaler
+elif [ $count != 0 ]
+    then
+    cp *.bam*us*.csv haybaler
+else
+    echo "INFO: No bam*us*.csv found to process for haybaler"
+fi
+cd haybaler
 conda activate haybaler
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
@@ -111,6 +128,7 @@ cp $haybaler_dir/*.R .
 #mv output output_$rand_number
 bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
+cd ..
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
 
