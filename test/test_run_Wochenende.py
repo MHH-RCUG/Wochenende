@@ -1,6 +1,7 @@
 import pytest
 import subprocess
 import os
+import re
 from itertools import combinations, product, chain
 
 
@@ -196,9 +197,25 @@ class TestFunctional:
         print(f'\n# Running Tests in: {os.getcwd()}')
         print(f'# Seeing files: {os.listdir(setup_tmpdir)}')
 
-        cmd = ['python3', 'run_Wochenende.py'] + list(pipeline_arguments) + \
-              ['reads_R1.fastq']
-        print(f'# Execute: {" ".join(cmd)}')
+        slurm_cmd = ['python3', 'run_Wochenende.py'] + list(pipeline_arguments) + \
+                    ['$fastq']
+
+        with open('run_Wochenende_SLURM.sh', 'r') as f:
+            slurm_file = f.read()
+
+        slurm_file = re.sub('^#python3 run_Wochenende.py .*$', '', slurm_file, flags=re.MULTILINE)
+        slurm_file = re.sub('^python3 run_Wochenende.py .*$', '', slurm_file, flags=re.MULTILINE)
+        slurm_file = slurm_file + ' '.join(slurm_cmd)
+
+        sbatch_test_filename = 'run_Wochenende_SLURM_test.sh'
+        with open(sbatch_test_filename, 'w') as f:
+            f.write(slurm_file)
+            f.flush()
+
+        cmd = ['sbatch', sbatch_test_filename, 'reads_R1.fastq']
+
+        print(' '.join(cmd))
+        print(slurm_file)
 
         proc = subprocess.run(
             cmd,
