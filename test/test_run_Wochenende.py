@@ -33,12 +33,12 @@ class TestFunctional:
     _p_options = {
         '--aligner': ['bwamem'],  # , 'minimap2', 'ngmlr'],
         '--readType': ['SE'],  # , 'PE'],
-        '--threads': ['1', '2'],  # , 4, 8, 16, 32, 56, 80],
+        '--threads': ['8'],  # , 4, 8, 16, 32, 56, 80],
         # '--remove_mismatching': ['1'  ]#  , 2, 3, 4, 5],
     }
     _p_flags = [
         '--fastp',
-        '--nextera',
+        # '--nextera',
         # '--trim_galore',
         # '--longread',
         # '--no_duplicate_removal',
