@@ -1,7 +1,7 @@
 import pytest
 import subprocess
 import os
-import re
+# import re
 from itertools import combinations, product, chain
 
 
@@ -193,18 +193,18 @@ class TestFunctional:
     def test_pipeline_call(self, setup_tmpdir, pipeline_arguments):
         """Main pipeline test using subprocesses"""
 
+        # change to temporary directory
         os.chdir(setup_tmpdir)
         print(f'\n# Running Tests in: {os.getcwd()}')
         print(f'# Seeing files: {os.listdir(setup_tmpdir)}')
 
-        slurm_cmd = ['python3', 'run_Wochenende.py'] + list(pipeline_arguments) + \
-                    ['$fastq']
-
-        with open('run_Wochenende_SLURM.sh', 'r') as f:
+        # Create slurm job script
+        slurm_template = os.path.join('test', 'slurm-template.sh')
+        with open(slurm_template, 'r') as f:
             slurm_file = f.read()
 
-        slurm_file = re.sub('^#python3 run_Wochenende.py .*$', '', slurm_file, flags=re.MULTILINE)
-        slurm_file = re.sub('^python3 run_Wochenende.py .*$', '', slurm_file, flags=re.MULTILINE)
+        slurm_cmd = ['python3', 'run_Wochenende.py'] + list(pipeline_arguments) + \
+                    ['$fastq']
         slurm_file = slurm_file + ' '.join(slurm_cmd) + '\n wait'
 
         sbatch_test_filename = 'run_Wochenende_SLURM_test.sh'
@@ -212,10 +212,11 @@ class TestFunctional:
             f.write(slurm_file)
             f.flush()
 
-        cmd = ['srun', sbatch_test_filename, 'reads_R1.fastq']
+        # print(slurm_file)
 
-        print(' '.join(cmd))
-        print(slurm_file)
+        # Start slurm subprocess
+        cmd = ['srun', sbatch_test_filename, 'reads_R1.fastq']
+        # print(' '.join(cmd))
 
         proc = subprocess.run(
             cmd,
