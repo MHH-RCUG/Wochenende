@@ -205,14 +205,14 @@ class TestFunctional:
 
         slurm_file = re.sub('^#python3 run_Wochenende.py .*$', '', slurm_file, flags=re.MULTILINE)
         slurm_file = re.sub('^python3 run_Wochenende.py .*$', '', slurm_file, flags=re.MULTILINE)
-        slurm_file = slurm_file + ' '.join(slurm_cmd)
+        slurm_file = slurm_file + ' '.join(slurm_cmd) + '\n wait'
 
         sbatch_test_filename = 'run_Wochenende_SLURM_test.sh'
         with open(sbatch_test_filename, 'w') as f:
             f.write(slurm_file)
             f.flush()
 
-        cmd = ['sbatch', sbatch_test_filename, 'reads_R1.fastq']
+        cmd = ['srun', sbatch_test_filename, 'reads_R1.fastq']
 
         print(' '.join(cmd))
         print(slurm_file)
