@@ -87,7 +87,7 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 
 
 
-# 2020_03 reference (unmasked, Achromobacter problem, not recommended)
+# 2020_03 reference (unmasked, Achromobacter problem and other masking issues, use 2020_05 above or 2021_02 instead)
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
