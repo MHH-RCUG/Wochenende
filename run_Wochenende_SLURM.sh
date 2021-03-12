@@ -69,7 +69,7 @@ cpus=12
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner minimap2 --no_abra --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 
-# 2021_02 reference update of 2020_03, with fungi, can better detect C. diff, and B. subtilis
+# 2021_02 reference update of 2020_03, with fungi, can better detect C. diff, and B. subtilis. No UNVERIF sp like one Achromobacter
 # blacklister masked
 python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.p --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem  --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
@@ -80,11 +80,17 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 #python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_unmasked --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
 
 
-# 2020_03 reference
+# 2020_05 reference (blacklister-masked version of 2020_03 below)
+#python3 run_Wochenende.py --metagenome 2020_05_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_05_meta_human --threads $cpus --aligner bwamem --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#python3 run_Wochenende.py --metagenome 2020_05_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
+
+
+
+# 2020_03 reference (unmasked, Achromobacter problem and other masking issues, use 2020_05 above or 2021_02 instead)
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
-#python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner ngmlr --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
 
 
 
@@ -92,8 +98,6 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 # with fastp
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
-# longread with ngmlr aligner
-#python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner ngmlr --mq30 --remove_mismatching 250 --readType SE --debug --force_restart $fastq
 # longread with minimap2 aligner
 #python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner minimap2 --mq30  --remove_mismatching 250 --readType SE --debug --force_restart $fastq
 
@@ -126,6 +130,7 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 #python3 run_Wochenende.py --metagenome k_variicola --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome k_oxytoca --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome clost_bot --threads $cpus --readType PE  --aligner bwamem --mq30 --debug --force_restart --no_prinseq $fastq
+#python3 run_Wochenende.py --metagenome clost_bot_e --threads $cpus --readType PE  --aligner bwamem --mq30 --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome clost_perf --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome clost_diff --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
 #python3 run_Wochenende.py --metagenome citro_freundii --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
@@ -149,7 +154,4 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 # Test wochenemde with fastp - the auto tests here will fail here since fastp not trm is in the filename
 #python3 run_Wochenende.py --metagenome testdb --fastp --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
 
-# Test new ngmlr aligner
-#python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner ngmlr --readType SE --debug --force_restart $fastq
-#python3 run_Wochenende.py --metagenome testdb --longread --threads $cpus --aligner minimap2 --readType SE --debug --force_restart $fastq
 

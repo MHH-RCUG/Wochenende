@@ -8,6 +8,8 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.9.1 add new bacterial ref clost_bot_e_contigs.fa
+1.9.0 add 2020_05 reference (masked by blacklister version of 2020_03)
 1.8.9 write ref to file reporting/ref.tmp, so don't need to set the correct refseq in run_Wochenende_reporting_SLURM.sh
 1.8.8 add MQ20 mapping quality option 
 1.8.7 add Clostridium botulinum ref
@@ -62,7 +64,7 @@ import argparse
 import time
 
 
-version = "1.8.9 - Mar 2021"
+version = "1.9.1 - Mar 2021"
 
 ##############################
 # CONFIGURATION
@@ -93,6 +95,7 @@ path_refseq_dict = {
     "2021_02_meta_fungi_human_masked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa",
     "2021_02_meta_fungi_human_unmasked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa",
     "2020_09_massiveref_human": "/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa",
+    "2020_05_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_05.fa",
     "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
     "2019_01_meta": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
     "2019_10_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
@@ -120,6 +123,7 @@ path_refseq_dict = {
     "k_variicola": "/lager2/rcug/seqres/metagenref/bwa/k_variicola.fa",
     "k_oxytoca": "/lager2/rcug/seqres/metagenref/bwa/k_oxytoca.fa",
     "clost_bot": "/lager2/rcug/seqres/metagenref/bwa/clost_bot.fa",
+    "clost_bot_e": "/lager2/rcug/seqres/metagenref/bwa/clost_bot_e_contigs.fa",
     "clost_diff": "/lager2/rcug/seqres/metagenref/bwa/clost_diff.fa",
     "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
     "citro_freundii": "/lager2/rcug/seqres/metagenref/bwa/citro_freundii.fa"
