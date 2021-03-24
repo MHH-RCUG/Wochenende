@@ -35,16 +35,15 @@ for i in *calmd.bam; do
     srun -c 1 samtools index extract/$sec_input.filt.bam
 
 	# Direct submission, not SLURM
-	samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
-    samtools index extract/$sec_input.filt.bam
+	#samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
+    #samtools index extract/$sec_input.filt.bam
 
 
 
 	echo "INFO: Extracting data from extracted specified BAMs"
 	window_input_bam=extract/$sec_input.filt.bam	
 	window_input_bam_prefix=${window_input_bam%%.bam}
-	# Get coverage depth in tiny windows for small ref seqs, eg viruses
-	# 8 threads, Windows 1000, overlap 500, -c minimum coverage. 
+	# Get coverage depth in tiny windows (eg 1kbp, set above) for small ref seqs, eg viruses
 	# SLURM
 	srun -c $threads -p $queue sambamba depth window -t $threads --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${window_input_bam_prefix}.bam > ${window_input_bam_prefix}_cov_window.txt &
 
