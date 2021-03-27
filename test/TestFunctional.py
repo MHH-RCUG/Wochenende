@@ -6,6 +6,7 @@ from itertools import combinations, product, chain
 
 
 class TestFunctional:
+    __test__ = False
     """Tests for the overall functionality of the Wochenende pipeline.
 
     Attributes
@@ -32,22 +33,22 @@ class TestFunctional:
         '--debug'
     ]
     _p_options = {
-        '--aligner': ['bwamem'],  # , 'minimap2', 'ngmlr'],
-        '--readType': ['SE'],  # , 'PE'],
-        '--threads': ['8'],  # , 4, 8, 16, 32, 56, 80],
-        # '--remove_mismatching': ['1'  ]#  , 2, 3, 4, 5],
+        '--aligner': ['bwamem', 'minimap2', 'ngmlr'],
+        '--readType': ['SE', 'PE'],
+        '--threads': ['8', '4', '8', '16', '32', '56', '80'],
+        '--remove_mismatching': ['1', '2', '3', '4', '5'],
     }
     _p_flags = [
         '--fastp',
-        # '--nextera',
-        # '--trim_galore',
-        # '--longread',
-        # '--no_duplicate_removal',
-        # '--no_prinseq',
-        # '--no_fastqc',
-        # '--no_abra',
-        # '--mq30',
-        # '--force_restart'
+        '--nextera',
+        '--trim_galore',
+        '--longread',
+        '--no_duplicate_removal',
+        '--no_prinseq',
+        '--no_fastqc',
+        '--no_abra',
+        '--mq30',
+        '--force_restart'
     ]
 
     def _gen_fixed_arguments(self):
@@ -190,6 +191,7 @@ class TestFunctional:
             metafunc.parametrize(argnames='pipeline_arguments',
                                  argvalues=self._gen_pipeline_arguments())
 
+    @pytest.mark.slow
     def test_pipeline_call(self, setup_tmpdir, pipeline_arguments):
         """Main pipeline test using subprocesses"""
 
