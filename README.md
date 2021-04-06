@@ -361,4 +361,4 @@ Thanks to:
 
 @sannareddyk Bug testing, updates, evaluation
 
-@poer-sophia Code review, testing, maintenance, programming
+@poer-sophia Code review, testing, maintenance, programming (haybaler and more)
