@@ -225,8 +225,21 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 
 ```
 
+## Run the postprocessing automatically (recommended!)
 
-### Running the metagenomic reporting scripts
+After a successful Wochenende run, make sure you check that all bams have been created and are sized as expected eg `ls -lh *.bam`
+
+Now start the postprocessing script `bash wochenende_postprocess.sh`
+- run sambamba depth to get read coverage of all configured BAM files in the current directory
+- run the Wochenende plot to create coverage diagrams
+- run wochenende reporting to count and normalize all read data
+- run the Haybaler report integration tool (provided it is installed and configured)
+- clean up files
+
+This script requires haybaler to be installed, and will otherwise fail.
+
+
+### Running the metagenomic reporting scripts manually 
 
 This tool (which requires python v3.6+) reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
 Normalizations are for:
