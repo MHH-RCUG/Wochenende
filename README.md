@@ -23,12 +23,15 @@ Project Haybaler https://github.com/MHH-RCUG/haybaler allows postprocessing of W
 - prepare results for heatmaps
 - create heatmaps using multiple different R libraries
 
+### Did you know ? 
+Wochenende means weekend in German. The original developer, Tobias, called the pipeline Wochenende, because you can start it running and go off to enjoy your weekend early.
+
 ![Alt text](dependencies/wochenende_2.png?raw=true "Wochenende schematic")
 
 
 ## Platforms
 
-Wochenende has currently (July 2020) only been tested on Ubuntu Linux 20.04 and 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment and Python3.6+ is critical to get things working.
+Wochenende has currently (July 2020) only been tested on Ubuntu Linux 20.04 and 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment, BASH and Python3.6+ is critical to get things working.
 
 
 ## Usage 
@@ -37,8 +40,8 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 
 ### SLURM usage
 
-1. Copy all the run_Wochenende* files to your directory with your FASTQ files
-`cp /path/to/wochenende/run_Wochenende* .`
+1. Copy all the run_Wochenende* files and prerequisite subfolders to your directory with your FASTQ files
+`cp /path/to/wochenende/get_wochenende.sh .` `bash get_wochenende.sh`
 2. Adjust settings in the script
 `nano run_Wochenende_SLURM.sh`
 3. Run the pipeline using SLURM (the "_R1" is important)
@@ -232,7 +235,7 @@ After a successful Wochenende run, make sure you check that all bams have been c
 Now start the postprocessing script `bash wochenende_postprocess.sh`
 - run sambamba depth to get read coverage of all configured BAM files in the current directory
 - run the Wochenende plot to create coverage diagrams
-- run wochenende reporting to count and normalize all read data
+- run Wochenende reporting to count and normalize all read data
 - run the Haybaler report integration tool (provided it is installed and configured)
 - clean up files
 
