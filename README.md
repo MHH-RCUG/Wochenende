@@ -18,6 +18,10 @@ Features include (see programs listed below at the bottom of this page)
 - Normalization (to Reads per Human cell, Reads Per Million reads per Million bases etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
 
+Project Haybaler https://github.com/MHH-RCUG/haybaler allows postprocessing of Wochenende results:
+- collation/integration of multiple reports (reporting csv or bam.txt files) using Python Pandas
+- prepare results for heatmaps
+- create heatmaps using multiple different R libraries
 
 ![Alt text](dependencies/wochenende_2.png?raw=true "Wochenende schematic")
 
