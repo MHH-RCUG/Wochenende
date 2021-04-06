@@ -13,10 +13,9 @@ version="0.15, Feb 2021"
 #0.10 - initial commits
 
 
-echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting and reporting" 
+echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
-echo "INFO: WORK IN PROGRESS ! . May not completely work for all steps, still useful."
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
 echo "INFO:  eg. run bash get_wochenende.sh to get the relevant files"
