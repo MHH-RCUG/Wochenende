@@ -60,15 +60,15 @@ python3 run_Wochenende.py
 
 Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
 Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors
-version: 1.7.5 - August 2020
+version: 1.9.1 - Mar 2021
 
 usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2,ngmlr}]
                          [--readType {PE,SE}]
-                         [--metagenome {2020_03_meta_human,2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,ezv_viruses,testdb}]
+                         [--metagenome {2021_02_meta_fungi_human_masked,2021_02_meta_fungi_human_unmasked,2020_09_massiveref_human,2020_05_meta_human,2020_03_meta_human,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,ecoli,nci_viruses,ezv_viruses,testdb,strept_halo,k_variicola,k_oxytoca,clost_bot,clost_bot_e,clost_diff,clost_perf,citro_freundii}]
                          [--threads THREADS] [--fastp] [--nextera]
                          [--trim_galore] [--debug] [--longread]
                          [--no_duplicate_removal] [--no_prinseq] [--no_fastqc]
-                         [--no_abra] [--mq30]
+                         [--no_abra] [--mq20] [--mq30]
                          [--remove_mismatching REMOVE_MISMATCHING]
                          [--force_restart] [--testWochenende]
                          fastq
@@ -83,10 +83,10 @@ optional arguments:
                         Usage of minimap2 and ngmlr currently optimized for
                         nanopore data only.
   --readType {PE,SE}    Single end or paired end data
-  --metagenome {2020_03_meta_human,2016_06_1p_genus,2016_06_1p_spec_corrected,2016_06_1p_spec,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,nci_viruses,ezv_viruses,testdb}
+  --metagenome {2021_02_meta_fungi_human_masked,2021_02_meta_fungi_human_unmasked,2020_09_massiveref_human,2020_05_meta_human,2020_03_meta_human,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,ecoli,nci_viruses,ezv_viruses,testdb,strept_halo,k_variicola,k_oxytoca,clost_bot,clost_bot_e,clost_diff,clost_perf,citro_freundii}
                         Meta/genome reference to use
   --threads THREADS     Number of threads to use
-  --fastp               Use tool fastp instead of fastqc and trimmomatic
+  --fastp               Use fastp trimmer instead of fastqc and trimmomatic
   --nextera             Attempt to remove Illumina Nextera adapters and
                         transposase sequence (default is Illumina Ultra II
                         adapters, but Illumina Nextera more common in future)
@@ -103,6 +103,9 @@ optional arguments:
   --no_fastqc           Skips FastQC quality control step.
   --no_abra             Skips steps for Abra realignment. Recommended for
                         metagenome and amplicon analysis.
+  --mq20                Remove reads with mapping quality less than 20.
+                        Recommended for metagenome and amplicon analysis. Less
+                        stringent than MQ30.
   --mq30                Remove reads with mapping quality less than 30.
                         Recommended for metagenome and amplicon analysis.
   --remove_mismatching REMOVE_MISMATCHING
@@ -153,9 +156,9 @@ conda env update -f env.wochenende.yml
 - [ABRA2](https://github.com/mozack/abra2)
 - [bamtools](https://github.com/pezmaster31/bamtools)
 - [BWA](https://github.com/lh3/bwa)
+- [ea-utils](https://github.com/ExpressionAnalysis/ea-utils)
 - [fastp](https://github.com/OpenGene/fastp)
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-- [ea-utils](https://github.com/ExpressionAnalysis/ea-utils)
 - [FastUniq](https://sourceforge.net/projects/fastuniq/)
 - [Minimap2](https://github.com/lh3/minimap2)
 - [NGMLR](https://github.com/philres/ngmlr)
@@ -165,6 +168,9 @@ conda env update -f env.wochenende.yml
 - [samtools](https://github.com/samtools/samtools)
 - [trim_galore](https://github.com/FelixKrueger/TrimGalore)
 - [trimmomatic](https://github.com/timflutre/trimmomatic)
+
+Postprocessing
+- [Haybaler](https://github.com/MHH-RCUG/haybaler)
 
 
 
@@ -185,30 +191,30 @@ Initial quality checks and read filtering.
 - MB_AERO_044_S70_R1.ndp.lc.trm.s.bam.unmapped.fastq    # Unmapped reads in FASTQ format. Can be further analysed, eg with alternative programs such as nextflow-blast, kraken, centrifuge etc
 
 BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filtering results
-- MB_aero_S2_R1.fastq               # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work well.
+- MB_aero_S2_R1.fastq               # Input file Read1. Note the form R1.fastq is required, R1_001.fastq will not work.
 - MB_aero_S2_R1.fastqprogress.tmp   # Temporary file with pipeline stage progress
 - MB_aero_S2_R1.trm.bam             # Initial, unsorted BAM. Can usually be deleted !
 - MB_aero_S2_R1.trm.fastq           # Trimmed FASTQ.
 - MB_aero_S2_R1.trm.s.bam           # Sorted BAM output file
 - MB_aero_S2_R1.ndp.lc.trm.s.bam.unmapped.fastq   # unmapped FASTQ reads
 - MB_aero_S2_R1.trm.s.mq30.bam                    # BAM where only well mapped reads with Mapping Quality 30 are retained
-- MB_aero_S2_R1.trm.s.mq30.01mm.bam               # Reads with more than 0 or 1 mismatches (ie 2+) have been excluded
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam           # Duplicates excluded by Picard
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam     # MD tags have been calculated to enable SNVs in JBrowse etc
+- MB_aero_S2_R1.trm.s.mq30.mm.bam               # Reads with 3 or more mismatches (default, can be changed) have been excluded
+- MB_aero_S2_R1.trm.s.mq30.mm.dup.bam           # Duplicate reads were excluded by Picard
+- MB_aero_S2_R1.trm.s.mq30.mm.dup.calmd.bam     # MD tags have been calculated to enable SNV visualization in JBrowse etc
 - MB_aero_S2_R2.fastq                 # Read 2 input file
 - MB_aero_S2_R2.trm.fastq             # Trimmed Read 2 file
 
 # Wochenende reporting input and output
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt       # Important: input for simple runbatch_metagen_awk_filter.sh and complex Wochenende reporting
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.filt.sort.csv           # Filtered and sorted BAM.txt read output
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.sorted.csv    # Output from Wochenende reporting step
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
+- MB_aero_S2_R1.trm.s.mq30.mm.dup.bam.txt       # Important: input for simple runbatch_metagen_awk_filter.sh and complex Wochenende reporting
+- MB_aero_S2_R1.trm.s.mq30.mm.dup.bam.txt.filt.sort.csv           # Filtered and sorted BAM.txt read output
+- MB_aero_S2_R1.trm.s.mq30.mm.dup.bam.txt.reporting.sorted.csv    # Output from Wochenende reporting step
+- MB_aero_S2_R1.trm.s.mq30.mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
 
 
 # Wochenende_plot.py input (.filt.csv) and output (png images)
-- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt              # Coverage per window in each BAM
-- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
-- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.01mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
+- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.mm.dup_cov_window.txt              # Coverage per window in each BAM
+- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.mm.dup_cov_window.txt.filt.csv     # Filtered (regions have at least 1+ reads) coverage per window in each BAM
+- MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
 
 # Wochenende_plot.py output (png images)
 - wochenende_png_files/
@@ -217,17 +223,12 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 - wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/probably_present/
 
 
-
-BAM Indices
-- MB_aero_S2_R1.trm.s.bam.bai       # Index
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.bam.bai       # Index
-- MB_aero_S2_R1.trm.s.mq30.01mm.dup.calmd.bam.bai # Index
 ```
 
 
 ### Running the metagenomic reporting scripts
 
-This tool (which requires python3.6) reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
+This tool (which requires python v3.6+) reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
 Normalizations are for:
 
 a) reads normalized to the idealized length of a bacterial chromosome (normalization to 1 million base pairs)
@@ -236,7 +237,7 @@ b) total reads in the sequencing library (normalization to 1 million reads)
 
 c) the above two normalizations combined (RPMM)
 
-d) reads per human cell(only works for metagenomes from human hosts)
+d) reads per human cell (only works for metagenomes from human hosts)
 
 See the subfolder `reporting` in the repository.
 
