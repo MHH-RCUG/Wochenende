@@ -1,12 +1,12 @@
 #######################
 ## Dr. Colin Davenport
-## Wochenende pipeline: bacterial metagenome commands. April  2020
+## Wochenende pipeline: bacterial metagenome commands. April 2021
 ## Intended to find bacteria
 ######################
 
 #################
-# Start: Input files in *fastq.gz or fastq must be in same folder. 
-# Script get_covid19_scripts_wochenende.sh must be present
+# Start: Input fastq files as *R1_fastq must be in same folder. 
+# This assumes you have a SLURM cluster to run the pipeline on
 ################
 
 
@@ -14,25 +14,59 @@
 # Segment 1, preparation, rename, run pipeline
 
 #0 
-cp /mnt/ngsnfs/tools/dev/covid19_wochenende/get_covid19_scripts_wochenende.sh .
+cp (your_wochenende_path)/get_wochenende.sh .
 
-#1 edit the location path_we in the following script, then run it to collect the Wochenende files and directories needed.
+#1 edit the location "path_we" in the following script, then run it to collect the Wochenende files and directories needed.
 nano get_wochenende.sh 
+# Now run the script to set the needed scripts and directories for the pipeline
 bash get_wochenende.sh
-(or copy the scripts manually to the folder containing your FASTQ data)
 
-#2. Wochenende needs sample names like sputum_R1.fastq and sputum_R2.fastq to run correctly.
+
+#2. Wochenende needs sample names like sputum_R1.fastq and sputum_R2.fastq to run correctly. So rename your files.
 srun gunzip *.fastq.gz
 rename 's/_001//g' *.fastq
 
+# 3a - Configure the Pipeline
+nano run_Wochenende_SLURM.sh
 
-#3 - Run Pipeline, wait 1-2h ? Format required: data_R1.fastq and data_R2.fastq, even for long reads
+Uncomment one and only one of the pipeline commands after this line. 
+This will specify reference genome or metagenome, paired end or single end reads, etc.
+"# Run script - Paired end reads R2 will be calculated by replacing R1 with R2"
+
+
+# 3b - Run Pipeline, wait 1-2h. Format required: data_R1.fastq and data_R2.fastq, even for long reads
 bash runbatch_sbatch_Wochenende.sh 
-
 
 ################
 ###### STOP HERE, wait ca 1-2 hr until Wochenende complete #########
 ################
+
+
+# 4 - Run the postprocessing scripts to automatically generate all the outputs
+
+bash wochenende_postprocess.sh 
+
+
+## If this completed successfully, this should be the end. Already. Go into the reporting and haybaler/haybaler_output
+subdirectories to see your files. Try the scripts to create heatmaps with haybaler.
+
+
+Output directories
+* plots 
+* reporting
+* reporting/haybaler/haybaler_output
+
+Files
+* multiqc.html
+
+
+
+
+
+#############
+## If you want to do the postprocessing steps manually, you can follow the guide below. 
+## We recommend wochenende_postprocess.sh as above though
+#############
 
 # Segment2 - QC, plotting, 
 #5

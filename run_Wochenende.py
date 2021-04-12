@@ -1027,7 +1027,7 @@ def getAverageReadLengthBAM(bamfile):
 
 
 def runBamtools(stage_infile):
-    # Method deprecated and will be removed, see flexible method runBamtoolsFixed instead
+    ###### Method _deprecated_ and will be removed, see flexible method runBamtoolsFixed instead ######
     # Keep only reads with 0 or 1 mismatch
     stage = "Keep only reads with 0 or 1 mismatch - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
@@ -1088,12 +1088,12 @@ def runBamtools(stage_infile):
 
 
 def runBamtoolsFixed(stage_infile, numberMismatches):
-    # Keep only reads with x mismatches. Intended for short reads with fixed read lengths, not variable length long reads
+    # Keep only reads with less than x mismatches. Intended for short reads with fixed read lengths, not variable length long reads
     stage = "Keep only reads with x mismatches (default 3) - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".mm.bam"
 
-    # "tag" : "NM:<4"
+    # "tag" : "NM:<3"
     mmList = ['"NM:<', numberMismatches, '"']
     mmString = "".join(mmList)
 
@@ -1766,7 +1766,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--remove_mismatching",
-        help="Remove reads with less than x mismatches (via the NM bam tag). Default 3. Argument required.",
+        help="Remove reads with more than x mismatches (via the NM bam tag). Default 3. Argument required.",
         action="store",
         default="3",
     )

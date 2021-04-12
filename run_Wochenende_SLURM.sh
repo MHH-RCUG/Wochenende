@@ -40,7 +40,7 @@ fastq=$1
 #--aligner ngmlr
 #--nextera  - remove Nextera adapters with Trimmomatic, not default Ultra II / Truseq adapters
 #--no_abra  - no read realignment
-#--mq20     - remove reads with a mapping quality of less than 20. Less stringent than MQ30
+#--mq20     - remove reads with a mapping quality of less than 20. Less stringent than MQ30, required for raspir https://github.com/mmpust/raspir
 #--mq30     - remove reads with a mapping quality of less than 30
 #--readType SE - single ended reads
 #--readType PE - paired end reads

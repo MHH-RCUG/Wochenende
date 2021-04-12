@@ -2,6 +2,11 @@
 # v0.1 2021_03
 # Only uncommented lines without a # are read
 
+# Work in progress - Colin TODO. 
+# Problems with env variables and new bash sessions. 
+# This could set two files in the current(?) dir as with the ref in reporting...
+# Potentially could also be run by the get_wochenende.sh command ?
+
 # Users: change this as appropriate
 # Install_directory for Wochenende on your system, full path
 wochenende_install_dir=/mnt/ngsnfs/tools/dev/Wochenende
