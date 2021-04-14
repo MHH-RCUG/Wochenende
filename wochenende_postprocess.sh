@@ -1,10 +1,11 @@
 #!/bin/bash
-# Colin Davenport, Sophia Poertner
+# Authors: Colin Davenport, Sophia Poertner
 
-version="0.15, Feb 2021"
+version="0.16, April 2021"
 
 #Changelog
-#0.16 - TODO Use environment variables for haybaler and wochenende installations
+#0.1xx - TODO Use environment variables for haybaler and wochenende installations
+#0.16 - use Haybaler update runbatch_heatmaps.sh
 #0.15 - check for files to cleanup before moving
 #0.14 - add haybaler env and use this
 #0.13 - copy filled directory plots and reporting into current directory, if missing
@@ -124,9 +125,14 @@ conda activate haybaler
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .
-#mv output output_$rand_number
 bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
+cp $haybaler_dir/*.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
+
+echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
+cd haybaler_output
+bash runbatch_heatmaps.sh   
+cd ..
 cd ..
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
@@ -137,10 +143,6 @@ wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
 echo "INFO: Completed Haybaler"
-
-
-
-
 
 
 
