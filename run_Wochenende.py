@@ -246,8 +246,10 @@ def addToProgress(func_name, c_file):
 
 
 def createReftmpFile(args):
-    # Write refseq as one line (overwrite) in file reporting/ref.tmp
+    # Write refseq as one line (overwrite) in file reporting/ref.tmp and ./ref.tmp
     with open("reporting/ref.tmp", mode="w") as f:
+        f.write(path_refseq_dict.get(args.metagenome))
+    with open("ref.tmp", mode="w") as f:
         f.write(path_refseq_dict.get(args.metagenome))
     
 

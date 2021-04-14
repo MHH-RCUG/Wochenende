@@ -1,10 +1,11 @@
 #!/bin/bash
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.16, April 2021"
+version="0.17, April 2021"
 
 #Changelog
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
+#0.17 - check directories and improve haybaler integration
 #0.16 - use Haybaler update runbatch_heatmaps.sh
 #0.15 - check for files to cleanup before moving
 #0.14 - add haybaler env and use this
@@ -19,13 +20,13 @@ echo "INFO: Version: " $version
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
-echo "INFO:  eg. run bash get_wochenende.sh to get the relevant files"
+echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende plot"
 echo "INFO:  - Wochenende reporting"
-echo "INFO:  - Haybaler"
+echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
 echo "INFO:  - cleanup directories "
 
 
@@ -43,7 +44,7 @@ sleeptimer=12
 # Cleanup previous results to a directory with a random name which includes a number, calculated here.
 rand_number=$RANDOM
 
-### Check if required directories exist, copy if missing ###
+### Check if required directories/files exist, copy if missing ###
 if [ ! -d "reporting" ] 
 then
     echo "INFO: Copying directory reporting, as it was missing!" 
@@ -53,6 +54,11 @@ if [ ! -d "plots" ]
 then
     echo "INFO: Copying directory plots, as it was missing!" 
     cp -R $wochenende_dir/plots .
+fi
+if [ ! -f "reporting/ref.tmp" ] 
+then
+    echo "INFO: Missing file reporting/ref.tmp , attempting to copy ./ref.tmp to reporting/ref.tmp" 
+    cp ref.tmp reporting/ref.tmp
 fi
 
 # get current dir containing Wochenende BAM and bam.txt output
@@ -104,7 +110,10 @@ echo "INFO: Completed Wochenende reporting"
 
 # Run haybaler
 echo "INFO: Start Haybaler"
-mkdir haybaler
+if [ ! -d "haybaler" ] 
+    then
+    mkdir haybaler
+fi
 count_mq30=`ls -1 *mq30.bam*us*.csv 2>/dev/null | wc -l`
 count_dup=`ls -1 *dup.bam*us*.csv 2>/dev/null | wc -l`
 count=`ls -1 *.bam*us*.csv 2>/dev/null | wc -l`
