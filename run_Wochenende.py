@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.9.2 add error handling for ref.tmp file creation
 1.9.1 add new bacterial ref clost_bot_e_contigs.fa
 1.9.0 add 2020_05 reference (masked by blacklister version of 2020_03)
 1.8.9 write ref to file reporting/ref.tmp, so don't need to set the correct refseq in run_Wochenende_reporting_SLURM.sh
@@ -64,7 +65,7 @@ import argparse
 import time
 
 
-version = "1.9.1 - Mar 2021"
+version = "1.9.2 - April 2021"
 
 ##############################
 # CONFIGURATION
@@ -246,10 +247,19 @@ def addToProgress(func_name, c_file):
 
 
 def createReftmpFile(args):
-    # Write refseq as one line (overwrite) in file reporting/ref.tmp
-    with open("reporting/ref.tmp", mode="w") as f:
-        f.write(path_refseq_dict.get(args.metagenome))
-    
+    # Write refseq as one line (overwrite) in file reporting/ref.tmp and ./ref.tmp
+    try:
+        with open("reporting/ref.tmp", mode="w") as f1:
+            f1.write(path_refseq_dict.get(args.metagenome))
+    except OSError as e:
+        print("Execution failed: Could not create reporting/ref.tmp or ref.tmp. Hint: did you run: bash get_wochenende.sh before starting?")
+        sys.exit(1)
+    try:
+        with open("ref.tmp", mode="w") as f2:
+            f2.write(path_refseq_dict.get(args.metagenome))
+    except OSError as e:
+        print("Execution failed: Could not create reporting/ref.tmp or ref.tmp. Hint: did you run: bash get_wochenende.sh before starting?")
+        sys.exit(1)
 
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
     # Run function and add it to the progress file
