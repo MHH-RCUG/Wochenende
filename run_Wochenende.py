@@ -5,9 +5,18 @@ Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich
-
+Author: Sophia Poertner
 
 Changelog
+1.9.2 add error handling for ref.tmp file creation
+1.9.1 add new bacterial ref clost_bot_e_contigs.fa
+1.9.0 add 2020_05 reference (masked by blacklister version of 2020_03)
+1.8.9 write ref to file reporting/ref.tmp, so don't need to set the correct refseq in run_Wochenende_reporting_SLURM.sh
+1.8.8 add MQ20 mapping quality option
+1.8.7 add Clostridium botulinum ref
+1.8.6 remove 2016 references as unused
+1.8.5 add 2021_02 ref 2021_02_human_bact_fungi_vir.fa.masked.fa and 2021_02_human_bact_fungi_vir_unmasked.fa (no blacklister)
+1.8.4 add new bacterial refs
 1.8.3 add ecoli ref
 1.8.2 Check number of uncommented lines = 1 in run_Wochenende_SLURM.sh from start script runbatch_sbatch_Wochenende.sh.
 1.8.1 Move mq30 filter (makes big changes) to after mm and duplicate filtering
@@ -21,7 +30,7 @@ Changelog
 1.7.2 add ngmlr --min-residues cutoff, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
-1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? 
+1.6.9 TODO WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? -
 1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
 1.6.7 add new viral ref EZV0_1_database2_cln.fasta
 1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
@@ -56,20 +65,19 @@ import argparse
 import time
 
 
-version = "1.8.3 - January 2021"
+version = "1.9.2 - April 2021"
 
 ##############################
 # CONFIGURATION
 ##############################
 
-## Paths to commands - please edit as appropriate.
-# If it is in your PATH just type the command. We recommend conda.
+## Paths to commands - please edit as appropriate. If it is in your PATH just type the command. We recommend conda.
 path_fastqc = "fastqc"
 path_afterqc = "/mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py"
 path_fastp = "fastp"
 path_prinseq = "prinseq-lite.pl"
 path_perl = "perl"
-path_perldup = "dependencies/remove_pcr_duplicates.pl"
+path_perldup = "/mnt/ngsnfs/tools/Wochenende/dependencies/remove_pcr_duplicates.pl"
 path_fastuniq = "fastuniq"
 path_trimmomatic = "trimmomatic"
 path_fastq_mcf = "fastq_mcf"
@@ -85,11 +93,11 @@ path_trim_galore = "trim_galore"
 
 ## Paths to reference seqs. Edit as appropriate to add new!
 path_refseq_dict = {
+    "2021_02_meta_fungi_human_masked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa",
+    "2021_02_meta_fungi_human_unmasked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa",
     "2020_09_massiveref_human": "/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa",
+    "2020_05_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_05.fa",
     "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
-    "2016_06_1p_genus": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
-    "2016_06_1p_spec_corrected": "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
-    "2016_06_1p_spec": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
     "2019_01_meta": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
     "2019_10_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
     "2019_10_meta_human_univec": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
@@ -111,12 +119,14 @@ path_refseq_dict = {
     "ecoli": "/lager2/rcug/seqres/EC/bwa/ecoli_K_12_MG1655.fasta",
     "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
     "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
-    "test": "test/data/ref.fa",
+    "testdb": "test/data/ref.fa",
     "strept_halo": "/lager2/rcug/seqres/metagenref/bwa/strept_halo.fa",
     "k_variicola": "/lager2/rcug/seqres/metagenref/bwa/k_variicola.fa",
     "k_oxytoca": "/lager2/rcug/seqres/metagenref/bwa/k_oxytoca.fa",
-    "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
+    "clost_bot": "/lager2/rcug/seqres/metagenref/bwa/clost_bot.fa",
+    "clost_bot_e": "/lager2/rcug/seqres/metagenref/bwa/clost_bot_e_contigs.fa",
     "clost_diff": "/lager2/rcug/seqres/metagenref/bwa/clost_diff.fa",
+    "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
     "citro_freundii": "/lager2/rcug/seqres/metagenref/bwa/citro_freundii.fa"
 }
 # Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
@@ -162,8 +172,7 @@ def check_arguments(args):
 
     if args.readType == "PE" and args.aligner == "minimap2":
         print(
-            "ERROR: Usage of minimap2 optimized for ONT data only. Combination of "
-            "'--readType PE' and '--aligner minimap2' is not allowed."
+            "ERROR: Usage of minimap2 optimized for ONT data only. Combination of '--readType PE' and '--aligner minimap2' is not allowed."
         )
         sys.exit(1)
 
@@ -194,8 +203,7 @@ def createTmpDir(path_tmpdir):
         os.makedirs(path_tmpdir, exist_ok=True)
     except:
         print(
-            "Error: Failed to create directory, do you have write access to the "
-            "configured directory? Directory: "
+            "Error: Failed to create directory, do you have write access to the configured directory? Directory: "
             + path_tmpdir
         )
         sys.exit(1)
@@ -217,8 +225,7 @@ def createProgressFile(args):
         return None
     else:
         print(
-            "Found progress file x.tmp, attempting to resume after last completed stage. "
-            "If not desired, use --force_restart or delete the .tmp progress files."
+            "Found progress file x.tmp, attempting to resume after last completed stage. If not desired, use --force_restart or delete the .tmp progress files."
         )
         return progress[1].replace("\n", "")
 
@@ -235,9 +242,24 @@ def addToProgress(func_name, c_file):
     return progress_lines[1].replace("\n", "")
 
 
+def createReftmpFile(args):
+    # Write refseq as one line (overwrite) in file reporting/ref.tmp and ./ref.tmp
+    try:
+        with open("reporting/ref.tmp", mode="w") as f1:
+            f1.write(path_refseq_dict.get(args.metagenome))
+    except OSError as e:
+        print("Execution failed: Could not create reporting/ref.tmp or ref.tmp. Hint: did you run: bash get_wochenende.sh before starting?")
+        sys.exit(1)
+    try:
+        with open("ref.tmp", mode="w") as f2:
+            f2.write(path_refseq_dict.get(args.metagenome))
+    except OSError as e:
+        print("Execution failed: Could not create reporting/ref.tmp or ref.tmp. Hint: did you run: bash get_wochenende.sh before starting?")
+        sys.exit(1)
+
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
     """
-    Used in the main function to compose the pipeline. Runs a function and adds 
+    Used in the main function to compose the pipeline. Runs a function and adds
     it to the progress file.
 
     Args:
@@ -264,7 +286,7 @@ def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
 def runStage(stage, programCommand):
     """
     Run a stage of this Pipeline
-    
+
     Args:
         stage (str): the stage's name
         programCommand (str): the command to execute as new subprocess
@@ -988,24 +1010,25 @@ def runGetUnmappedReads(stage_infile, readType):
     return 0
 
 
-def runMQ30(stage_infile):
-    # Remove reads with less than MQ30
-    stage = "Remove MQ30 reads"
+def runMappingQualityFilter(stage_infile, mapping_quality_integer):
+    # Remove reads with less than MQ20/30
+    stage = "Remove MQ20/30 reads"
     prefix = stage_infile.replace(".bam", "")
-    stage_outfile = prefix + ".mq30.bam"
-    samtoolsMQ30Cmd = [
+    stage_outfile = prefix + ".mq" + str(mapping_quality_integer) + ".bam"
+    samtoolsMQCmd = [
         path_samtools,
         "view",
         "-@",
         IOthreadsConstant,
         "-b",
         "-q",
-        "30",
+        #"30",
+        mapping_quality_integer,
         stage_infile,
         "-o",
         stage_outfile,
     ]
-    runStage(stage, samtoolsMQ30Cmd)
+    runStage(stage, samtoolsMQCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
@@ -1021,14 +1044,16 @@ def getAverageReadLengthBAM(bamfile):
         # Split output and get read length as last field after ": "
         readLength = tmpString.rpartition(": ")[-1]
     except:
-        print("############### Error getting average read length. Use 75 ###############")
+        print(
+            "######Error getting average read length. Use 75 ##################################"
+        )
         readLength = 75
     print("Read length returned: " + str(readLength))
     return readLength
 
 
 def runBamtools(stage_infile):
-    # Method deprecated and will be removed, see flexible method runBamtoolsFixed instead
+    ###### Method _deprecated_ and will be removed, see flexible method runBamtoolsFixed instead ######
     # Keep only reads with 0 or 1 mismatch
     stage = "Keep only reads with 0 or 1 mismatch - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
@@ -1092,13 +1117,12 @@ def runBamtools(stage_infile):
 
 
 def runBamtoolsFixed(stage_infile, numberMismatches):
-    # Keep only reads with x mismatches. Intended for short reads with fixed read
-    # lengths, not variable length long reads
+    # Keep only reads with less than x mismatches. Intended for short reads with fixed read lengths, not variable length long reads
     stage = "Keep only reads with x mismatches (default 3) - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".mm.bam"
 
-    # "tag" : "NM:<4"
+    # "tag" : "NM:<3"
     mmList = ['"NM:<', numberMismatches, '"']
     mmString = "".join(mmList)
 
@@ -1406,6 +1430,9 @@ def main(args, sys_argv):
     global progress_file
     progress_file = args.fastq + "progress.tmp"
     currentFile = createProgressFile(args)
+    print("Meta/genome selected: " + args.metagenome)
+    # write Meta/genome ref to file
+    createReftmpFile(args)
     threads = args.threads
     global inputFastq
     inputFastq = args.fastq
@@ -1422,7 +1449,7 @@ def main(args, sys_argv):
     if args.nextera:
         adapter_path = adapter_fastp_general
 
-    print("Meta/genome selected: " + args.metagenome)
+
 
     ##############
     # Single ended input reads
@@ -1438,7 +1465,7 @@ def main(args, sys_argv):
             currentFile = runFunc(
                 "runFastpSE", runFastpSE, currentFile, True, args.threads, adapter_path
             )
-        if args.trim_galore:
+        if args.trim_galore and not args.longread:
             currentFile = runFunc(
                 "runTrimGaloreSE",
                 runTrimGaloreSE,
@@ -1498,8 +1525,8 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
-            # currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
-            # currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+            # currentFile = runFunc("runBAMindex12", runBAMindex, currentFile, False)
+            # currentFile = runFunc("runIDXstats12", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
             # currentFile = runFunc("markDups", markDups, currentFile, True)
@@ -1509,10 +1536,15 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, True, "20")
+            currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, True, "30")
+            currentFile = runFunc("runBAMindex10", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats10", runIDXstats, currentFile, False)
 
         if not args.no_abra and not args.longread:
             currentFile = runFunc(
@@ -1619,9 +1651,13 @@ def main(args, sys_argv):
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, True, "20")
+            currentFile = runFunc("runBAMindex6", runBAMindex, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, True, "30")
+            currentFile = runFunc("runBAMindex7", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
@@ -1665,10 +1701,7 @@ def main(args, sys_argv):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        epilog="We recommend using bioconda for the installation of the tools. Remember "
-               "to run 'conda activate <environment name>' before you start if you are "
-               "using bioconda. Details about the installation are available on "
-               "https://github.com/MHH-RCUG/Wochenende#installation"
+        epilog="We recommend using bioconda for the installation of the tools. Remember to run 'conda activate <environment name>' before you start if you are using bioconda. Details about the installation are available on https://github.com/MHH-RCUG/Wochenende#installation"
     )
 
     parser.add_argument(
@@ -1679,8 +1712,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--aligner",
-        help="Aligner to use, either bwamem, ngmlr or minimap2. Usage of minimap2 and "
-             "ngmlr currently optimized for nanopore data only.",
+        help="Aligner to use, either bwamem, ngmlr or minimap2. Usage of minimap2 and ngmlr currently optimized for nanopore data only.",
         action="store",
         choices=["bwamem", "minimap2", "ngmlr"],
         default="bwamem",
@@ -1713,16 +1745,13 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--nextera",
-        help="Attempt to remove Illumina Nextera adapters and transposase sequence "
-             "(default is Illumina Ultra II adapters, but Illumina Nextera more common in"
-             " future)",
+        help="Attempt to remove Illumina Nextera adapters and transposase sequence (default is Illumina Ultra II adapters, but Illumina Nextera more common in future)",
         action="store_true",
     )
 
     parser.add_argument(
         "--trim_galore",
-        help="Use trim_galore read trimmer. Effective for Nextera adapters and "
-             "transposase sequence",
+        help="Use trim_galore read trimmer. Effective for Nextera adapters and transposase sequence",
         action="store_true",
     )
 
@@ -1730,8 +1759,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--longread",
-        help="Only do steps relevant for long PacBio/ONT reads eg. no dup removal, no "
-             "trimming, just alignment and bam conversion",
+        help="Only do steps relevant for long PacBio/ONT reads eg. no dup removal, no trimming, just alignment and bam conversion",
         action="store_true",
     )
 
@@ -1753,8 +1781,13 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--no_abra",
-        help="Skips steps for Abra realignment. Recommended for metagenome and amplicon "
-             "analysis.",
+        help="Skips steps for Abra realignment. Recommended for metagenome and amplicon analysis.",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--mq20",
+        help="Remove reads with mapping quality less than 20. Recommended for metagenome and amplicon analysis. Less stringent than MQ30.",
         action="store_true",
     )
 
@@ -1767,8 +1800,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--remove_mismatching",
-        help="Remove reads with less than x mismatches (via the NM bam tag). Default 3. "
-             "Argument required.",
+        help="Remove reads with more than x mismatches (via the NM bam tag). Default 3. Argument required.",
         action="store",
         default="3",
     )

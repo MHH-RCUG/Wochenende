@@ -1,5 +1,5 @@
 #!/bin/bash
-# Erik Wessels, Colin Davenport Jan 2020
+# Erik Wessels, Colin Davenport Jan 2020 - March 2021
 # Check window coverage on Wochenende sorted dup.bam output
 # Use output for Python script to check coverage distribution
 
@@ -14,9 +14,6 @@ for i in *calmd.bam; do
 	threads=1
 	queue=short
 
-	# Sort - coo means coordinate sorting
-        #sambamba sort $input -o ${sec_input}_coo.bam
-
 	# Get coverage depth in windows
 	# 8 threads, Windows 100000, overlap 50000, -c minimum coverage. 
 	# SLURM
@@ -24,9 +21,6 @@ for i in *calmd.bam; do
 
 	# Direct submission, not SLURM
 	#sambamba depth window -t $threads --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${sec_input}.bam > ${sec_input}_cov_window.txt &
-
-	# if using sorting step _coo from above
-	#srun -c 8 sambamba depth window -t 8 -w 10000 --overlap=5000 -c 0.00001 ${sec_input}_coo.bam > ${sec_input}_cov_window.txt
 
 done
 wait
