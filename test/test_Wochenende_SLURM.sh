@@ -1,7 +1,5 @@
 #!/bin/bash
-## A SLURM sbatch script which is part of the Wochenende Pipeline https://github.com/MHH-RCUG/Wochenende
-## Supply the FASTQ read input as arg1, bash run_Wochenende_slurm.sh in_R1.fastq
-## Reference fasta sequences and adapters should be configured in run_Wochenende.py
+## A SLURM sbatch script which is part of the Wochenende Pipeline https://github.com/MHH-RCUG/Wochenende for testing
 
 # set partition
 #SBATCH -p normal
@@ -10,7 +8,7 @@
 #SBATCH --mem 40000
 
 # set run x cpus
-#SBATCH --cpus-per-task 12
+#SBATCH --cpus-per-task 4
 
 # set max wallclock time
 #SBATCH --time=47:00:00
@@ -24,8 +22,4 @@
 # Activate env on cluster node
 conda activate wochenende >> /dev/null
 
-echo "Input file: " $1
-fastq=$1
-
-cpus=12
-
+pytest --basetemp=/ngsssd1/scheitht/tmp/ -n 4 test/
