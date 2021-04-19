@@ -44,7 +44,7 @@ def test_run(request, setup_tmpdir, readType, longread):
 
 @pytest.mark.parametrize("path", [p for _, p in we.path_refseq_dict.items()])
 def test_reference_paths(path):
-    assert isfile(f"../{path}")
+    assert isfile(f"../{path}") or isfile(path)
 
 @pytest.mark.parametrize("path", [p for varname, p in vars(we).items() if ('path' in varname) and not varname in "path_tmpdir,path_refseq_dict"])
 def test_program_paths(path):
@@ -52,4 +52,4 @@ def test_program_paths(path):
 
 @pytest.mark.parametrize("path", [p for varname, p in vars(we).items() if 'adapter' in varname])
 def test_adapter_paths(path):
-    assert isfile(f"../{path}")
+    assert isfile(f"../{path}") or isfile(path)
