@@ -831,10 +831,10 @@ def runAlignerBoost(stage_infile, readType):
     else:
         filterType="filterSE"
 
-    #$java -Xmx60g -jar $jar run filterSE -in $i -out $i.alb.bam &
+    #$java -Xmx30g -jar $jar run filterSE -in $i -out $i.alb.bam &
     alignerBoostCmd = [
         "java",
-        "-Xmx=50g",
+        "-Xmx30g",
         "-jar",
         path_alignerboost,
         "run",
