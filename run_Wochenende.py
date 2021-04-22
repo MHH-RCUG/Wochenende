@@ -838,7 +838,8 @@ def runBAMsort(stage_infile, readType):
         rmUnsortedBamCmd = ["rm", stage_infile]
         rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
         try:
-            os.system(rmUnsortedBamCmdStr)
+            #os.system(rmUnsortedBamCmdStr)
+            pass
         except:
             print("Error removing unsorted bam file")
             sys.exit(1)
