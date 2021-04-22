@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
 1.9.2 add error handling for ref.tmp file creation
 1.9.1 add new bacterial ref clost_bot_e_contigs.fa
 1.9.0 add 2020_05 reference (masked by blacklister version of 2020_03)
@@ -65,7 +66,7 @@ import argparse
 import time
 
 
-version = "1.9.2 - April 2021"
+version = "1.9.3 - April 2021"
 
 ##############################
 # CONFIGURATION
