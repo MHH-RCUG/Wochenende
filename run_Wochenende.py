@@ -8,6 +8,8 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.9.4 add AlignerBoost stage and jar to dependencies folder
+1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
 1.9.2 add error handling for ref.tmp file creation
 1.9.1 add new bacterial ref clost_bot_e_contigs.fa
 1.9.0 add 2020_05 reference (masked by blacklister version of 2020_03)
@@ -65,7 +67,7 @@ import argparse
 import time
 
 
-version = "1.9.2 - April 2021"
+version = "1.9.3 - April 2021"
 
 ##############################
 # CONFIGURATION
@@ -74,6 +76,7 @@ version = "1.9.2 - April 2021"
 ## Paths to commands - please edit as appropriate. If it is in your PATH just type the command. We recommend conda.
 path_fastqc = "fastqc"
 path_afterqc = "/mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py"
+path_alignerboost = "/mnt/ngsnfs/tools/Wochenende/dependencies/AlignerBoost.jar"
 path_fastp = "fastp"
 path_prinseq = "prinseq-lite.pl"
 path_perl = "perl"
@@ -816,6 +819,36 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
+def runAlignerBoost(stage_infile, readType):
+    # run AlignerBoost
+    stage = "Run AlignerBoost to correct unsorted BAM MQ"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".ab.bam"
+    if readType == "SE":
+        filterType="filterSE"
+    elif readType == "PE":
+        filterType="filterPE"
+    else:
+        filterType="filterSE"
+
+    #$java -Xmx30g -jar $jar run filterSE -in $i -out $i.alb.bam &
+    alignerBoostCmd = [
+        "java",
+        "-Xmx30g",
+        "-jar",
+        path_alignerboost,
+        "run",
+        filterType,
+        "-in",
+        stage_infile,
+        "-out",
+        stage_outfile,
+    ]
+    runStage(stage, alignerBoostCmd)
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
 
 def runBAMsort(stage_infile, readType):
     # runBAMsort
@@ -838,7 +871,8 @@ def runBAMsort(stage_infile, readType):
         rmUnsortedBamCmd = ["rm", stage_infile]
         rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
         try:
-            os.system(rmUnsortedBamCmdStr)
+            #os.system(rmUnsortedBamCmdStr)
+            pass
         except:
             print("Error removing unsorted bam file")
             sys.exit(1)
@@ -1472,6 +1506,10 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
+        if args.runAlignerBoost:
+            currentFile = runFunc(
+                "runAlignerBoost", runAlignerBoost, currentFile, True, args.readType
+            )
         currentFile = runFunc(
             "runBAMsort", runBAMsort, currentFile, True, args.readType
         )
@@ -1581,6 +1619,10 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
+        if args.runAlignerBoost:
+            currentFile = runFunc(
+                "runAlignerBoost", runAlignerBoost, currentFile, True, args.readType
+            )
         # PE reads need name sorted reads which went through fixmate before duplicate marking
         currentFile = runFunc(
             "runBAMsortByName1", runBAMsortByName, currentFile, True, args.readType
@@ -1762,6 +1804,12 @@ if __name__ == "__main__":
         action="store_true",
     )
 
+    parser.add_argument(
+        "--runAlignerBoost",
+        help="Runs AlignerBoost Bayesian Mapping Quality calibration.",
+        action="store_true",
+    )
+    
     parser.add_argument(
         "--mq20",
         help="Remove reads with mapping quality less than 20. Recommended for metagenome and amplicon analysis. Less stringent than MQ30.",
