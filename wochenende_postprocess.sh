@@ -5,6 +5,7 @@ version="0.17, April 2021"
 
 #Changelog
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
+#0.18 - make wochenende_plot optional with --no-plot
 #0.17 - check directories and improve haybaler integration
 #0.16 - use Haybaler update runbatch_heatmaps.sh
 #0.15 - check for files to cleanup before moving
@@ -24,11 +25,15 @@ echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
-echo "INFO:  - Wochenende plot"
+echo "INFO:  - Wochenende plot (disable with --no-plot argument"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
 echo "INFO:  - cleanup directories "
 
+if [ $1 = "--no-plot" ] 
+then
+    echo "INFO: Found --no-plot argument: Plot mode disabled"
+fi
 
 # Setup conda and directories
 haybaler_dir=/mnt/ngsnfs/tools/dev/haybaler/
@@ -82,17 +87,24 @@ echo "INFO: Completed Sambamba depth and filtering"
 
 
 # Plots
-echo "INFO: Started Wochenende plot"
-cd $bamDir
-cd plots
-cp ../*_window.txt . 
-cp ../*_window.txt.filt.csv .
-bash runbatch_wochenende_plot.sh >/dev/null 2>&1
-#wait
-echo "INFO: Sleeping for " $sleeptimer
-sleep $sleeptimer
-cd $bamDir
-echo "INFO: Completed Wochenende plot"
+if [ $1 = "--no-plot" ] 
+then
+    echo "INFO: Found --no-plot argument: Plot mode disabled"
+else
+
+    echo "INFO: Started Wochenende plot"
+    cd $bamDir
+    cd plots
+    cp ../*_window.txt . 
+    cp ../*_window.txt.filt.csv .
+
+    bash runbatch_wochenende_plot.sh >/dev/null 2>&1
+    #wait
+    echo "INFO: Sleeping for " $sleeptimer
+    sleep $sleeptimer
+    cd $bamDir
+    echo "INFO: Completed Wochenende plot"
+fi
 
 # Run reporting 
 echo "INFO: Started Wochenende reporting"
