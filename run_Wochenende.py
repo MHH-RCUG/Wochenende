@@ -67,7 +67,7 @@ import argparse
 import time
 
 
-version = "1.9.3 - April 2021"
+version = "1.9.4 - April 2021"
 
 ##############################
 # CONFIGURATION
@@ -170,7 +170,7 @@ global args
 
 
 def check_arguments(args):
-    # Check argument cobination
+    # Check argument combination
     if args.aligner == "minimap2" and not args.longread:
         args.longrad = True
         print(

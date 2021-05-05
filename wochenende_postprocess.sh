@@ -1,9 +1,10 @@
 #!/bin/bash
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.18, April 2021"
+version="0.19, May 2021"
 
 #Changelog
+#0.19 - update haybaler copying and add double square brackets for bash ifs
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
 #0.18 - make wochenende_plot optional with --no-plot
 #0.17 - check directories and improve haybaler integration
@@ -148,7 +149,8 @@ cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .
 bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
-cp $haybaler_dir/*.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
+cp $haybaler_dir/runbatch_heatmaps.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
+cp $haybaler_dir/haybaler_taxonomy.py haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
