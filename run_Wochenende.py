@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
+Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2021)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich

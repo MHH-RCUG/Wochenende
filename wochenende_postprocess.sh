@@ -1,7 +1,7 @@
 #!/bin/bash
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.17, April 2021"
+version="0.18, April 2021"
 
 #Changelog
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
@@ -30,7 +30,7 @@ echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
 echo "INFO:  - cleanup directories "
 
-if [ $1 = "--no-plot" ] 
+if [[ $1 == "--no-plot" ]] 
 then
     echo "INFO: Found --no-plot argument: Plot mode disabled"
 fi
@@ -50,17 +50,17 @@ sleeptimer=12
 rand_number=$RANDOM
 
 ### Check if required directories/files exist, copy if missing ###
-if [ ! -d "reporting" ] 
+if [[ ! -d "reporting" ]] 
 then
     echo "INFO: Copying directory reporting, as it was missing!" 
     cp -R $wochenende_dir/reporting .
 fi
-if [ ! -d "plots" ] 
+if [[ ! -d "plots" ]] 
 then
     echo "INFO: Copying directory plots, as it was missing!" 
     cp -R $wochenende_dir/plots .
 fi
-if [ ! -f "reporting/ref.tmp" ] 
+if [[ ! -f "reporting/ref.tmp" ]] 
 then
     echo "INFO: Missing file reporting/ref.tmp , attempting to copy ./ref.tmp to reporting/ref.tmp" 
     cp ref.tmp reporting/ref.tmp
@@ -87,7 +87,7 @@ echo "INFO: Completed Sambamba depth and filtering"
 
 
 # Plots
-if [ $1 = "--no-plot" ] 
+if [[ $1 == "--no-plot" ]] 
 then
     echo "INFO: Found --no-plot argument: Plot mode disabled"
 else
@@ -122,20 +122,20 @@ echo "INFO: Completed Wochenende reporting"
 
 # Run haybaler
 echo "INFO: Start Haybaler"
-if [ ! -d "haybaler" ] 
+if [[ ! -d "haybaler" ]]
     then
     mkdir haybaler
 fi
 count_mq30=`ls -1 *mq30.bam*us*.csv 2>/dev/null | wc -l`
 count_dup=`ls -1 *dup.bam*us*.csv 2>/dev/null | wc -l`
 count=`ls -1 *.bam*us*.csv 2>/dev/null | wc -l`
-if [ $count_mq30 != 0 ]
+if [[ $count_mq30 != 0 ]]
     then
     cp *mq30.bam*us*.csv haybaler
-elif [ $count_dup != 0 ]
+elif [[ $count_dup != 0 ]]
     then
     cp *dup.bam*us*.csv haybaler
-elif [ $count != 0 ]
+elif [[ $count != 0 ]]
     then
     cp *.bam*us*.csv haybaler
 else
@@ -180,17 +180,17 @@ mkdir txt csv xlsx
 
 # cleanup .txt, .csv and .xlsx files if they exists in directory
 count=`ls -1 *.txt 2>/dev/null | wc -l`
-if [ $count != 0 ]
+if [[ $count != 0 ]]
     then 
     mv *.txt txt
 fi 
 count=`ls -1 *.csv 2>/dev/null | wc -l`
-if [ $count != 0 ]
+if [[ $count != 0 ]]
     then 
     mv *.csv csv
 fi 
 count=`ls -1 *.xlsx 2>/dev/null | wc -l`
-if [ $count != 0 ]
+if [[ $count != 0 ]]
     then 
     mv *.xlsx xlsx
 fi 
