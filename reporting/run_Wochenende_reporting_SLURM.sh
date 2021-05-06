@@ -43,5 +43,5 @@ echo "$ref"
 srun python3 basic_reporting.py --input_file $bamtxt --reference $ref --sequencer illumina --output_name $bamtxt
 
 #conda activate wochenende
-#python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --refseq_file /lager2/rcug/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --sample_name test
+#python3 basic_reporting.py --input_file tmp_R1.ndp.lc.trm.s.mq30.01mm.dup.bam.txt --refseq_file /mnt/ngsnfs/seqres/metagenref/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa --sequencer illumina --sample_name test
 
