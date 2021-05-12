@@ -1,9 +1,10 @@
 #!/bin/bash
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.19, May 2021"
+version="0.20, May 2021"
 
 #Changelog
+#0.20 - add haybaler heat tree support
 #0.19 - update haybaler copying and add double square brackets for bash ifs
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
 #0.18 - make wochenende_plot optional with --no-plot
@@ -31,7 +32,7 @@ echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
 echo "INFO:  - cleanup directories "
 
-if [[ $1 == "--no-plot" ]] 
+if [[ $1 == "--no-plot" ]]
 then
     echo "INFO: Found --no-plot argument: Plot mode disabled"
 fi
@@ -151,6 +152,7 @@ bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
 cp $haybaler_dir/runbatch_heatmaps.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
 cp $haybaler_dir/haybaler_taxonomy.py haybaler_output/
+cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
