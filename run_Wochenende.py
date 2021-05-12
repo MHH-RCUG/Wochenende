@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.9.5 add minimap2short and minimap2long modes
 1.9.4 add AlignerBoost stage and jar to dependencies folder
 1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
 1.9.2 add error handling for ref.tmp file creation
@@ -171,15 +172,16 @@ global args
 
 def check_arguments(args):
     # Check argument combination
-    if args.aligner == "minimap2" and not args.longread:
-        args.longrad = True
+    if args.aligner == "minimap2short" and args.longread:
         print(
-            "WARNING: Usage of minimap2 optimized for ONT data only. Added --longread flag."
-        )
+            "WARNING: Usage of minimap2short not useful for long read data. Exiting."
+        )                
+        sys.exit(1)
 
-    if args.readType == "PE" and args.aligner == "minimap2":
+
+    if args.readType == "PE" and args.aligner == "minimap2long":
         print(
-            "ERROR: Usage of minimap2 optimized for ONT data only. Combination of '--readType PE' and '--aligner minimap2' is not allowed."
+            "ERROR: Usage of minimap2long optimized for ONT data only. Combination of '--readType PE' and '--aligner minimap2long' is not allowed."
         )
         sys.exit(1)
 
@@ -187,9 +189,9 @@ def check_arguments(args):
         print("ERROR: Combination of '--readType PE' and '--longread' is not allowed.")
         sys.exit(1)
 
-    if args.fastp and args.aligner == "minimap2":
+    if args.fastp and args.aligner == "minimap2long":
         print(
-            "ERROR: Combination of '--fastp' and '--aligner minimap2' is not allowed."
+            "ERROR: Combination of '--fastp' and '--aligner minimap2long' is not allowed."
         )
         sys.exit(1)
 
@@ -668,7 +670,7 @@ def runEATrimming(stage_infile):
 
 
 def runAligner(stage_infile, aligner, index, noThreads, readType):
-    # Alignment - Short-read single and paired end using bwa-mem. minimap2 or ngmlr for long reads
+    # Alignment - Short-read single and paired end using bwa-mem or minimap2short. minimap2long or ngmlr for long reads
 
     ngmlrMinIdentity = (
         0.85  # Aligner ngmlr only: minimum identity (fraction) of read to reference
@@ -685,11 +687,26 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     readGroup = os.path.basename(inputFastq.replace(".fastq", ""))
 
     alignerCmd = ""
-    if "minimap2" in aligner:
+    if "minimap2long" in aligner:
         alignerCmd = [
             path_minimap2,
             "-x",
             "map-ont",
+            "-a",
+            "--split-prefix",
+            prefix,
+            "-t",
+            str(noThreads),
+            str(index),
+            stage_infile,
+            ">",
+            minimap_samfile,
+        ]
+    elif "minimap2short" in aligner:
+        alignerCmd = [
+            path_minimap2,
+            "-x",
+            "sr",
             "-a",
             "--split-prefix",
             prefix,
@@ -801,7 +818,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
 
     else:
         print("minimap2 aligner check failed")
-        system.exit(1)
+        sys.exit(1)
 
     """
     # Old actual run alignment block
@@ -1731,9 +1748,9 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--aligner",
-        help="Aligner to use, either bwamem, ngmlr or minimap2. Usage of minimap2 and ngmlr currently optimized for nanopore data only.",
+        help="Aligner to use, either bwamem, ngmlr or minimap2short and minimap2long. Usage of minimap2long and ngmlr currently optimized for nanopore data only.",
         action="store",
-        choices=["bwamem", "minimap2", "ngmlr"],
+        choices=["bwamem", "minimap2short", "minimap2long", "ngmlr"],
         default="bwamem",
     )
 
