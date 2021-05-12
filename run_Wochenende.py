@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
+Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2021)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich
@@ -67,7 +67,7 @@ import argparse
 import time
 
 
-version = "1.9.3 - April 2021"
+version = "1.9.4 - April 2021"
 
 ##############################
 # CONFIGURATION
@@ -96,53 +96,53 @@ path_trim_galore = "trim_galore"
 
 ## Paths to reference seqs. Edit as appropriate to add new!
 path_refseq_dict = {
-    "2021_02_meta_fungi_human_masked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa",
-    "2021_02_meta_fungi_human_unmasked": "/lager2/rcug/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa",
-    "2020_09_massiveref_human": "/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa",
-    "2020_05_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_05.fa",
-    "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
-    "2019_01_meta": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
-    "2019_10_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
-    "2019_10_meta_human_univec": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
-    "2019_01_meta_mouse": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
-    "2019_01_meta_mouse_ASF_OMM": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
-    "2019_01_meta_mouse_ASF": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
-    "2019_01_meta_mouse_OMM": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_OMM.fasta",
-    "hg19": "/lager2/rcug/seqres/HS/bwa/hg19.fa",
-    "GRCh37": "/lager2/rcug/seqres/HS/bwa/GRCh37.fa",
-    "GRCh38-45GB": "/lager2/rcug/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa",
-    "GRCh38-noalt": "/lager2/rcug/seqres/HS/bwa/GRCh38_no_alt.fa",
-    "GRCh38-mito": "/lager2/rcug/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa",
-    "mm10": "/lager2/rcug/seqres/MM/bwa/mm10.fa",
-    "rn6": "/lager2/rcug/seqres/RN/bwa/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa",
-    "rat_1AR1_ont": "/lager2/rcug/seqres/RN/bwa/1AR1_2019_ONT_final.fasta",
-    "zf10": "/lager2/rcug/seqres/DR/bwa/GRCz10.fa",
-    "ss11": "/lager2/rcug/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
-    "PA14": "/lager2/rcug/seqres/PA/bwa/NC_008463.fna",
-    "ecoli": "/lager2/rcug/seqres/EC/bwa/ecoli_K_12_MG1655.fasta",
-    "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
-    "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
+    "2021_02_meta_fungi_human_masked": "/mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa",
+    "2021_02_meta_fungi_human_unmasked": "/mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa",
+    "2020_09_massiveref_human": "/mnt/ngsnfs/seqres/metagenref/bwa/2020_09_massiveref.fa",
+    "2020_05_meta_human": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_05.fa",
+    "2020_03_meta_human": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
+    "2019_01_meta": "/mnt/ngsnfs/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
+    "2019_10_meta_human": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
+    "2019_10_meta_human_univec": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
+    "2019_01_meta_mouse": "/mnt/ngsnfs/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
+    "2019_01_meta_mouse_ASF_OMM": "/mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
+    "2019_01_meta_mouse_ASF": "/mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
+    "2019_01_meta_mouse_OMM": "/mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_OMM.fasta",
+    "hg19": "/mnt/ngsnfs/seqres/HS/bwa/hg19.fa",
+    "GRCh37": "/mnt/ngsnfs/seqres/HS/bwa/GRCh37.fa",
+    "GRCh38-45GB": "/mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa",
+    "GRCh38-noalt": "/mnt/ngsnfs/seqres/HS/bwa/GRCh38_no_alt.fa",
+    "GRCh38-mito": "/mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa",
+    "mm10": "/mnt/ngsnfs/seqres/MM/bwa/mm10.fa",
+    "rn6": "/mnt/ngsnfs/seqres/RN/bwa/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa",
+    "rat_1AR1_ont": "/mnt/ngsnfs/seqres/RN/bwa/1AR1_2019_ONT_final.fasta",
+    "zf10": "/mnt/ngsnfs/seqres/DR/bwa/GRCz10.fa",
+    "ss11": "/mnt/ngsnfs/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
+    "PA14": "/mnt/ngsnfs/seqres/PA/bwa/NC_008463.fna",
+    "ecoli": "/mnt/ngsnfs/seqres/EC/bwa/ecoli_K_12_MG1655.fasta",
+    "nci_viruses": "/mnt/ngsnfs/seqres/metagenref/bwa/nci_viruses.fa",
+    "ezv_viruses": "/mnt/ngsnfs/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
     "testdb": "testdb/ref.fa",
-    "strept_halo": "/lager2/rcug/seqres/metagenref/bwa/strept_halo.fa",
-    "k_variicola": "/lager2/rcug/seqres/metagenref/bwa/k_variicola.fa",
-    "k_oxytoca": "/lager2/rcug/seqres/metagenref/bwa/k_oxytoca.fa",
-    "clost_bot": "/lager2/rcug/seqres/metagenref/bwa/clost_bot.fa",
-    "clost_bot_e": "/lager2/rcug/seqres/metagenref/bwa/clost_bot_e_contigs.fa",
-    "clost_diff": "/lager2/rcug/seqres/metagenref/bwa/clost_diff.fa",
-    "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
-    "citro_freundii": "/lager2/rcug/seqres/metagenref/bwa/citro_freundii.fa"
+    "strept_halo": "/mnt/ngsnfs/seqres/metagenref/bwa/strept_halo.fa",
+    "k_variicola": "/mnt/ngsnfs/seqres/metagenref/bwa/k_variicola.fa",
+    "k_oxytoca": "/mnt/ngsnfs/seqres/metagenref/bwa/k_oxytoca.fa",
+    "clost_bot": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_bot.fa",
+    "clost_bot_e": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_bot_e_contigs.fa",
+    "clost_diff": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_diff.fa",
+    "clost_perf": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_perf.fa",
+    "citro_freundii": "/mnt/ngsnfs/seqres/metagenref/bwa/citro_freundii.fa"
 }
 # Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
-ea_adapter_fasta = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
+ea_adapter_fasta = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa"
 adapter_truseq = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
-adapter_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
+adapter_nextera = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
 adapter_fastp_solid = (
-    "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
+    "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
 )
 adapter_fastp_nextera = (
-    "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
+    "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
 )
-adapter_fastp_general = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
+adapter_fastp_general = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa"
 
 ## Path to temp directory, edit for your server
 path_tmpdir = "/ngsssd1/rcug/tmp/"
@@ -170,7 +170,7 @@ global args
 
 
 def check_arguments(args):
-    # Check argument cobination
+    # Check argument combination
     if args.aligner == "minimap2" and not args.longread:
         args.longrad = True
         print(
