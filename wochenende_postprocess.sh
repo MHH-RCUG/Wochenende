@@ -21,6 +21,7 @@ version="0.21, May 2021"
 
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
+echo "INFO: Usage: bash wochenende_postprocess.sh --no-plot"
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
