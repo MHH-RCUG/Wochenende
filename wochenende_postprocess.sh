@@ -1,9 +1,10 @@
 #!/bin/bash
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.20, May 2021"
+version="0.21, May 2021"
 
 #Changelog
+#0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
 #0.20 - add haybaler heat tree support
 #0.19 - update haybaler copying and add double square brackets for bash ifs
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
@@ -141,7 +142,10 @@ elif [[ $count != 0 ]]
     then
     cp *.bam*us*.csv haybaler
 else
-    echo "INFO: No bam*us*.csv found to process for haybaler"
+    echo "WARNING: No bam*us*.csv found to process for haybaler"
+    echo "INFO: Attempting to find and copy bam*us*.csv to haybaler"
+    cp txt/*.bam*us*.csv haybaler
+    cp csv/*.bam*us*.csv haybaler
 fi
 cd haybaler
 conda activate haybaler
