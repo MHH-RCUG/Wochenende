@@ -1,4 +1,5 @@
 #!/bin/bash
+# Automated postprocessing of results from the Wochenende pipeline
 # Authors: Colin Davenport, Sophia Poertner
 
 version="0.21, May 2021"
@@ -21,15 +22,16 @@ version="0.21, May 2021"
 
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
+echo "INFO: Usage: bash wochenende_postprocess.sh args"
 echo "INFO: Usage: bash wochenende_postprocess.sh --no-plot"
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO:  ####### "
-echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
+echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and are filled"
 echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
-echo "INFO:  - Wochenende plot (disable with --no-plot argument"
+echo "INFO:  - Wochenende plot (disable with --no-plot argument)"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
 echo "INFO:  - cleanup directories "
