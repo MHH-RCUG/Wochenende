@@ -1,5 +1,7 @@
 #!/bin/bash
 ## A SLURM sbatch script which is part of the Wochenende Pipeline https://github.com/MHH-RCUG/Wochenende for testing
+## To run it, cd into the test folder this file is in, modify the bastemp directory
+# and use sbatch command to schedule the job on your slurm cluster.
 
 # set partition
 #SBATCH -p normal
@@ -22,4 +24,4 @@
 # Activate env on cluster node
 conda activate wochenende >> /dev/null
 
-pytest --basetemp=/ngsssd1/scheitht/tmp/ -n 4 test/
+pytest --basetemp=/ngsssd1/rcug/tmp/ -n 4

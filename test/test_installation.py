@@ -7,6 +7,7 @@ from subprocess import run, PIPE
 
 @pytest.fixture()
 def setup_tmpdir(request, tmpdir):
+    """Fixture to set up a temporary testing directory"""
     os.chdir(request.config.invocation_dir)
     # ON UPDATE to python >= v3.8, use dirs_exist_ok=True for copytree instead of rmdir
     os.rmdir(tmpdir)
@@ -15,7 +16,9 @@ def setup_tmpdir(request, tmpdir):
 
 @pytest.mark.parametrize("readType,longread", [('SE',False), ('PE',False), ('SE',True)])
 def test_run(request, setup_tmpdir, readType, longread):
+    """Runs the pipeline for a functional test."""
     os.chdir(setup_tmpdir)
+    print(os.listdir())
     cmd = ['python3', 'run_Wochenende.py',
            '--aligner', 'minimap2' if longread else 'bwamem',
            '--readType', readType,
@@ -23,9 +26,8 @@ def test_run(request, setup_tmpdir, readType, longread):
            '--threads', '8',
            '--debug']
     if longread:
-        cmd += ['--longread', 'test/data/reads_R1.fastq']
-    else:
-        cmd += ['test/data/reads_R1.fastq']
+        cmd += ['--longread']
+    cmd += ['test/data/reads_R1.fastq']
 
     proc = run(cmd, stdout=PIPE, stderr=PIPE)
 
@@ -44,12 +46,15 @@ def test_run(request, setup_tmpdir, readType, longread):
 
 @pytest.mark.parametrize("path", [p for _, p in we.path_refseq_dict.items()])
 def test_reference_paths(path):
+    """Tests all reference paths for existence"""
     assert isfile(f"../{path}") or isfile(path)
 
 @pytest.mark.parametrize("path", [p for varname, p in vars(we).items() if ('path' in varname) and not varname in "path_tmpdir,path_refseq_dict"])
 def test_program_paths(path):
+    """Tests all program / binary paths for existence"""
     assert which(path) != None or isfile(f"../{path}") or isfile(path)
 
 @pytest.mark.parametrize("path", [p for varname, p in vars(we).items() if 'adapter' in varname])
 def test_adapter_paths(path):
+    """Tests all adapter paths for existence"""
     assert isfile(f"../{path}") or isfile(path)

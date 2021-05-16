@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
+Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2021)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich
@@ -119,7 +119,7 @@ path_refseq_dict = {
     "ecoli": "/lager2/rcug/seqres/EC/bwa/ecoli_K_12_MG1655.fasta",
     "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
     "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
-    "testdb": "test/data/ref.fa",
+    "test": "test/data/ref.fa",
     "strept_halo": "/lager2/rcug/seqres/metagenref/bwa/strept_halo.fa",
     "k_variicola": "/lager2/rcug/seqres/metagenref/bwa/k_variicola.fa",
     "k_oxytoca": "/lager2/rcug/seqres/metagenref/bwa/k_oxytoca.fa",
@@ -1355,71 +1355,6 @@ def abra(stage_infile, fasta, threads):
     return stage_outfile
 
 
-def runTests(stage_infile):
-    stage = "Running internal tests"
-    # use sbatch script to start tests
-    # This section should check the output
-    # Test output will be printed on std out
-    print("\n\n")
-    print("####################################################################")
-    print("######################### Starting tests ###########################")
-    print("####################################################################")
-
-    failedCount = 0
-
-    print("\n\nTest tempfile length")
-    tempFile = ""
-    tempFile = "test/data/reads_R1.fastqprogress.tmp"
-    try:
-        with open(tempFile, mode="r") as f:
-            f.seek(0)
-            testList = f.readlines()
-    except:
-        print("Test FAILED - could not open !" + str(tempFile))
-
-    print(len(testList))
-    if len(testList) == 18:
-        print("Test tempfile length 18 lines  ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print("\n\nTest unmapped file length")
-    tempFile = ""
-    tempFile = "test/data/reads_R1.ndp.lc.trm.s.bam.unmapped.fastq"
-    try:
-        with open(tempFile, mode="r") as f:
-            f.seek(0)
-            testList = f.readlines()
-            print(len(testList))
-    except:
-        print("Test FAILED, could not open file!")
-
-    if len(testList) == 44:
-        print("Test unmapped length 44 lines ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print("\n\nTest bam.txt file contents")
-    tempFile = ""
-    tempFile = "test/data/reads_R1.ndp.lc.trm.s.mq30.mm.dup.bam.txt"
-    with open(tempFile, mode="r") as f:
-        f.seek(0)
-        testList = f.readlines()
-    print(testList[0])
-    if testList[0] == "1	599940	411	0\n":
-        print("Test stats contents  ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print(str(failedCount) + " tests failed!\n")
-
-    print("\nTesting completed, cleaning up test/data directory")
-    os.system("bash wochenende_test_cleanup.sh")
-
-
 ##############################
 # MAIN FUNCTION (PIPELINE DEFINITION)
 ##############################
@@ -1687,12 +1622,6 @@ def main(args, sys_argv):
             print("Filelist item: " + fileList[i])
             i = i + 1
 
-    # Report all percentage mapped
-
-    if args.testWochenende:
-
-        # Run internal tests
-        currentFile = runFunc("runTests", runTests, currentFile, False)
 
 
 ##############################
@@ -1808,13 +1737,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--force_restart",
         help="Force restart, without regard to existing progress",
-        action="store_true",
-    )
-
-    parser.add_argument(
-        "--testWochenende",
-        help="Run pipeline tests vs test/data, needs the subdirectory test/data, "
-             "default false",
         action="store_true",
     )
 

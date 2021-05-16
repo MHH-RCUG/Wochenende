@@ -22,7 +22,11 @@ class TestFunctional:
     Notes
     -----
     To run only a few combinations, just comment the irrelevant ones.
+    This test class relies on an existing slurm installation. It might be too much to run
+    this due to combinatorial explosion. For a simple test of installation, one can rely
+    on `test_installation.py`. 
     """
+
     # TODO: PE support
     # TODO: Test partially successful runs, continuation and --force-restart
     # TODO: Collect test run information
