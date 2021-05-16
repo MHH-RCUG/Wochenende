@@ -9,6 +9,7 @@ Features include (see programs listed below at the bottom of this page)
 - trimming (Trimmomatic or fastp or trim galore or ea-utils)
 - alignment (bwa mem, minimap2 or ngmlr)
 - SAM-> BAM conversion (samtools and sambamba)
+- AlignerBoost Mapping Quality recalculation 
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
 - Post-alignment duplicate removal (Samtools from v1.7.8, Sambamba)
@@ -156,6 +157,7 @@ conda env update -f env.wochenende.yml
 
 ## List of Tools used or optional in the pipeline
 
+- [Alignerboost](https://github.com/Grice-Lab/AlignerBoost). GPL3, in dependencies folder.
 - [ABRA2](https://github.com/mozack/abra2)
 - [bamtools](https://github.com/pezmaster31/bamtools)
 - [BWA](https://github.com/lh3/bwa)

@@ -42,6 +42,7 @@ fastq=$1
 #--no_abra  - no read realignment
 #--mq20     - remove reads with a mapping quality of less than 20. Less stringent than MQ30, required for raspir https://github.com/mmpust/raspir
 #--mq30     - remove reads with a mapping quality of less than 30
+#--runAlignerBoost - run the AlignerBoost software to adjust mapping quality.
 #--readType SE - single ended reads
 #--readType PE - paired end reads
 #--debug
@@ -78,6 +79,9 @@ python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads
 #python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_unmasked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_unmasked --threads $cpus --aligner bwamem  --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_unmasked --threads $cpus --aligner minimap2 --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
+
+#Alignerboost test
+#python3 run_Wochenende.py --runAlignerBoost --no_fastqc --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 
 
 # 2020_05 reference (blacklister-masked version of 2020_03 below)
