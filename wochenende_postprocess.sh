@@ -2,14 +2,15 @@
 # Automated postprocessing of results from the Wochenende pipeline
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.21, May 2021"
+version="0.22, May 2021"
 
 #Changelog
+#0.22 - add heat trees
 #0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
 #0.20 - add haybaler heat tree support
 #0.19 - update haybaler copying and add double square brackets for bash ifs
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
-#0.18 - make wochenende_plot optional with --no-plot
+#0.18 - make wochenende_plot optional with --no-plots
 #0.17 - check directories and improve haybaler integration
 #0.16 - use Haybaler update runbatch_heatmaps.sh
 #0.15 - check for files to cleanup before moving
@@ -23,22 +24,21 @@ version="0.21, May 2021"
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
 echo "INFO: Usage: bash wochenende_postprocess.sh args"
-echo "INFO: Usage: bash wochenende_postprocess.sh --no-plot"
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
-echo "INFO:  ####### "
-echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and are filled"
+echo "INFO: Usage: Make sure the directories plots/ and reporting/ exist and are filled"
 echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
-echo "INFO:  - Wochenende plot (disable with --no-plot argument)"
+echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
+echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, and R required)"
 echo "INFO:  - cleanup directories "
 
-if [[ $1 == "--no-plot" ]]
+if [[ $1 == "--no-plots" ]]
 then
-    echo "INFO: Found --no-plot argument: Plot mode disabled"
+    echo "INFO: Found --no-plots argument: Plot mode disabled"
 fi
 
 # Setup conda and directories
@@ -93,9 +93,9 @@ echo "INFO: Completed Sambamba depth and filtering"
 
 
 # Plots
-if [[ $1 == "--no-plot" ]] 
+if [[ $1 == "--no-plots" ]] 
 then
-    echo "INFO: Found --no-plot argument: Plot mode disabled"
+    echo "INFO: Found --no-plots argument: Plot mode disabled"
 else
 
     echo "INFO: Started Wochenende plot"
@@ -163,7 +163,10 @@ cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
-bash runbatch_heatmaps.sh   
+bash runbatch_heatmaps.sh  
+echo "INFO: Attempting to add taxonomy and create heat-trees. Requires R installation and pytaxonkit." 
+bash run_haybaler_tax.sh
+bash run_heattrees.sh
 cd ..
 cd ..
 echo "INFO: Sleeping for " $sleeptimer
