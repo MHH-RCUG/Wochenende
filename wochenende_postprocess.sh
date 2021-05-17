@@ -1,9 +1,12 @@
 #!/bin/bash
+# Automated postprocessing of results from the Wochenende pipeline
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.19, May 2021"
+version="0.21, May 2021"
 
 #Changelog
+#0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
+#0.20 - add haybaler heat tree support
 #0.19 - update haybaler copying and add double square brackets for bash ifs
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
 #0.18 - make wochenende_plot optional with --no-plot
@@ -19,19 +22,21 @@ version="0.19, May 2021"
 
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
+echo "INFO: Usage: bash wochenende_postprocess.sh args"
+echo "INFO: Usage: bash wochenende_postprocess.sh --no-plot"
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO:  ####### "
-echo "INFO:  Usage: Make sure the directories plots and reporting exist and are filled"
+echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and are filled"
 echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
-echo "INFO:  - Wochenende plot (disable with --no-plot argument"
+echo "INFO:  - Wochenende plot (disable with --no-plot argument)"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
 echo "INFO:  - cleanup directories "
 
-if [[ $1 == "--no-plot" ]] 
+if [[ $1 == "--no-plot" ]]
 then
     echo "INFO: Found --no-plot argument: Plot mode disabled"
 fi
@@ -140,7 +145,10 @@ elif [[ $count != 0 ]]
     then
     cp *.bam*us*.csv haybaler
 else
-    echo "INFO: No bam*us*.csv found to process for haybaler"
+    echo "WARNING: No bam*us*.csv found to process for haybaler"
+    echo "INFO: Attempting to find and copy bam*us*.csv to haybaler"
+    cp txt/*.bam*us*.csv haybaler
+    cp csv/*.bam*us*.csv haybaler
 fi
 cd haybaler
 conda activate haybaler
@@ -151,6 +159,7 @@ bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
 cp $haybaler_dir/runbatch_heatmaps.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
 cp $haybaler_dir/haybaler_taxonomy.py haybaler_output/
+cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
