@@ -158,7 +158,7 @@ cp $haybaler_dir/*.R .
 bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
 cp $haybaler_dir/runbatch_heatmaps.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
-cp $haybaler_dir/haybaler_taxonomy.py haybaler_output/
+cp $haybaler_dir/*tax* haybaler_output/
 cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
@@ -185,7 +185,7 @@ cd $bamDir
 cd reporting
 # create backup, move folders from previous reporting run to a directory
 mkdir reporting_$rand_number
-mv txt csv xlsx reporting_$rand_number 
+mv txt/ csv/ xlsx/ reporting_$rand_number 
 # make and fill current folders from this run
 mkdir txt csv xlsx
 

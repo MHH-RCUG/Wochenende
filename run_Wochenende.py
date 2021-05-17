@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.9.6 use srun in run_Wochenende_SLURM.sh 
 1.9.5 add minimap2short and minimap2long modes
 1.9.4 add AlignerBoost stage and jar to dependencies folder
 1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
