@@ -187,9 +187,13 @@ echo "INFO: Completed Haybaler"
 echo "INFO: Start cleanup reporting"
 cd $bamDir
 cd reporting
-# create backup, move folders from previous reporting run to a directory
+# create backup, move folders from previous reporting run to a directory (if the txt directory exists already)
 mkdir reporting_$rand_number
-mv txt/ csv/ xlsx/ reporting_$rand_number 
+if [[ -d "txt" ]]
+    then
+    mv txt/ csv/ xlsx/ reporting_$rand_number
+fi
+
 # make and fill current folders from this run
 mkdir txt csv xlsx
 

@@ -6,11 +6,11 @@
 echo "INFO: Starting Wochenende"
 
 echo "INFO: First checking which analysis mode is selected - only ONE should be selected."
-egrep "^\$slurm_srun python3 run_Wochenende_SLURM.sh"
+egrep '^\$slurm_srun python3' run_Wochenende_SLURM.sh
 #$cmd
 echo "INFO: Argument count: "
 
-analysisCount="$(egrep ^'\$slurm_srun python3 run_Wochenende.py' run_Wochenende_SLURM.sh | wc -l )"
+analysisCount="$(egrep '^\$slurm_srun python3 run_Wochenende.py' run_Wochenende_SLURM.sh | wc -l )"
 echo "${analysisCount}"
 if [ $analysisCount != "1" ]; then
         echo "#############################################"
