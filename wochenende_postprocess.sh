@@ -1,10 +1,11 @@
 #!/bin/bash
-# Automated postprocessing of results from the Wochenende pipeline
+# Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.22, May 2021"
+version="0.23, May 2021"
 
 #Changelog
+#0.23 - handle mq20 output files
 #0.22 - add heat trees
 #0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
 #0.20 - add haybaler heat tree support
@@ -83,12 +84,17 @@ sleep 3
 echo "INFO: Started Sambamba depth"
 bash runbatch_metagen_awk_filter.sh
 wait
-bash runbatch_sambamba_depth.sh >/dev/null 2>&1
-wait
-echo "INFO: Sleeping for " $sleeptimer
-sleep $sleeptimer
-bash runbatch_metagen_window_filter.sh >/dev/null 2>&1
-wait
+if [[ $1 == "--no-plots" ]] 
+    then
+    echo "INFO: Found --no-plots argument: Skipping runbatch_sambamba_depth.sh"
+else
+    bash runbatch_sambamba_depth.sh >/dev/null 2>&1
+    wait
+    echo "INFO: Sleeping for " $sleeptimer
+    sleep $sleeptimer
+    bash runbatch_metagen_window_filter.sh >/dev/null 2>&1
+    wait
+fi
 echo "INFO: Completed Sambamba depth and filtering"
 
 
@@ -97,7 +103,6 @@ if [[ $1 == "--no-plots" ]]
 then
     echo "INFO: Found --no-plots argument: Plot mode disabled"
 else
-
     echo "INFO: Started Wochenende plot"
     cd $bamDir
     cd plots
@@ -132,12 +137,16 @@ if [[ ! -d "haybaler" ]]
     then
     mkdir haybaler
 fi
+count_mq20=`ls -1 *mq20.bam*us*.csv 2>/dev/null | wc -l`
 count_mq30=`ls -1 *mq30.bam*us*.csv 2>/dev/null | wc -l`
 count_dup=`ls -1 *dup.bam*us*.csv 2>/dev/null | wc -l`
 count=`ls -1 *.bam*us*.csv 2>/dev/null | wc -l`
 if [[ $count_mq30 != 0 ]]
     then
     cp *mq30.bam*us*.csv haybaler
+elif [[ $count_mq20 != 0 ]]
+    then
+    cp *mq20.bam*us*.csv haybaler
 elif [[ $count_dup != 0 ]]
     then
     cp *dup.bam*us*.csv haybaler
