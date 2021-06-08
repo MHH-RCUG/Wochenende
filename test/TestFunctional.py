@@ -38,21 +38,21 @@ class TestFunctional:
     ]
     _p_options = {
         '--aligner': ['bwamem', 'minimap2', 'ngmlr'],
-        '--readType': ['SE', 'PE'],
-        '--threads': ['8', '4', '8', '16', '32', '56', '80'],
-        '--remove_mismatching': ['1', '2', '3', '4', '5'],
+        #'--readType': ['SE', 'PE'],
+        #'--threads': ['8', '4', '8', '16', '32', '56', '80'],
+        #'--remove_mismatching': ['1', '2', '3', '4', '5'],
     }
     _p_flags = [
-        '--fastp',
-        '--nextera',
-        '--trim_galore',
-        '--longread',
-        '--no_duplicate_removal',
-        '--no_prinseq',
-        '--no_fastqc',
-        '--no_abra',
-        '--mq30',
-        '--force_restart'
+        #'--fastp',
+        #'--nextera',
+        #'--trim_galore',
+        #'--longread',
+        #'--no_duplicate_removal',
+        #'--no_prinseq',
+        #'--no_fastqc',
+        #'--no_abra',
+        #'--mq30',
+        #'--force_restart'
     ]
 
     def _gen_fixed_arguments(self):

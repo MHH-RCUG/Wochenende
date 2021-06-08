@@ -132,6 +132,7 @@ path_refseq_dict = {
     "clost_bot_e": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_bot_e_contigs.fa",
     "clost_diff": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_diff.fa",
     "clost_perf": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_perf.fa",
+    "2021_sfb_human": "/mnt/ngsnfs/seqres/metagenref/bwa/2021_02_ref_plus_Cand_Arthromitus_masked.fa",
     "citro_freundii": "/mnt/ngsnfs/seqres/metagenref/bwa/citro_freundii.fa"
 }
 # Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
