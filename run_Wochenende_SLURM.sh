@@ -85,6 +85,7 @@ $slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_mask
 #$slurm_srun python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner bwamem --no_abra --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome 2020_09_massiveref_human --threads $cpus --aligner minimap2short --no_abra --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 
+
 #Alignerboost test
 #$slurm_srun python3 run_Wochenende.py --runAlignerBoost --no_fastqc --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 
@@ -96,10 +97,12 @@ $slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_mask
 
 
 
+
 # 2020_03 reference (unmasked, Achromobacter problem and other masking issues, use 2020_05 above or 2021_02 instead)
 #$slurm_srun python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner bwamem --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome 2020_03_meta_human --threads $cpus --aligner minimap2long --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
+
 
 
 
@@ -109,6 +112,7 @@ $slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_mask
 #$slurm_srun python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --fastp --no_prinseq --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
 # longread with minimap2 aligner
 #$slurm_srun python3 run_Wochenende.py --metagenome 2019_10_meta_human --threads $cpus --longread --no_prinseq --aligner minimap2long --mq30  --remove_mismatching 250 --readType SE --debug --force_restart $fastq
+
 
 ## 2019 10 October metagenomes with Univec contamination
 #$slurm_srun python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
@@ -157,6 +161,7 @@ $slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_mask
 #$slurm_srun python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType SE --aligner minimap2long --longread --no_duplicate_removal --no_abra --force_restart --no_prinseq $fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType SE --aligner bwamem --no_duplicate_removal --no_abra --force_restart --no_prinseq $fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType PE --aligner bwamem --no_duplicate_removal --no_abra --remove_mismatching 3 --mq30 --force_restart --no_prinseq $fastq
+
 
 # Test wochenende pipeline. Run tests with sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq

@@ -176,7 +176,6 @@ def check_arguments(args):
         )                
         sys.exit(1)
 
-
     if args.readType == "PE" and args.aligner == "minimap2long":
         print(
             "ERROR: Usage of minimap2long optimized for ONT data only. Combination of '--readType PE' and '--aligner minimap2long' is not allowed."
