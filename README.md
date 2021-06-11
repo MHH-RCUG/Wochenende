@@ -1,22 +1,22 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
-Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is simple (python script), portable and has many optional steps. 
+Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is relevant for genomics and metagenomics. Wochenende is simple (python script), portable and is easy to configure. 
 
 Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
 - pre alignment duplicate removal (perldup)
 - pre alignment poor sequence removal (Prinseq - used for single ended reads only)
 - trimming (Trimmomatic or fastp or trim galore or ea-utils)
-- alignment (bwa mem, minimap2 or ngmlr)
+- alignment (bwa mem, or minimap2 for short reads, minimap2 or ngmlr for long reads)
 - SAM-> BAM conversion (samtools and sambamba)
-- AlignerBoost Mapping Quality recalculation 
+- AlignerBoost Mapping Quality recalculation (in testing April-June 2021)
 - Report % aligned reads (samtools)
 - Output unmapped reads as fastq (samtools)  (from v1.4)
 - Post-alignment duplicate removal (Samtools from v1.7.8, Sambamba)
 - Removal reads with x mismatches (bamtools), adjustable from v1.7.3
 - Realignment (Abra2)
 - MD tag marking (Samtools)
-- Normalization (to Reads per Human cell, Reads Per Million reads per Million bases etc, see Reporting below for details)
+- Normalization (to Bacteria per Human cell, RPMM Reads Per Million sequenced reads per Million reference bases etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
 
 Project Haybaler https://github.com/MHH-RCUG/haybaler allows postprocessing of Wochenende results:
@@ -42,13 +42,15 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 ### SLURM usage
 
 1. Copy all the run_Wochenende* files and prerequisite subfolders to your directory with your FASTQ files
-`cp /path/to/wochenende/get_wochenende.sh .` `bash get_wochenende.sh`
-2. Adjust settings in the script
+`cp /path/to/wochenende/get_wochenende.sh .` 
+2. Adjust your path/to/wochenende in the get_wochenende.sh script
+3. `bash get_wochenende.sh`
+4. Adjust settings in the script
 `nano run_Wochenende_SLURM.sh`
-3. Run the pipeline using SLURM (the "_R1" is important)
+5. Run the pipeline using SLURM (the "_R1" is important)
 `sbatch run_Wochenende_SLURM.sh sample_R1.fastq`
-4. Optional reporting step to normalize the extracted read counts  (see reporting below)
-`sbatch run_Wochenende_reporting_SLURM.sh`
+6. After completion of the alignment and filtering, run wochenende_postprocess.sh (Requires [Haybaler](https://github.com/MHH-RCUG/haybaler) for final integration steps and R for optional automated heatmaps) 
+`bash wochenende_postprocess.sh`
 
 ### Tutorial
 
@@ -255,7 +257,7 @@ b) total reads in the sequencing library (normalization to 1 million reads)
 
 c) the above two normalizations combined (RPMM)
 
-d) reads per human cell (only works for metagenomes from human hosts)
+d) (bacterial) reads per human cell (only works for metagenomes from human hosts. An estimate of absolute abundance).
 
 See the subfolder `reporting` in the repository.
 
