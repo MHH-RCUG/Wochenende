@@ -1,5 +1,10 @@
 --- 
 ## Config file for Wochenende and Haybaler
+# If you mess up this file, use an online yaml validator to find the problematic lines.
+
+# Paths to program directories
+wochenende_dir: /mnt/ngsnfs/tools/dev/Wochenende
+haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
 # Adapter sequence locations
 adapter_fastp_general: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa
 adapter_fastp_nextera: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa
