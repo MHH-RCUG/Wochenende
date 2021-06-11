@@ -60,12 +60,12 @@ path_refseq_dict : {
     "citro_freundii": "/mnt/ngsnfs/seqres/metagenref/bwa/citro_freundii.fa"
 }
 
-# Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
+# Adapters - edit as appropriate. For nextera trim_galore is the best tool. No FASTA required for trim_galore.
 ea_adapter_fasta : "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa"
 adapter_truseq : "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
 adapter_nextera : "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-adapter_fastp_solid : ("/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters_solid.fa")
-adapter_fastp_nextera : ("/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa")
+adapter_fastp_solid : "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
+adapter_fastp_nextera : "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
 adapter_fastp_general : "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa"
 
 ## Path to temp directory, edit for your server
