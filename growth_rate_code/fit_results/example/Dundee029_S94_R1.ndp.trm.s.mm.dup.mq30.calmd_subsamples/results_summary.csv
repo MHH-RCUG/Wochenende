@@ -1,0 +1,12 @@
+Name,Growths,Growth Rate,#Reads,Initial Bins,Used Bins,Fit Err,Error Codes
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_AE016830_1_Enterococcus_faecalis_V583_chromosome__complete_genome_BAC,moderate,1.46,16123,50,41,1.80,[]
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_AP011540_1_Rothia_mucilaginosa_DY_18_DNA__complete_genome_BAC,moderate,1.87,2992,50,46,3.37,[]
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_CP000023_1_Streptococcus_thermophilus_LMG_18311__complete_genome_BAC,failed,1.24,27025,50,15,9.57,"[-3, -5]"
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_CP001617_1_Lactobacillus_plantarum_JDM1__complete_genome_BAC,moderate,1.51,1049,50,40,4.00,[]
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_CP001820_1_Veillonella_parvula_DSM_2008__complete_genome_BAC,slow,1.10,3657,50,37,5.08,[]
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_CP002843_1_Streptococcus_parasanguinis_ATCC_15912__complete_genome_BAC,fast,2.18,23166,50,33,2.83,[]
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_CP002925_1_Streptococcus_pseudopneumoniae_IS7493__complete_genome_BAC,moderate,1.56,2154,50,27,4.00,[]
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_CP004409_1_Streptococcus_cristatus_AS_1_3089_chromosome__complete_genome_BAC,failed,1.00,1733,50,16,1734.50,"[-1, -2, -3, -5]"
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_CP020438_2_Streptococcus_equinus_strain_FDAARGOS_251_chromosome__complete_genome_BAC,failed,2.09,62855,50,8,38.26,"[-3, -5]"
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_FN568063_1_Streptococcus_mitis_B6_complete_genome__strain_B6_BAC,no growth,1.00,3320,50,32,4.78,[]
+Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_1_FR873482_1_Streptococcus_salivarius_JIM8777_complete_genome_BAC,failed,1.46,35988,50,13,2.45,[-3]
