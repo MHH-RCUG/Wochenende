@@ -6,8 +6,15 @@ pandas
 tqdm
 lmfit	(https://lmfit.github.io/lmfit-py/installation.html)
 
-
+Old:
 Execute main.py to evaluate the program on the example data in data/
+
+New:
+Copy all the bam files from the wanted samples and the associated bam.txt files in the growth_rate_code directory.
+Activate the wochenende enviroment.
+First run the run_bed_to_csv.sh script.
+Then run the run_reproduction_determiner.sh
+
 
 In general, the program takes as input the path of a folder containing one or more csv files. Each csv file contains the read positions of an organism.
 It produces a single result csv file named 'results_summary.csv'. Additionally, a png file is saved for each input csv file visualizing the fitting result, if 'save_plots' is set to true.
