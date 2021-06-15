@@ -11,7 +11,7 @@
 wochenende_install_dir=/mnt/ngsnfs/tools/dev/we_config2/Wochenende
 
 # Install_directory for Haybaler https://github.com/MHH-RCUG/haybaler on your system, full path
-haybaler_install_dir=/mnt/ngsnfs/tools/dev/haybaler
+haybaler_install_dir=/mnt/ngsnfs/tools/dev/we_config2/haybaler
 
 
 
@@ -27,7 +27,7 @@ WOCHENENDE_DIR=$wochenende_install_dir
 HAYBALER_DIR=$haybaler_install_dir
 PARSE_YAML_CMD=$WOCHENENDE_DIR/scripts/parse_yaml.sh
 
-# Make variables from config_cln.yml available in Bash
+# Make variables from config.yaml available in Bash
 echo "source "$PARSE_YAML_CMD >> ~/.bashrc
-echo "eval \$(parse_yaml" $WOCHENENDE_DIR"/config_cln.yml)" >> ~/.bashrc
+echo "eval \$(parse_yaml" $WOCHENENDE_DIR"/config.yaml)" >> ~/.bashrc
 

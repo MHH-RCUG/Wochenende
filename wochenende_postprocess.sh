@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.23, May 2021"
+version="0.24, June 2021"
 
 #Changelog
+#0.24 - use bash config.yaml parsing
 #0.23 - handle mq20 output files
 #0.22 - add heat trees
 #0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
@@ -45,9 +46,12 @@ then
     echo "INFO: Found --no-plots argument: Plot mode disabled"
 fi
 
+
 # Setup conda and directories
-haybaler_dir=/mnt/ngsnfs/tools/dev/haybaler/
-wochenende_dir=/mnt/ngsnfs/tools/dev/Wochenende/
+source $WOCHENENDE_DIR/scripts/parse_yaml.sh
+eval $(parse_yaml config.yaml)
+haybaler_dir=$HAYBALER_DIR
+wochenende_dir=$WOCHENENDE_DIR
 # Use existing conda env
 . /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 conda activate wochenende

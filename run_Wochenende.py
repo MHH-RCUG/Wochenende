@@ -81,7 +81,7 @@ version = "1.9.8 - June 2021"
 
 # get the config file from a BASH variable (you must configure and run setup.sh before running run_Wochenende.py)
 global config_path
-if os.environ["WOCHENENDE_DIR"] != "":
+if os.environ["WOCHENENDE_DIR"] != None:
     woch_dir_bash = os.environ["WOCHENENDE_DIR"] 
     config_path = woch_dir_bash + "/config.yaml"
     print("INFO: Config file path: " + config_path)
