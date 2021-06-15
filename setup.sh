@@ -1,5 +1,5 @@
 # Wochenende setup. Set environment variables for Wochenende https://github.com/MHH-RCUG/Wochenende
-# v0.1 2021_03
+# v0.2 2021_06
 # Only uncommented lines without a # are read
 
 
@@ -10,7 +10,7 @@
 # Install_directory for Wochenende on your system, full path
 wochenende_install_dir=/mnt/ngsnfs/tools/dev/Wochenende
 
-# Install_directory for Haybaler on your system, full path
+# Install_directory for Haybaler https://github.com/MHH-RCUG/haybaler on your system, full path
 haybaler_install_dir=/mnt/ngsnfs/tools/dev/haybaler
 
 
