@@ -2,6 +2,10 @@
 ## Config file for Wochenende and Haybaler
 # If you mess up this file, use an online yaml validator to find the problematic lines.
 
+# path to R
+rscript_bin: /usr/bin/Rscript
+# path to conda env
+conda_env: /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 # Paths to program directories
 wochenende_dir: /mnt/ngsnfs/tools/dev/Wochenende
 haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
