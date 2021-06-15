@@ -78,6 +78,8 @@ version = "1.9.7 - June 2021"
 # CONFIGURATION 
 ##############################
 
+
+
 with open("config.yaml", 'r') as stream:
     try:
         config_dict = yaml.safe_load(stream)
@@ -191,6 +193,7 @@ def addToProgress(func_name, c_file):
 
 def createReftmpFile(args):
     # Write refseq as one line (overwrite) in file reporting/ref.tmp and ./ref.tmp
+    # path_refseq_dict is filled with variables from the yaml file using the yaml parser and method "locals"
     try:
         with open("reporting/ref.tmp", mode="w") as f1:
             f1.write(path_refseq_dict.get(args.metagenome))
