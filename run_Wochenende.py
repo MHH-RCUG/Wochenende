@@ -8,7 +8,9 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
-1.9.6 add yaml config parsing in bash and python
+
+1.9.7 use srun in run_Wochenende_SLURM.sh 
+1.9.6 add yaml config parsing in bash and python (replaces paths in run_Wochenende.py and other files)
 1.9.5 add minimap2short and minimap2long modes
 1.9.4 add AlignerBoost stage and jar to dependencies folder
 1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
@@ -16,7 +18,7 @@ Changelog
 1.9.1 add new bacterial ref clost_bot_e_contigs.fa
 1.9.0 add 2020_05 reference (masked by blacklister version of 2020_03)
 1.8.9 write ref to file reporting/ref.tmp, so don't need to set the correct refseq in run_Wochenende_reporting_SLURM.sh
-1.8.8 add MQ20 mapping quality option 
+1.8.8 add MQ20 mapping quality option
 1.8.7 add Clostridium botulinum ref
 1.8.6 remove 2016 references as unused
 1.8.5 add 2021_02 ref 2021_02_human_bact_fungi_vir.fa.masked.fa and 2021_02_human_bact_fungi_vir_unmasked.fa (no blacklister)
@@ -34,7 +36,7 @@ Changelog
 1.7.2 add ngmlr --min-residues cutoff, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
-1.6.9 TODO WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? - 
+1.6.9 TODO WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? -
 1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
 1.6.7 add new viral ref EZV0_1_database2_cln.fasta
 1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
@@ -69,11 +71,11 @@ import argparse
 import time
 import yaml
 
-version = "1.9.6 - June 2021"
+version = "1.9.7 - June 2021"
 
 
 ##############################
-# CONFIGURATION
+# CONFIGURATION 
 ##############################
 
 with open("config.yaml", 'r') as stream:
@@ -84,15 +86,16 @@ with open("config.yaml", 'r') as stream:
         print(exc)
 
 
+
 ##############################
 # INITIALIZATION AND ORGANIZATIONAL FUNCTIONS
 ##############################
 
 
 print("Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline")
-print(
-    "Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors"
-)
+print("Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and "
+      "Fabian Friedrich with help from many further contributors "
+      "https://github.com/MHH-RCUG/Wochenende/graphs/contributors")
 print("version: " + version)
 print()
 
@@ -113,7 +116,6 @@ def check_arguments(args):
             "WARNING: Usage of minimap2short not useful for long read data. Exiting."
         )                
         sys.exit(1)
-
 
     if args.readType == "PE" and args.aligner == "minimap2long":
         print(
@@ -203,6 +205,20 @@ def createReftmpFile(args):
         sys.exit(1)
 
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
+    """
+    Used in the main function to compose the pipeline. Runs a function and adds
+    it to the progress file.
+
+    Args:
+        func_name (str): The function's name
+        func (fun): The function to run
+        cF (str): the current file to operate on
+        *extraArgs: any additional arguments for the function
+
+    Returns:
+        str: The new current file which is used for the next step. It is defined
+        by the input function.
+    """
     # Run function and add it to the progress file
     with open(progress_file, mode="r") as f:
         done = func_name in "".join(f.readlines())
@@ -215,7 +231,13 @@ def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
 
 
 def runStage(stage, programCommand):
-    # Run a stage of this Pipeline
+    """
+    Run a stage of this Pipeline
+
+    Args:
+        stage (str): the stage's name
+        programCommand (str): the command to execute as new subprocess
+    """
     print("######  " + stage + "  ######")
     try:
         # print(programCommand)
@@ -334,7 +356,7 @@ def runTrimGaloreSE(stage_infile, noThreads, nextera):
     return stage_outfile
 
 
-#################### TODO !!!!!!!!!!!!!!!! Have never done this for TrimGalore AND how does it do PE output?
+# TODO !!!!!!!!!!!!!!!! Have never done this for TrimGalore AND how does it do PE output?
 def runTrimGalorePE(stage_infile, noThreads, adapter_path):
     # use for Nextera - paired end reads
     stage = "TrimGalore - PE TODO!!"
@@ -1067,7 +1089,10 @@ def runBamtools(stage_infile):
     try:
         # could not get subprocess.run, .call etc to work with "&&"
         # print(bamtools_cmd)
-        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 && bam_merge = path_samtools merge -@ IOthreadsConstant stage_outfile tmpfile0 tmpfile1")
+        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && "
+        #           "keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 "
+        #           "-tag NM:1 && bam_merge = path_samtools merge -@ IOthreadsConstant "
+        #           "stage_outfile tmpfile0 tmpfile1")
         os.system(bamtools_cmd1)
         os.system(bamtools_cmd2)
         os.system(merge)
@@ -1110,7 +1135,9 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
     try:
         # could not get subprocess.run, .call etc to work with "&&"
         # print(bamtools_cmd)
-        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 &>
+        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && "
+        #           "keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 "
+        #           "-tag NM:1 &>")
         os.system(bamtools_cmd1)
 
     except:
@@ -1128,7 +1155,9 @@ def runBamtoolsAdaptive(stage_infile):
     #################################### Under development and not used yet ##############
 
     # Keep only reads with max 1 mismatch per 20bp of read (eg 3 for 75bp, 7 for 150bp)
-    stage = "Keep only reads with max 1 mismatch per 30bp of read (eg 2 for 75bp, 5 for 150bp). Maximum 7 mismatches. Intended for specific alignments in metagenomics"
+    stage = "Keep only reads with max 1 mismatch per 30bp of read (eg 2 for 75bp, " \
+            "5 for 150bp). Maximum 7 mismatches. Intended for specific alignments in " \
+            "metagenomics"
     prefix = stage_infile.replace(".bam", "")
 
     # Get size
@@ -1177,7 +1206,9 @@ def runBamtoolsAdaptive(stage_infile):
     try:
         # could not get subprocess.run, .call etc to work with "&&"
         # print(bamtools_cmd)
-        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 && bam_merge = path_samtools merge -@ IO>
+        #  os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && "
+        #            "keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -"
+        #            "tag NM:1 && bam_merge = path_samtools merge -@ IO>")
         os.system(bamtools_cmd1)
         os.system(bamtools_cmd2)
         os.system(merge)
@@ -1317,71 +1348,6 @@ def abra(stage_infile, fasta, threads):
     return stage_outfile
 
 
-def runTests(stage_infile):
-    stage = "Running internal tests"
-    # use sbatch script to start tests
-    # This section should check the output
-    # Test output will be printed on std out
-    print("\n\n")
-    print("####################################################################")
-    print("######################### Starting tests ###########################")
-    print("####################################################################")
-
-    failedCount = 0
-
-    print("\n\nTest tempfile length")
-    tempFile = ""
-    tempFile = "testdb/reads_R1.fastqprogress.tmp"
-    try:
-        with open(tempFile, mode="r") as f:
-            f.seek(0)
-            testList = f.readlines()
-    except:
-        print("Test FAILED - could not open !" + str(tempFile))
-
-    print(len(testList))
-    if len(testList) == 18:
-        print("Test tempfile length 18 lines  ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print("\n\nTest unmapped file length")
-    tempFile = ""
-    tempFile = "testdb/reads_R1.ndp.lc.trm.s.bam.unmapped.fastq"
-    try:
-        with open(tempFile, mode="r") as f:
-            f.seek(0)
-            testList = f.readlines()
-            print(len(testList))
-    except:
-        print("Test FAILED, could not open file!")
-
-    if len(testList) == 44:
-        print("Test unmapped length 44 lines ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print("\n\nTest bam.txt file contents")
-    tempFile = ""
-    tempFile = "testdb/reads_R1.ndp.lc.trm.s.mq30.mm.dup.bam.txt"
-    with open(tempFile, mode="r") as f:
-        f.seek(0)
-        testList = f.readlines()
-    print(testList[0])
-    if testList[0] == "1	599940	411	0\n":
-        print("Test stats contents  ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print(str(failedCount) + " tests failed!\n")
-
-    print("\nTesting completed, cleaning up testdb directory")
-    os.system("bash wochenende_test_cleanup.sh")
-
-
 ##############################
 # MAIN FUNCTION (PIPELINE DEFINITION)
 ##############################
@@ -1474,9 +1440,8 @@ def main(args, sys_argv):
         )
         currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
-        currentFile = runFunc(
-            "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
-        )
+        currentFile = runFunc("runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile,
+                              False)
         currentFile = runFunc(
             "runGetUnmappedReads",
             runGetUnmappedReads,
@@ -1654,9 +1619,8 @@ def main(args, sys_argv):
         currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
 
     else:
-        print(
-            " --readType must be set to either SE or PE (meaning single ended or paired-end)"
-        )
+        print( "--readType must be set to either SE or PE (meaning single ended or "
+               "paired-end)")
 
     # Report all files
     if args.debug:
@@ -1665,12 +1629,6 @@ def main(args, sys_argv):
             print("Filelist item: " + fileList[i])
             i = i + 1
 
-    # Report all percentage mapped
-
-    if args.testWochenende:
-
-        # Run internal tests
-        currentFile = runFunc("runTests", runTests, currentFile, False)
 
 
 ##############################
@@ -1777,7 +1735,8 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--mq30",
-        help="Remove reads with mapping quality less than 30. Recommended for metagenome and amplicon analysis.",
+        help="Remove reads with mapping quality less than 30. Recommended for metagenome "
+             "and amplicon analysis.",
         action="store_true",
     )
 
@@ -1791,12 +1750,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--force_restart",
         help="Force restart, without regard to existing progress",
-        action="store_true",
-    )
-
-    parser.add_argument(
-        "--testWochenende",
-        help="Run pipeline tests vs testdb, needs the subdirectory testdb, default false",
         action="store_true",
     )
 

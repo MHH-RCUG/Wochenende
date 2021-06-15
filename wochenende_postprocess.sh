@@ -1,15 +1,17 @@
 #!/bin/bash
-# Automated postprocessing of results from the Wochenende pipeline
+# Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.21, May 2021"
+version="0.23, May 2021"
 
 #Changelog
+#0.23 - handle mq20 output files
+#0.22 - add heat trees
 #0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
 #0.20 - add haybaler heat tree support
 #0.19 - update haybaler copying and add double square brackets for bash ifs
 #0.1xx - TODO Use environment variables for haybaler and wochenende installations
-#0.18 - make wochenende_plot optional with --no-plot
+#0.18 - make wochenende_plot optional with --no-plots
 #0.17 - check directories and improve haybaler integration
 #0.16 - use Haybaler update runbatch_heatmaps.sh
 #0.15 - check for files to cleanup before moving
@@ -31,14 +33,16 @@ echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
-echo "INFO:  - Wochenende plot (disable with --no-plot argument)"
+echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
+
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
+echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, and R required)"
 echo "INFO:  - cleanup directories "
 
-if [[ $1 == "--no-plot" ]]
+if [[ $1 == "--no-plots" ]]
 then
-    echo "INFO: Found --no-plot argument: Plot mode disabled"
+    echo "INFO: Found --no-plots argument: Plot mode disabled"
 fi
 
 # Setup conda and directories
@@ -83,21 +87,25 @@ sleep 3
 echo "INFO: Started Sambamba depth"
 bash runbatch_metagen_awk_filter.sh
 wait
-bash runbatch_sambamba_depth.sh >/dev/null 2>&1
-wait
-echo "INFO: Sleeping for " $sleeptimer
-sleep $sleeptimer
-bash runbatch_metagen_window_filter.sh >/dev/null 2>&1
-wait
+if [[ $1 == "--no-plots" ]] 
+    then
+    echo "INFO: Found --no-plots argument: Skipping runbatch_sambamba_depth.sh"
+else
+    bash runbatch_sambamba_depth.sh >/dev/null 2>&1
+    wait
+    echo "INFO: Sleeping for " $sleeptimer
+    sleep $sleeptimer
+    bash runbatch_metagen_window_filter.sh >/dev/null 2>&1
+    wait
+fi
 echo "INFO: Completed Sambamba depth and filtering"
 
 
 # Plots
-if [[ $1 == "--no-plot" ]] 
+if [[ $1 == "--no-plots" ]] 
 then
-    echo "INFO: Found --no-plot argument: Plot mode disabled"
+    echo "INFO: Found --no-plots argument: Plot mode disabled"
 else
-
     echo "INFO: Started Wochenende plot"
     cd $bamDir
     cd plots
@@ -132,12 +140,16 @@ if [[ ! -d "haybaler" ]]
     then
     mkdir haybaler
 fi
+count_mq20=`ls -1 *mq20.bam*us*.csv 2>/dev/null | wc -l`
 count_mq30=`ls -1 *mq30.bam*us*.csv 2>/dev/null | wc -l`
 count_dup=`ls -1 *dup.bam*us*.csv 2>/dev/null | wc -l`
 count=`ls -1 *.bam*us*.csv 2>/dev/null | wc -l`
 if [[ $count_mq30 != 0 ]]
     then
     cp *mq30.bam*us*.csv haybaler
+elif [[ $count_mq20 != 0 ]]
+    then
+    cp *mq20.bam*us*.csv haybaler
 elif [[ $count_dup != 0 ]]
     then
     cp *dup.bam*us*.csv haybaler
@@ -158,12 +170,16 @@ cp $haybaler_dir/*.R .
 bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
 wait
 cp $haybaler_dir/runbatch_heatmaps.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
-cp $haybaler_dir/haybaler_taxonomy.py haybaler_output/
+cp $haybaler_dir/*tax* haybaler_output/
 cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
-bash runbatch_heatmaps.sh   
+bash runbatch_heatmaps.sh  
+echo "INFO: Attempting to add taxonomy. Requires pytaxonkit." 
+bash run_haybaler_tax.sh
+echo "INFO: Attempting create heat-trees. Requires R installation and packages: packages = c("metacoder", "taxa", "dplyr", "tibble", "ggplot2")." 
+bash run_heattrees.sh
 cd ..
 cd ..
 echo "INFO: Sleeping for " $sleeptimer
@@ -183,9 +199,13 @@ echo "INFO: Completed Haybaler"
 echo "INFO: Start cleanup reporting"
 cd $bamDir
 cd reporting
-# create backup, move folders from previous reporting run to a directory
+# create backup, move folders from previous reporting run to a directory (if the txt directory exists already)
 mkdir reporting_$rand_number
-mv txt csv xlsx reporting_$rand_number 
+if [[ -d "txt" ]]
+    then
+    mv txt/ csv/ xlsx/ reporting_$rand_number
+fi
+
 # make and fill current folders from this run
 mkdir txt csv xlsx
 
