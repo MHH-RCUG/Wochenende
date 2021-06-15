@@ -78,9 +78,17 @@ version = "1.9.7 - June 2021"
 # CONFIGURATION 
 ##############################
 
+# get the config file from a BASH variable (you must configure and run setup.sh before running run_Wochenende.py)
+
+if os.environ["WOCHENENDE_DIR"] != "":
+    woch_dir_bash = os.environ["WOCHENENDE_DIR"] 
+    config_path = woch_dir_bash + "/config.yaml"
+    print("INFO: Config file path: " + config_path)
+else:
+    print("Error: could not get the config file from the BASH variable $WOCHENENDE_DIR (you must configure and run setup.sh before running run_Wochenende.py)")
 
 
-with open("config.yaml", 'r') as stream:
+with open(config_path, 'r') as stream:
     try:
         config_dict = yaml.safe_load(stream)
         locals().update(config_dict)
