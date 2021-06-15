@@ -8,6 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
+1.9.6 add yaml config parsing in bash and python
 1.9.5 add minimap2short and minimap2long modes
 1.9.4 add AlignerBoost stage and jar to dependencies folder
 1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
@@ -68,7 +69,7 @@ import argparse
 import time
 import yaml
 
-version = "1.9.4 - April 2021"
+version = "1.9.6 - June 2021"
 
 
 ##############################
