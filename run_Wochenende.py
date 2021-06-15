@@ -8,7 +8,9 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
-1.9.6 use srun in run_Wochenende_SLURM.sh 
+
+1.9.7 use srun in run_Wochenende_SLURM.sh 
+1.9.6 add yaml config parsing in bash and python (replaces paths in run_Wochenende.py and other files)
 1.9.5 add minimap2short and minimap2long modes
 1.9.4 add AlignerBoost stage and jar to dependencies folder
 1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
@@ -67,84 +69,23 @@ import subprocess
 import shutil
 import argparse
 import time
+import yaml
 
+version = "1.9.7 - June 2021"
 
-version = "1.9.4 - April 2021"
 
 ##############################
-# CONFIGURATION
+# CONFIGURATION 
 ##############################
 
-## Paths to commands - please edit as appropriate. If it is in your PATH just type the command. We recommend conda.
-path_fastqc = "fastqc"
-path_afterqc = "/mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py"
-path_alignerboost = "/mnt/ngsnfs/tools/Wochenende/dependencies/AlignerBoost.jar"
-path_fastp = "fastp"
-path_prinseq = "prinseq-lite.pl"
-path_perl = "perl"
-path_perldup = "/mnt/ngsnfs/tools/Wochenende/dependencies/remove_pcr_duplicates.pl"
-path_fastuniq = "fastuniq"
-path_trimmomatic = "trimmomatic"
-path_fastq_mcf = "fastq_mcf"
-path_bwa = "bwa"
-path_samtools = "samtools"
-path_bamtools = "bamtools"
-path_sambamba = "sambamba"
-path_java = "java"
-path_abra_jar = "/mnt/ngsnfs/tools/abra2/abra2_latest.jar"
-path_minimap2 = "minimap2"
-path_ngmlr = "ngmlr"
-path_trim_galore = "trim_galore"
+with open("config.yaml", 'r') as stream:
+    try:
+        config_dict = yaml.safe_load(stream)
+        locals().update(config_dict)
+    except yaml.YAMLError as exc:
+        print(exc)
 
-## Paths to reference seqs. Edit as appropriate to add new!
-path_refseq_dict = {
-    "2021_02_meta_fungi_human_masked": "/mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa",
-    "2021_02_meta_fungi_human_unmasked": "/mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa",
-    "2020_09_massiveref_human": "/mnt/ngsnfs/seqres/metagenref/bwa/2020_09_massiveref.fa",
-    "2020_05_meta_human": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_05.fa",
-    "2020_03_meta_human": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
-    "2019_01_meta": "/mnt/ngsnfs/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
-    "2019_10_meta_human": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
-    "2019_10_meta_human_univec": "/mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
-    "2019_01_meta_mouse": "/mnt/ngsnfs/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
-    "2019_01_meta_mouse_ASF_OMM": "/mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
-    "2019_01_meta_mouse_ASF": "/mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
-    "2019_01_meta_mouse_OMM": "/mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_OMM.fasta",
-    "hg19": "/mnt/ngsnfs/seqres/HS/bwa/hg19.fa",
-    "GRCh37": "/mnt/ngsnfs/seqres/HS/bwa/GRCh37.fa",
-    "GRCh38-45GB": "/mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa",
-    "GRCh38-noalt": "/mnt/ngsnfs/seqres/HS/bwa/GRCh38_no_alt.fa",
-    "GRCh38-mito": "/mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa",
-    "mm10": "/mnt/ngsnfs/seqres/MM/bwa/mm10.fa",
-    "rn6": "/mnt/ngsnfs/seqres/RN/bwa/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa",
-    "rat_1AR1_ont": "/mnt/ngsnfs/seqres/RN/bwa/1AR1_2019_ONT_final.fasta",
-    "zf10": "/mnt/ngsnfs/seqres/DR/bwa/GRCz10.fa",
-    "ss11": "/mnt/ngsnfs/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
-    "PA14": "/mnt/ngsnfs/seqres/PA/bwa/NC_008463.fna",
-    "ecoli": "/mnt/ngsnfs/seqres/EC/bwa/ecoli_K_12_MG1655.fasta",
-    "nci_viruses": "/mnt/ngsnfs/seqres/metagenref/bwa/nci_viruses.fa",
-    "ezv_viruses": "/mnt/ngsnfs/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
-    "test": "test/data/ref.fa",
-    "strept_halo": "/mnt/ngsnfs/seqres/metagenref/bwa/strept_halo.fa",
-    "k_variicola": "/mnt/ngsnfs/seqres/metagenref/bwa/k_variicola.fa",
-    "k_oxytoca": "/mnt/ngsnfs/seqres/metagenref/bwa/k_oxytoca.fa",
-    "clost_bot": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_bot.fa",
-    "clost_bot_e": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_bot_e_contigs.fa",
-    "clost_diff": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_diff.fa",
-    "clost_perf": "/mnt/ngsnfs/seqres/metagenref/bwa/clost_perf.fa",
-    "2021_sfb_human": "/mnt/ngsnfs/seqres/metagenref/bwa/2021_02_ref_plus_Cand_Arthromitus_masked.fa",
-    "citro_freundii": "/mnt/ngsnfs/seqres/metagenref/bwa/citro_freundii.fa"
-}
-# Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
-ea_adapter_fasta = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa"
-adapter_truseq = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
-adapter_nextera = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-adapter_fastp_solid = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
-adapter_fastp_nextera = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-adapter_fastp_general = "/mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa"
 
-## Path to temp directory, edit for your server
-path_tmpdir = "/ngsssd1/rcug/tmp/"
 
 ##############################
 # INITIALIZATION AND ORGANIZATIONAL FUNCTIONS
@@ -1413,6 +1354,12 @@ def abra(stage_infile, fasta, threads):
 
 
 def main(args, sys_argv):
+    with open("config.yaml", 'r') as stream:
+        try:
+            print(yaml.safe_load(stream))
+        except yaml.YAMLError as exc:
+            print(exc)
+
     args = check_arguments(args)
     global progress_file
     progress_file = args.fastq + "progress.tmp"

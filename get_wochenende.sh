@@ -1,9 +1,13 @@
 # Dr Colin Davenport
 # April 2. 2020
 # A helper script to copy Wochenende scripts/directory to the current path.
+# Uses settings from the config yaml file
 
-# change as appropriate
 path_we=/mnt/ngsnfs/tools/dev/Wochenende
+source scripts/parse_yaml.sh
+eval $(parse_yaml config_cln.yml)
+
+path_we=$wochenende_dir
 
 cp $path_we/README* .
 cp $path_we/*.sh .
