@@ -2,12 +2,17 @@
 ## Config file for Wochenende and Haybaler
 # If you mess up this file, use an online yaml validator to find the problematic lines.
 
+<<<<<<< HEAD
 # Paths to program directories. The two following lines are set in setup.sh and are not used here. Will be removed.
 #wochenende_dir: /mnt/ngsnfs/tools/dev/Wochenende
 #haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
 
+# path to R
+rscript_bin: /usr/bin/Rscript
 # Path to conda.sh file. eg. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 CONDA_SH_PATH: /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
+# path to conda env - suggest removing this as more defined above
+conda_env: /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 # Adapter sequence locations
 adapter_fastp_general: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa
 adapter_fastp_nextera: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa
