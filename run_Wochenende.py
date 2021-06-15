@@ -79,14 +79,13 @@ version = "1.9.7 - June 2021"
 ##############################
 
 # get the config file from a BASH variable (you must configure and run setup.sh before running run_Wochenende.py)
-
+global config_path
 if os.environ["WOCHENENDE_DIR"] != "":
     woch_dir_bash = os.environ["WOCHENENDE_DIR"] 
     config_path = woch_dir_bash + "/config.yaml"
     print("INFO: Config file path: " + config_path)
 else:
     print("Error: could not get the config file from the BASH variable $WOCHENENDE_DIR (you must configure and run setup.sh before running run_Wochenende.py)")
-
 
 with open(config_path, 'r') as stream:
     try:
@@ -1365,7 +1364,9 @@ def abra(stage_infile, fasta, threads):
 
 
 def main(args, sys_argv):
-    with open("config.yaml", 'r') as stream:
+
+    # load config from yaml file for the main scope
+    with open(config_path, 'r') as stream:
         try:
             print(yaml.safe_load(stream))
         except yaml.YAMLError as exc:
