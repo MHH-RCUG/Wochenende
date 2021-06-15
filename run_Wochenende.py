@@ -9,6 +9,7 @@ Author: Sophia Poertner
 
 Changelog
 
+1.9.8 yaml config parsing from BASH Env variable defined location (need to configure and run setup.sh before starting)
 1.9.7 use srun in run_Wochenende_SLURM.sh 
 1.9.6 add yaml config parsing in bash and python (replaces paths in run_Wochenende.py and other files)
 1.9.5 add minimap2short and minimap2long modes
@@ -71,7 +72,7 @@ import argparse
 import time
 import yaml
 
-version = "1.9.7 - June 2021"
+version = "1.9.8 - June 2021"
 
 
 ##############################
@@ -102,8 +103,8 @@ with open(config_path, 'r') as stream:
 
 
 print("Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline")
-print("Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and "
-      "Fabian Friedrich with help from many further contributors "
+print("Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer, "
+      "Sophia Poertner and Fabian Friedrich with help from many further contributors "
       "https://github.com/MHH-RCUG/Wochenende/graphs/contributors")
 print("version: " + version)
 print()
