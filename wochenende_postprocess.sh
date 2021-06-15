@@ -49,11 +49,12 @@ fi
 
 # Setup conda and directories
 source $WOCHENENDE_DIR/scripts/parse_yaml.sh
-eval $(parse_yaml config.yaml)
+eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 haybaler_dir=$HAYBALER_DIR
 wochenende_dir=$WOCHENENDE_DIR
-# Use existing conda env
-. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
+# Set and activate existing conda env
+#. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
+. $CONDA_SH_PATH
 conda activate wochenende
 
 # Setup sleep duration. Might be useful to set higher for some big projects, where the wait command may fail for some SLURM jobs.
