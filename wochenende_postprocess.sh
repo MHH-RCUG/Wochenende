@@ -26,7 +26,7 @@ version="0.24, June 2021"
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
 echo "INFO: Usage: bash wochenende_postprocess.sh args"
-echo "INFO: Usage: bash wochenende_postprocess.sh --no-plot"
+echo "INFO: Usage: bash wochenende_postprocess.sh --no-plots"
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and are filled"
@@ -37,8 +37,8 @@ echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
 
 echo "INFO:  - Wochenende reporting"
-echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
-echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, and R required)"
+echo "INFO:  - Haybaler and heatmaps in R (Haybaler and R required)"
+echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, metacoder and R required)"
 echo "INFO:  - cleanup directories "
 
 if [[ $1 == "--no-plots" ]]
