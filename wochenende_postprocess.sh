@@ -104,7 +104,7 @@ if [[ $1 == "--no-plots" ]]
 else
     bash runbatch_sambamba_depth.sh >$output_log 2>&1
     wait
-    echo "INFO: Sleeping for " $sleeptimer
+    echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
     sleep $sleeptimer
     bash runbatch_metagen_window_filter.sh >>$output_log 2>&1
     wait
@@ -125,7 +125,7 @@ else
 
     bash runbatch_wochenende_plot.sh >>$output_log 2>&1
     #wait
-    echo "INFO: Sleeping for " $sleeptimer
+    echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
     sleep $sleeptimer
     cd $bamDir
     echo "INFO: Completed Wochenende plot"
@@ -137,10 +137,8 @@ cd reporting
 cp ../*.bam.txt .
 bash runbatch_Wochenende_reporting.sh>>$output_log 2>&1
 wait
-echo "INFO: Sleeping for " $sleeptimer
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
 sleep $sleeptimer
-#echo "INFO: Sleeping for " $sleeptimer " * 10"
-#sleep $((sleeptimer*10))
 
 echo "INFO: Completed Wochenende reporting"
 
@@ -194,13 +192,13 @@ echo "INFO: Attempting create heat-trees. Requires R installation and packages: 
 bash run_heattrees.sh >>$output_log 2>&1
 cd ..
 cd ..
-echo "INFO: Sleeping for " $sleeptimer
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
 sleep $sleeptimer
 
 echo "INFO: Start csv to xlsx conversion"
 bash runbatch_csv_to_xlsx.sh >>$output_log 2>&1
 wait
-echo "INFO: Sleeping for " $sleeptimer
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
 sleep $sleeptimer
 echo "INFO: Completed Haybaler"
 
