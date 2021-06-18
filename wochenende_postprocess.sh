@@ -61,9 +61,13 @@ conda activate $WOCHENENDE_CONDA_ENV_NAME
 sleeptimer=12
 #sleeptimer=120
 
+# get current dir containing Wochenende BAM and bam.txt output
+bamDir=$(pwd)
+
 # Cleanup previous results to a directory with a random name which includes a number, calculated here.
 rand_number=$RANDOM
-output_log="postprocess_"$(date +%s)".log"
+# Save output log in directory containing bams and preprocess script
+output_log=$bamDir"/postprocess_"$(date +%s)".log"
 echo "INFO: output_log: " $output_log
 
 
@@ -84,8 +88,7 @@ then
     cp ref.tmp reporting/ref.tmp
 fi
 
-# get current dir containing Wochenende BAM and bam.txt output
-bamDir=$(pwd)
+
 
 echo "INFO: Starting Wochenende_postprocess"
 echo "INFO: Current directory" $bamDir
