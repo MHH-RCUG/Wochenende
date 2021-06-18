@@ -53,11 +53,11 @@ eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 haybaler_dir=$HAYBALER_DIR
 wochenende_dir=$WOCHENENDE_DIR
 # Set and activate existing conda env
-#. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 . $CONDA_SH_PATH
-conda activate wochenende
+conda activate $WOCHENENDE_CONDA_ENV_NAME
 
-# Setup sleep duration. Might be useful to set higher for some big projects, where the wait command may fail for some SLURM jobs.
+# Setup variable sleep duration. Might be useful to set higher for some big projects where the filesystem IO becomes too much.
+# The wait command may fail for some SLURM jobs in these cases simply because files have not yet been written in time.
 sleeptimer=12
 #sleeptimer=120
 
@@ -145,6 +145,7 @@ if [[ ! -d "haybaler" ]]
     then
     mkdir haybaler
 fi
+# count files and only copy files that exist to avoid missing files errors
 count_mq20=`ls -1 *mq20.bam*us*.csv 2>/dev/null | wc -l`
 count_mq30=`ls -1 *mq30.bam*us*.csv 2>/dev/null | wc -l`
 count_dup=`ls -1 *dup.bam*us*.csv 2>/dev/null | wc -l`
@@ -168,7 +169,7 @@ else
     cp csv/*.bam*us*.csv haybaler
 fi
 cd haybaler
-conda activate haybaler
+conda activate $HAYBALER_CONDA_ENV_NAME
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .
@@ -214,7 +215,7 @@ fi
 # make and fill current folders from this run
 mkdir txt csv xlsx
 
-# cleanup .txt, .csv and .xlsx files if they exists in directory
+# cleanup .txt, .csv and .xlsx files if they exist in directory
 count=`ls -1 *.txt 2>/dev/null | wc -l`
 if [[ $count != 0 ]]
     then 
