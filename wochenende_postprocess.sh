@@ -63,6 +63,9 @@ sleeptimer=12
 
 # Cleanup previous results to a directory with a random name which includes a number, calculated here.
 rand_number=$RANDOM
+output_log="postprocess_"$(date +%s)".log"
+echo "INFO: output_log: " $output_log
+
 
 ### Check if required directories/files exist, copy if missing ###
 if [[ ! -d "reporting" ]] 
@@ -96,11 +99,11 @@ if [[ $1 == "--no-plots" ]]
     then
     echo "INFO: Found --no-plots argument: Skipping runbatch_sambamba_depth.sh"
 else
-    bash runbatch_sambamba_depth.sh >/dev/null 2>&1
+    bash runbatch_sambamba_depth.sh >$output_log 2>&1
     wait
     echo "INFO: Sleeping for " $sleeptimer
     sleep $sleeptimer
-    bash runbatch_metagen_window_filter.sh >/dev/null 2>&1
+    bash runbatch_metagen_window_filter.sh >>$output_log 2>&1
     wait
 fi
 echo "INFO: Completed Sambamba depth and filtering"
@@ -117,7 +120,7 @@ else
     cp ../*_window.txt . 
     cp ../*_window.txt.filt.csv .
 
-    bash runbatch_wochenende_plot.sh >/dev/null 2>&1
+    bash runbatch_wochenende_plot.sh >>$output_log 2>&1
     #wait
     echo "INFO: Sleeping for " $sleeptimer
     sleep $sleeptimer
@@ -129,7 +132,7 @@ fi
 echo "INFO: Started Wochenende reporting"
 cd reporting
 cp ../*.bam.txt .
-bash runbatch_Wochenende_reporting.sh >/dev/null 2>&1
+bash runbatch_Wochenende_reporting.sh>>$output_log 2>&1
 wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
@@ -173,7 +176,7 @@ conda activate $HAYBALER_CONDA_ENV_NAME
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .
-bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
+bash run_haybaler.sh $haybaler_dir >>$output_log 2>&1
 wait
 cp $haybaler_dir/runbatch_heatmaps.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
 cp $haybaler_dir/*tax* haybaler_output/
@@ -181,18 +184,18 @@ cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
-bash runbatch_heatmaps.sh >/dev/null 2>&1
+bash runbatch_heatmaps.sh >>$output_log 2>&1
 echo "INFO: Attempting to add taxonomy. Requires pytaxonkit." 
-bash run_haybaler_tax.sh >/dev/null 2>&1
+bash run_haybaler_tax.sh >>$output_log 2>&1
 echo "INFO: Attempting create heat-trees. Requires R installation and packages: packages = c("metacoder", "taxa", "dplyr", "tibble", "ggplot2")." 
-bash run_heattrees.sh >/dev/null 2>&1
+bash run_heattrees.sh >>$output_log 2>&1
 cd ..
 cd ..
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer
 
 echo "INFO: Start csv to xlsx conversion"
-bash runbatch_csv_to_xlsx.sh >/dev/null 2>&1
+bash runbatch_csv_to_xlsx.sh >>$output_log 2>&1
 wait
 echo "INFO: Sleeping for " $sleeptimer
 sleep $sleeptimer

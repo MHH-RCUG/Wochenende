@@ -33,8 +33,9 @@ echo "eval \$(parse_yaml" $WOCHENENDE_DIR"/config.yaml)" >> ~/.bashrc
 
 echo "INFO: Added some config to the end of your ~/.bashrc setup file "
 echo "INFO: The last 10 lines of your ~/.bashrc file now look like this:"
+echo "INFO: ######################## "
 tail -n 10  ~/.bashrc
 
-
+echo "INFO: ######################## "
 echo "INFO: If the paths don't look ok please remove them from ~/.bashrc, correct them in setup.sh, and rerun setup.sh":
 echo "INFO: Wochenende setup complete"
