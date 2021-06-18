@@ -31,3 +31,10 @@ PARSE_YAML_CMD=$WOCHENENDE_DIR/scripts/parse_yaml.sh
 echo "source "$PARSE_YAML_CMD >> ~/.bashrc
 echo "eval \$(parse_yaml" $WOCHENENDE_DIR"/config.yaml)" >> ~/.bashrc
 
+echo "INFO: Added some config to the end of your ~/.bashrc setup file "
+echo "INFO: The last 10 lines of your ~/.bashrc file now look like this:"
+tail -n 10  ~/.bashrc
+
+
+echo "INFO: If the paths don't look ok please remove them from ~/.bashrc, correct them in setup.sh, and rerun setup.sh":
+echo "INFO: Wochenende setup complete"
