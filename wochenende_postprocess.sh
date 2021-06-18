@@ -181,11 +181,11 @@ cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
-bash runbatch_heatmaps.sh  
+bash runbatch_heatmaps.sh >/dev/null 2>&1
 echo "INFO: Attempting to add taxonomy. Requires pytaxonkit." 
-bash run_haybaler_tax.sh
+bash run_haybaler_tax.sh >/dev/null 2>&1
 echo "INFO: Attempting create heat-trees. Requires R installation and packages: packages = c("metacoder", "taxa", "dplyr", "tibble", "ggplot2")." 
-bash run_heattrees.sh
+bash run_heattrees.sh >/dev/null 2>&1
 cd ..
 cd ..
 echo "INFO: Sleeping for " $sleeptimer

@@ -12,8 +12,6 @@ rscript_bin: /usr/bin/Rscript
 heattree_server: "hpc-bc15-07 hpc-bc15-12 hpc06"
 # Path to conda.sh file. eg. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 CONDA_SH_PATH: /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
-# path to conda env - suggest removing this as more defined above
-conda_env: /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 WOCHENENDE_CONDA_ENV_NAME: wochenende
 HAYBALER_CONDA_ENV_NAME: haybaler
 # Adapter sequence locations
