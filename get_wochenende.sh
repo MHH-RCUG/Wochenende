@@ -3,7 +3,8 @@
 # A helper script to copy Wochenende scripts/directory to the current path.
 # Uses settings from the config yaml file
 
-# Setup.sh should have created  Wochenende env variable
+echo "INFO: setup.sh should have created  Wochenende env variable on this server and user account"
+echo "INFO: If you get errors here check setup.sh was setup and run properly"
 
 #path_we=/mnt/ngsnfs/tools/dev/Wochenende
 #path_we=/mnt/ngsnfs/tools/dev/we_config2/wochenende
