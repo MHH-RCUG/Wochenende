@@ -47,7 +47,7 @@ then
 fi
 
 
-# Setup conda and directories
+# Setup conda and directories using data parsed from config.yaml
 source $WOCHENENDE_DIR/scripts/parse_yaml.sh
 eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 haybaler_dir=$HAYBALER_DIR
