@@ -239,5 +239,6 @@ fi
 cd $bamDir
 echo "INFO: Completed cleanup reporting"
 
+echo "INFO: Remember to check the output log for errors at: " $output_log
 echo "INFO: ########### Completed Wochenende_postprocess #############"
 
