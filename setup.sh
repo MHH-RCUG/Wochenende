@@ -8,10 +8,10 @@
 #############
 
 # Install_directory for Wochenende on your system, full path
-wochenende_install_dir=/mnt/ngsnfs/tools/dev/we_config2/Wochenende
+wochenende_install_dir=/mnt/ngsnfs/tools/dev/Wochenende
 
 # Install_directory for Haybaler https://github.com/MHH-RCUG/haybaler on your system, full path
-haybaler_install_dir=/mnt/ngsnfs/tools/dev/we_config2/haybaler
+haybaler_install_dir=/mnt/ngsnfs/tools/dev/haybaler
 
 
 

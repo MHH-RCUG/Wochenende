@@ -4,7 +4,7 @@
 # Uses settings from the config yaml file
 
 echo "INFO: setup.sh should have created  WOCHENENDE_DIR environment variable on this server and user account"
-echo "INFO: If you get errors here check setup.sh was setup and run properly"
+echo "INFO: WOCHENENDE_DIR detected as: " $WOCHENENDE_DIR
 
 #path_we=/mnt/ngsnfs/tools/dev/Wochenende
 #path_we=/mnt/ngsnfs/tools/dev/we_config2/wochenende
@@ -16,3 +16,6 @@ cp $path_we/*.py .
 cp -R $path_we/extract/ .
 cp -R $path_we/plots/ .
 cp -R $path_we/reporting/ .
+
+echo "INFO: If you get errors here check setup.sh was setup and run properly"
+echo "INFO: Completed get_wochenende\n "

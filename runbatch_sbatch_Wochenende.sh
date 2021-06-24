@@ -7,9 +7,8 @@ echo "INFO: Starting Wochenende"
 
 echo "INFO: First checking which analysis mode is selected - only ONE should be selected."
 egrep '^\$slurm_srun python3' run_Wochenende_SLURM.sh
-echo "INFO: Argument count: "
 analysisCount="$(egrep '^\$slurm_srun python3 run_Wochenende.py' run_Wochenende_SLURM.sh | wc -l )"
-echo "${analysisCount}"
+echo "INFO: Argument count: " ${analysisCount}
 if [ $analysisCount != "1" ]; then
         echo "#############################################"
         echo "ERROR: Too many run_Wochenende.py jobs uncommented in run_Wochenende_SLURM.sh"
