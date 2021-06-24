@@ -140,16 +140,18 @@ OR
 ```
 cd wochenende
 conda env create -f env.wochenende.yml
-# or if you have problems remove the previous and try this:
+# or if you have problems remove the previous environment and try this:
 conda env create -f env.wochenende.minimal.yml
 ```
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
-4. Important! Edit the configuration section of `run_Wochenende.py` to set the paths to the tools, tmp directory and reference sequences.
-5. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.12.1 numpy-base==1.15.0 pandas==0.23.4 matplotlib==2.2.2`
-6. Activate the conda environment before running the pipeline.
+4. Important! Edit the configuration section of `config.yaml` to set the paths to the tools, tmp directory and reference sequences. Use a code editor to avoid breaking the yaml format.
+5. Edit the paths to Wochenende and optionally haybaler in `setup.sh`
+6. Run `bash setup.sh` to configure Wochenende BASH environment variables (for current user and server only)
+7. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.12.1 numpy-base==1.15.0 pandas==0.23.4 matplotlib==2.2.2`
+8. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
-7. Optional: run the tests, see below.
+9. Optional: run the tests, see below.
 
 ### Update conda enviroment
 If there is already a conda enviroment named wochenende:
@@ -236,14 +238,14 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 
 After a successful Wochenende run, make sure you check that all bams have been created and are sized as expected eg `ls -lh *.bam`
 
-Now start the postprocessing script `bash wochenende_postprocess.sh`
+Now start the postprocessing script `bash wochenende_postprocess.sh` to automatically:
 - run sambamba depth to get read coverage of all configured BAM files in the current directory
 - run the Wochenende plot to create coverage diagrams
 - run Wochenende reporting to count and normalize all read data
 - run the Haybaler report integration tool (provided it is installed and configured)
 - clean up files
 
-This script requires haybaler to be installed, and will otherwise fail.
+This script requires haybaler and it's dependencies to be installed, and will otherwise fail some steps.
 
 
 ### Running the metagenomic reporting scripts manually 
@@ -292,7 +294,7 @@ Options:
                           report
   --help                  Show this message and exit.
 ```
-### Running Wochenende_plot
+### Running Wochenende_plot manually
 
 #### Preparing the data from BAM files
 
