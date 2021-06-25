@@ -8,6 +8,10 @@
 
 # Run samtools stats
 echo "INFO:  Running samtools stats"
+for bam in `ls *trm.s.bam`
+	do
+	samtools stats $bam > $bam.stats
+done
 for bam in `ls *calmd.bam`
 	do
 	samtools stats $bam > $bam.stats
