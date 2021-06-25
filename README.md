@@ -115,8 +115,8 @@ optional arguments:
   --mq30                Remove reads with mapping quality less than 30.
                         Recommended for metagenome and amplicon analysis.
   --remove_mismatching REMOVE_MISMATCHING
-                        Remove reads with less than x mismatches (via the NM
-                        bam tag). Default 3. Argument required.
+                        Remove reads with x or more mismatches (via the NM
+                        bam tag). Default 3 (so reads with 0-2 mismatches remain). Argument required.
   --force_restart       Force restart, without regard to existing progress
   --testWochenende      Run pipeline tests vs testdb, needs the subdirectory
                         testdb, default false
