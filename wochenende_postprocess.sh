@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.23, May 2021"
+version="0.24, June 2021"
 
 #Changelog
+#0.24 - use bash config.yaml parsing
 #0.23 - handle mq20 output files
 #0.22 - add heat trees
 #0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
@@ -25,7 +26,7 @@ version="0.23, May 2021"
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
 echo "INFO: Usage: bash wochenende_postprocess.sh args"
-echo "INFO: Usage: bash wochenende_postprocess.sh --no-plot"
+echo "INFO: Usage: bash wochenende_postprocess.sh --no-plots"
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and are filled"
@@ -36,8 +37,8 @@ echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
 
 echo "INFO:  - Wochenende reporting"
-echo "INFO:  - Haybaler and heatmaps in R (Haybaler, and R required)"
-echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, and R required)"
+echo "INFO:  - Haybaler and heatmaps in R (Haybaler and R required)"
+echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, metacoder and R required)"
 echo "INFO:  - cleanup directories "
 
 if [[ $1 == "--no-plots" ]]
@@ -45,19 +46,30 @@ then
     echo "INFO: Found --no-plots argument: Plot mode disabled"
 fi
 
-# Setup conda and directories
-haybaler_dir=/mnt/ngsnfs/tools/dev/haybaler/
-wochenende_dir=/mnt/ngsnfs/tools/dev/Wochenende/
-# Use existing conda env
-. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
-conda activate wochenende
 
-# Setup sleep duration. Might be useful to set higher for some big projects, where the wait command may fail for some SLURM jobs.
+# Setup conda and directories using data parsed from config.yaml
+source $WOCHENENDE_DIR/scripts/parse_yaml.sh
+eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
+haybaler_dir=$HAYBALER_DIR
+wochenende_dir=$WOCHENENDE_DIR
+# Set and activate existing conda env
+. $CONDA_SH_PATH
+conda activate $WOCHENENDE_CONDA_ENV_NAME
+
+# Setup variable sleep duration. Might be useful to set higher for some big projects where the filesystem IO becomes too much.
+# The wait command may fail for some SLURM jobs in these cases simply because files have not yet been written in time.
 sleeptimer=12
 #sleeptimer=120
 
+# get current dir containing Wochenende BAM and bam.txt output
+bamDir=$(pwd)
+
 # Cleanup previous results to a directory with a random name which includes a number, calculated here.
 rand_number=$RANDOM
+# Save output log in directory containing bams and preprocess script
+output_log=$bamDir"/postprocess_"$(date +%s)".log"
+echo "INFO: output_log: " $output_log
+
 
 ### Check if required directories/files exist, copy if missing ###
 if [[ ! -d "reporting" ]] 
@@ -76,8 +88,7 @@ then
     cp ref.tmp reporting/ref.tmp
 fi
 
-# get current dir containing Wochenende BAM and bam.txt output
-bamDir=$(pwd)
+
 
 echo "INFO: Starting Wochenende_postprocess"
 echo "INFO: Current directory" $bamDir
@@ -91,11 +102,11 @@ if [[ $1 == "--no-plots" ]]
     then
     echo "INFO: Found --no-plots argument: Skipping runbatch_sambamba_depth.sh"
 else
-    bash runbatch_sambamba_depth.sh >/dev/null 2>&1
+    bash runbatch_sambamba_depth.sh >$output_log 2>&1
     wait
-    echo "INFO: Sleeping for " $sleeptimer
+    echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
     sleep $sleeptimer
-    bash runbatch_metagen_window_filter.sh >/dev/null 2>&1
+    bash runbatch_metagen_window_filter.sh >>$output_log 2>&1
     wait
 fi
 echo "INFO: Completed Sambamba depth and filtering"
@@ -112,9 +123,9 @@ else
     cp ../*_window.txt . 
     cp ../*_window.txt.filt.csv .
 
-    bash runbatch_wochenende_plot.sh >/dev/null 2>&1
+    bash runbatch_wochenende_plot.sh >>$output_log 2>&1
     #wait
-    echo "INFO: Sleeping for " $sleeptimer
+    echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
     sleep $sleeptimer
     cd $bamDir
     echo "INFO: Completed Wochenende plot"
@@ -124,12 +135,10 @@ fi
 echo "INFO: Started Wochenende reporting"
 cd reporting
 cp ../*.bam.txt .
-bash runbatch_Wochenende_reporting.sh >/dev/null 2>&1
+bash runbatch_Wochenende_reporting.sh>>$output_log 2>&1
 wait
-echo "INFO: Sleeping for " $sleeptimer
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
 sleep $sleeptimer
-#echo "INFO: Sleeping for " $sleeptimer " * 10"
-#sleep $((sleeptimer*10))
 
 echo "INFO: Completed Wochenende reporting"
 
@@ -140,6 +149,7 @@ if [[ ! -d "haybaler" ]]
     then
     mkdir haybaler
 fi
+# count files and only copy files that exist to avoid missing files errors
 count_mq20=`ls -1 *mq20.bam*us*.csv 2>/dev/null | wc -l`
 count_mq30=`ls -1 *mq30.bam*us*.csv 2>/dev/null | wc -l`
 count_dup=`ls -1 *dup.bam*us*.csv 2>/dev/null | wc -l`
@@ -163,11 +173,11 @@ else
     cp csv/*.bam*us*.csv haybaler
 fi
 cd haybaler
-conda activate haybaler
+conda activate $HAYBALER_CONDA_ENV_NAME
 cp $haybaler_dir/*.sh .
 cp $haybaler_dir/*.py .
 cp $haybaler_dir/*.R .
-bash run_haybaler.sh $haybaler_dir >/dev/null 2>&1
+bash run_haybaler.sh $haybaler_dir >>$output_log 2>&1
 wait
 cp $haybaler_dir/runbatch_heatmaps.sh haybaler_output/ && cp $haybaler_dir/*.R haybaler_output/
 cp $haybaler_dir/*tax* haybaler_output/
@@ -175,20 +185,20 @@ cp $haybaler_dir/*tree* haybaler_output/
 
 echo "INFO: Attempting to filter results and create heatmaps. Requires R installation." 
 cd haybaler_output
-bash runbatch_heatmaps.sh  
+bash runbatch_heatmaps.sh >>$output_log 2>&1
 echo "INFO: Attempting to add taxonomy. Requires pytaxonkit." 
-bash run_haybaler_tax.sh
+bash run_haybaler_tax.sh >>$output_log 2>&1
 echo "INFO: Attempting create heat-trees. Requires R installation and packages: packages = c("metacoder", "taxa", "dplyr", "tibble", "ggplot2")." 
-bash run_heattrees.sh
+bash run_heattrees.sh >>$output_log 2>&1
 cd ..
 cd ..
-echo "INFO: Sleeping for " $sleeptimer
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
 sleep $sleeptimer
 
 echo "INFO: Start csv to xlsx conversion"
-bash runbatch_csv_to_xlsx.sh >/dev/null 2>&1
+bash runbatch_csv_to_xlsx.sh >>$output_log 2>&1
 wait
-echo "INFO: Sleeping for " $sleeptimer
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
 sleep $sleeptimer
 echo "INFO: Completed Haybaler"
 
@@ -209,7 +219,7 @@ fi
 # make and fill current folders from this run
 mkdir txt csv xlsx
 
-# cleanup .txt, .csv and .xlsx files if they exists in directory
+# cleanup .txt, .csv and .xlsx files if they exist in directory
 count=`ls -1 *.txt 2>/dev/null | wc -l`
 if [[ $count != 0 ]]
     then 
@@ -229,5 +239,6 @@ fi
 cd $bamDir
 echo "INFO: Completed cleanup reporting"
 
+echo "INFO: Remember to check the output log for errors at: " $output_log
 echo "INFO: ########### Completed Wochenende_postprocess #############"
 
