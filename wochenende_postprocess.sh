@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.24, June 2021"
+version="0.25, June 2021"
 
 #Changelog
+#0.25 - add viral read extraction
 #0.24 - use bash config.yaml parsing
 #0.23 - handle mq20 output files
 #0.22 - add heat trees
@@ -35,7 +36,7 @@ echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
-
+echo "INFO:  - Extract selected human viral pathogen reads"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler and R required)"
 echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, metacoder and R required)"
@@ -74,13 +75,18 @@ echo "INFO: output_log: " $output_log
 ### Check if required directories/files exist, copy if missing ###
 if [[ ! -d "reporting" ]] 
 then
-    echo "INFO: Copying directory reporting, as it was missing!" 
+    echo "INFO: Copying directory reporting, as it was missing! Use get_wochenende.sh to set up Wochenende properly." 
     cp -R $wochenende_dir/reporting .
 fi
 if [[ ! -d "plots" ]] 
 then
     echo "INFO: Copying directory plots, as it was missing!" 
     cp -R $wochenende_dir/plots .
+fi
+if [[ ! -d "extract" ]] 
+then
+    echo "INFO: Copying directory extract, as it was missing!" 
+    cp -R $wochenende_dir/extract .
 fi
 if [[ ! -f "reporting/ref.tmp" ]] 
 then
@@ -130,6 +136,12 @@ else
     cd $bamDir
     echo "INFO: Completed Wochenende plot"
 fi
+
+echo "INFO:  - Extracting selected human viral pathogen reads"
+bash extract_viral_reads.sh >>$output_log 2>&1
+wait
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
+sleep $sleeptimer
 
 # Run reporting 
 echo "INFO: Started Wochenende reporting"
