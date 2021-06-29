@@ -6,10 +6,22 @@
 # is greater than X (here probably 20). Good for idxstats files i.e. bam.txt files from Wochenende
 
 
+# Run samtools stats
+echo "INFO:  Running samtools stats"
+for bam in `ls *trm.s.bam`
+	do
+	samtools stats $bam > $bam.stats
+done
+for bam in `ls *calmd.bam`
+	do
+	samtools stats $bam > $bam.stats
+done
+
+
 
 # Run multiqc
 echo "INFO:  Running multiqc"
-#multiqc -f .
+multiqc -f .
 
 # Collate mapping stats
 out="mapped_percent.txt"
