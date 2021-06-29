@@ -371,3 +371,9 @@ Thanks to:
 @sannareddyk Bug testing, updates, evaluation
 
 @poer-sophia Code review, testing, maintenance, programming (haybaler and more)
+
+@twehrbein - growth rate code module
+
+### Gallery
+
+![Alt text](dependencies/1_AP011540_1_Rothia_mucilaginosa_DY_18_DNA__BAC_8.png?raw=true "Genome coverage plot")
