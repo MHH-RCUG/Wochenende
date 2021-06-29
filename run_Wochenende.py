@@ -1,13 +1,29 @@
 #!/usr/bin/python3
 
 """
-Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2020)
+Wochenende: A whole genome/metagenome analysis pipeline in Python3 (2018-2021)
 Author: Tobias Scheithauer
 Author: Dr. Colin Davenport
 Author: Fabian Friedrich
-
+Author: Sophia Poertner
 
 Changelog
+
+1.9.8 yaml config parsing from BASH Env variable defined location (need to configure and run setup.sh before starting)
+1.9.7 use srun in run_Wochenende_SLURM.sh 
+1.9.6 add yaml config parsing in bash and python (replaces paths in run_Wochenende.py and other files)
+1.9.5 add minimap2short and minimap2long modes
+1.9.4 add AlignerBoost stage and jar to dependencies folder
+1.9.3 do not delete unsorted BAM file, needed for testing AlignerBoost
+1.9.2 add error handling for ref.tmp file creation
+1.9.1 add new bacterial ref clost_bot_e_contigs.fa
+1.9.0 add 2020_05 reference (masked by blacklister version of 2020_03)
+1.8.9 write ref to file reporting/ref.tmp, so don't need to set the correct refseq in run_Wochenende_reporting_SLURM.sh
+1.8.8 add MQ20 mapping quality option
+1.8.7 add Clostridium botulinum ref
+1.8.6 remove 2016 references as unused
+1.8.5 add 2021_02 ref 2021_02_human_bact_fungi_vir.fa.masked.fa and 2021_02_human_bact_fungi_vir_unmasked.fa (no blacklister)
+1.8.4 add new bacterial refs
 1.8.3 add ecoli ref
 1.8.2 Check number of uncommented lines = 1 in run_Wochenende_SLURM.sh from start script runbatch_sbatch_Wochenende.sh.
 1.8.1 Move mq30 filter (makes big changes) to after mm and duplicate filtering
@@ -21,7 +37,7 @@ Changelog
 1.7.2 add ngmlr --min-residues cutoff, prefer to default 0.25
 1.7.1 add modified Nextera file and support for Trimmomatic trimming of Nextera adapters and transposase sequences
 1.7.0 lint code with tool black
-1.6.9 WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? 
+1.6.9 TODO WIP - scale allowed number of allowed mismatches to read length, 1 every 30bp ? -
 1.6.8 remove --share from SLURM instructions (--share removed in modern 2019 SLURM)
 1.6.7 add new viral ref EZV0_1_database2_cln.fasta
 1.6.6 add new ref 2020_03 - same as 2019_10, but removed Synthetic E. coli which collided with real E. coli when using mq30 mode.
@@ -54,84 +70,32 @@ import subprocess
 import shutil
 import argparse
 import time
+import yaml
 
+version = "1.9.8 - June 2021"
 
-version = "1.8.3 - January 2021"
 
 ##############################
-# CONFIGURATION
+# CONFIGURATION 
 ##############################
 
-## Paths to commands - please edit as appropriate. If it is in your PATH just type the command. We recommend conda.
-path_fastqc = "fastqc"
-path_afterqc = "/mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py"
-path_fastp = "fastp"
-path_prinseq = "prinseq-lite.pl"
-path_perl = "perl"
-path_perldup = "/mnt/ngsnfs/tools/Wochenende/dependencies/remove_pcr_duplicates.pl"
-path_fastuniq = "fastuniq"
-path_trimmomatic = "trimmomatic"
-path_fastq_mcf = "fastq_mcf"
-path_bwa = "bwa"
-path_samtools = "samtools"
-path_bamtools = "bamtools"
-path_sambamba = "sambamba"
-path_java = "java"
-path_abra_jar = "/mnt/ngsnfs/tools/abra2/abra2_latest.jar"
-path_minimap2 = "minimap2"
-path_ngmlr = "ngmlr"
-path_trim_galore = "trim_galore"
+# get the config file from a BASH variable (you must configure and run setup.sh before running run_Wochenende.py)
+global config_path
+if os.environ["WOCHENENDE_DIR"] != None:
+    woch_dir_bash = os.environ["WOCHENENDE_DIR"] 
+    config_path = woch_dir_bash + "/config.yaml"
+    print("INFO: Config file path: " + config_path)
+else:
+    print("Error: could not get the config file from the BASH variable $WOCHENENDE_DIR (you must configure and run setup.sh before running run_Wochenende.py)")
 
-## Paths to reference seqs. Edit as appropriate to add new!
-path_refseq_dict = {
-    "2020_09_massiveref_human": "/lager2/rcug/seqres/metagenref/bwa/2020_09_massiveref.fa",
-    "2020_03_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa",
-    "2016_06_1p_genus": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_genus.fa",
-    "2016_06_1p_spec_corrected": "/lager2/rcug/seqres/metagenref/bwa/2016_06_PPKC_metagenome_test_1p_spec_change_cln.fa",
-    "2016_06_1p_spec": "/working2/tuem/metagen/refs/2016/bwa/2016_06_PPKC_metagenome_test_1p_spec_change.fa",
-    "2019_01_meta": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final.fasta",
-    "2019_10_meta_human": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta",
-    "2019_10_meta_human_univec": "/lager2/rcug/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta",
-    "2019_01_meta_mouse": "/lager2/rcug/seqres/metagenref/bwa/all_kingdoms_refseq_2019_Jan_final_mm10_no_human.fasta",
-    "2019_01_meta_mouse_ASF_OMM": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta",
-    "2019_01_meta_mouse_ASF": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_ASF.fasta",
-    "2019_01_meta_mouse_OMM": "/lager2/rcug/seqres/metagenref/bwa/mm10_plus_OMM.fasta",
-    "hg19": "/lager2/rcug/seqres/HS/bwa/hg19.fa",
-    "GRCh37": "/lager2/rcug/seqres/HS/bwa/GRCh37.fa",
-    "GRCh38-45GB": "/lager2/rcug/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa",
-    "GRCh38-noalt": "/lager2/rcug/seqres/HS/bwa/GRCh38_no_alt.fa",
-    "GRCh38-mito": "/lager2/rcug/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa",
-    "mm10": "/lager2/rcug/seqres/MM/bwa/mm10.fa",
-    "rn6": "/lager2/rcug/seqres/RN/bwa/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa",
-    "rat_1AR1_ont": "/lager2/rcug/seqres/RN/bwa/1AR1_2019_ONT_final.fasta",
-    "zf10": "/lager2/rcug/seqres/DR/bwa/GRCz10.fa",
-    "ss11": "/lager2/rcug/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa",
-    "PA14": "/lager2/rcug/seqres/PA/bwa/NC_008463.fna",
-    "ecoli": "/lager2/rcug/seqres/EC/bwa/ecoli_K_12_MG1655.fasta",
-    "nci_viruses": "/lager2/rcug/seqres/metagenref/bwa/nci_viruses.fa",
-    "ezv_viruses": "/lager2/rcug/seqres/metagenref/bwa/EZV0_1_database2_cln.fasta",
-    "testdb": "testdb/ref.fa",
-    "strept_halo": "/lager2/rcug/seqres/metagenref/bwa/strept_halo.fa",
-    "k_variicola": "/lager2/rcug/seqres/metagenref/bwa/k_variicola.fa",
-    "k_oxytoca": "/lager2/rcug/seqres/metagenref/bwa/k_oxytoca.fa",
-    "clost_perf": "/lager2/rcug/seqres/metagenref/bwa/clost_perf.fa",
-    "clost_diff": "/lager2/rcug/seqres/metagenref/bwa/clost_diff.fa",
-    "citro_freundii": "/lager2/rcug/seqres/metagenref/bwa/citro_freundii.fa"
-}
-# Adapters - edit as appropriate. For nextera trim_galore is the best tool (no FASTA required).
-ea_adapter_fasta = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
-adapter_truseq = "/mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa"
-adapter_nextera = "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-adapter_fastp_solid = (
-    "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters_solid.fa"
-)
-adapter_fastp_nextera = (
-    "/lager2/rcug/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa"
-)
-adapter_fastp_general = "/lager2/rcug/seqres/contaminants/2020_02/adapters/adapters.fa"
+with open(config_path, 'r') as stream:
+    try:
+        config_dict = yaml.safe_load(stream)
+        locals().update(config_dict)
+    except yaml.YAMLError as exc:
+        print(exc)
 
-## Path to temp directory, edit for your server
-path_tmpdir = "/ngsssd1/rcug/tmp/"
+
 
 ##############################
 # INITIALIZATION AND ORGANIZATIONAL FUNCTIONS
@@ -139,9 +103,9 @@ path_tmpdir = "/ngsssd1/rcug/tmp/"
 
 
 print("Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline")
-print(
-    "Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors"
-)
+print("Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer, "
+      "Sophia Poertner and Fabian Friedrich with help from many further contributors "
+      "https://github.com/MHH-RCUG/Wochenende/graphs/contributors")
 print("version: " + version)
 print()
 
@@ -156,16 +120,16 @@ global args
 
 
 def check_arguments(args):
-    # Check argument cobination
-    if args.aligner == "minimap2" and not args.longread:
-        args.longrad = True
+    # Check argument combination
+    if args.aligner == "minimap2short" and args.longread:
         print(
-            "WARNING: Usage of minimap2 optimized for ONT data only. Added --longread flag."
-        )
+            "WARNING: Usage of minimap2short not useful for long read data. Exiting."
+        )                
+        sys.exit(1)
 
-    if args.readType == "PE" and args.aligner == "minimap2":
+    if args.readType == "PE" and args.aligner == "minimap2long":
         print(
-            "ERROR: Usage of minimap2 optimized for ONT data only. Combination of '--readType PE' and '--aligner minimap2' is not allowed."
+            "ERROR: Usage of minimap2long optimized for ONT data only. Combination of '--readType PE' and '--aligner minimap2long' is not allowed."
         )
         sys.exit(1)
 
@@ -173,9 +137,9 @@ def check_arguments(args):
         print("ERROR: Combination of '--readType PE' and '--longread' is not allowed.")
         sys.exit(1)
 
-    if args.fastp and args.aligner == "minimap2":
+    if args.fastp and args.aligner == "minimap2long":
         print(
-            "ERROR: Combination of '--fastp' and '--aligner minimap2' is not allowed."
+            "ERROR: Combination of '--fastp' and '--aligner minimap2long' is not allowed."
         )
         sys.exit(1)
 
@@ -235,7 +199,37 @@ def addToProgress(func_name, c_file):
     return progress_lines[1].replace("\n", "")
 
 
+def createReftmpFile(args):
+    # Write refseq as one line (overwrite) in file reporting/ref.tmp and ./ref.tmp
+    # path_refseq_dict is filled with variables from the yaml file using the yaml parser and method "locals"
+    try:
+        with open("reporting/ref.tmp", mode="w") as f1:
+            f1.write(path_refseq_dict.get(args.metagenome))
+    except OSError as e:
+        print("Execution failed: Could not create reporting/ref.tmp or ref.tmp. Hint: did you run: bash get_wochenende.sh before starting?")
+        sys.exit(1)
+    try:
+        with open("ref.tmp", mode="w") as f2:
+            f2.write(path_refseq_dict.get(args.metagenome))
+    except OSError as e:
+        print("Execution failed: Could not create reporting/ref.tmp or ref.tmp. Hint: did you run: bash get_wochenende.sh before starting?")
+        sys.exit(1)
+
 def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
+    """
+    Used in the main function to compose the pipeline. Runs a function and adds
+    it to the progress file.
+
+    Args:
+        func_name (str): The function's name
+        func (fun): The function to run
+        cF (str): the current file to operate on
+        *extraArgs: any additional arguments for the function
+
+    Returns:
+        str: The new current file which is used for the next step. It is defined
+        by the input function.
+    """
     # Run function and add it to the progress file
     with open(progress_file, mode="r") as f:
         done = func_name in "".join(f.readlines())
@@ -248,7 +242,13 @@ def runFunc(func_name, func, cF, newCurrentFile, *extraArgs):
 
 
 def runStage(stage, programCommand):
-    # Run a stage of this Pipeline
+    """
+    Run a stage of this Pipeline
+
+    Args:
+        stage (str): the stage's name
+        programCommand (str): the command to execute as new subprocess
+    """
     print("######  " + stage + "  ######")
     try:
         # print(programCommand)
@@ -367,7 +367,7 @@ def runTrimGaloreSE(stage_infile, noThreads, nextera):
     return stage_outfile
 
 
-#################### TODO !!!!!!!!!!!!!!!! Have never done this for TrimGalore AND how does it do PE output?
+# TODO !!!!!!!!!!!!!!!! Have never done this for TrimGalore AND how does it do PE output?
 def runTrimGalorePE(stage_infile, noThreads, adapter_path):
     # use for Nextera - paired end reads
     stage = "TrimGalore - PE TODO!!"
@@ -639,7 +639,7 @@ def runEATrimming(stage_infile):
 
 
 def runAligner(stage_infile, aligner, index, noThreads, readType):
-    # Alignment - Short-read single and paired end using bwa-mem. minimap2 or ngmlr for long reads
+    # Alignment - Short-read single and paired end using bwa-mem or minimap2short. minimap2long or ngmlr for long reads
 
     ngmlrMinIdentity = (
         0.85  # Aligner ngmlr only: minimum identity (fraction) of read to reference
@@ -656,11 +656,26 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     readGroup = os.path.basename(inputFastq.replace(".fastq", ""))
 
     alignerCmd = ""
-    if "minimap2" in aligner:
+    if "minimap2long" in aligner:
         alignerCmd = [
             path_minimap2,
             "-x",
             "map-ont",
+            "-a",
+            "--split-prefix",
+            prefix,
+            "-t",
+            str(noThreads),
+            str(index),
+            stage_infile,
+            ">",
+            minimap_samfile,
+        ]
+    elif "minimap2short" in aligner:
+        alignerCmd = [
+            path_minimap2,
+            "-x",
+            "sr",
             "-a",
             "--split-prefix",
             prefix,
@@ -714,7 +729,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     else:
         print("Read type not defined")
 
-        system.exit(1)
+        sys.exit(1)
 
     # minimap2 cannot pipe directly to samtools for bam conversion, the @SQ problem
     if "minimap2" not in aligner:
@@ -772,7 +787,7 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
 
     else:
         print("minimap2 aligner check failed")
-        system.exit(1)
+        sys.exit(1)
 
     """
     # Old actual run alignment block
@@ -786,6 +801,36 @@ def runAligner(stage_infile, aligner, index, noThreads, readType):
     except:
         sys.exit(1)
     """
+
+    rejigFiles(stage, stage_infile, stage_outfile)
+    return stage_outfile
+
+def runAlignerBoost(stage_infile, readType):
+    # run AlignerBoost
+    stage = "Run AlignerBoost to correct unsorted BAM MQ"
+    prefix = stage_infile.replace(".bam", "")
+    stage_outfile = prefix + ".ab.bam"
+    if readType == "SE":
+        filterType="filterSE"
+    elif readType == "PE":
+        filterType="filterPE"
+    else:
+        filterType="filterSE"
+
+    #$java -Xmx30g -jar $jar run filterSE -in $i -out $i.alb.bam &
+    alignerBoostCmd = [
+        "java",
+        "-Xmx30g",
+        "-jar",
+        path_alignerboost,
+        "run",
+        filterType,
+        "-in",
+        stage_infile,
+        "-out",
+        stage_outfile,
+    ]
+    runStage(stage, alignerBoostCmd)
 
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
@@ -812,7 +857,8 @@ def runBAMsort(stage_infile, readType):
         rmUnsortedBamCmd = ["rm", stage_infile]
         rmUnsortedBamCmdStr = " ".join(rmUnsortedBamCmd)
         try:
-            os.system(rmUnsortedBamCmdStr)
+            #os.system(rmUnsortedBamCmdStr)
+            pass
         except:
             print("Error removing unsorted bam file")
             sys.exit(1)
@@ -968,24 +1014,25 @@ def runGetUnmappedReads(stage_infile, readType):
     return 0
 
 
-def runMQ30(stage_infile):
-    # Remove reads with less than MQ30
-    stage = "Remove MQ30 reads"
+def runMappingQualityFilter(stage_infile, mapping_quality_integer):
+    # Remove reads with less than MQ20/30
+    stage = "Remove MQ20/30 reads"
     prefix = stage_infile.replace(".bam", "")
-    stage_outfile = prefix + ".mq30.bam"
-    samtoolsMQ30Cmd = [
+    stage_outfile = prefix + ".mq" + str(mapping_quality_integer) + ".bam"
+    samtoolsMQCmd = [
         path_samtools,
         "view",
         "-@",
         IOthreadsConstant,
         "-b",
         "-q",
-        "30",
+        #"30",
+        mapping_quality_integer,
         stage_infile,
         "-o",
         stage_outfile,
     ]
-    runStage(stage, samtoolsMQ30Cmd)
+    runStage(stage, samtoolsMQCmd)
     rejigFiles(stage, stage_infile, stage_outfile)
     return stage_outfile
 
@@ -1010,7 +1057,7 @@ def getAverageReadLengthBAM(bamfile):
 
 
 def runBamtools(stage_infile):
-    # Method deprecated and will be removed, see flexible method runBamtoolsFixed instead
+    ###### Method _deprecated_ and will be removed, see flexible method runBamtoolsFixed instead ######
     # Keep only reads with 0 or 1 mismatch
     stage = "Keep only reads with 0 or 1 mismatch - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
@@ -1053,7 +1100,10 @@ def runBamtools(stage_infile):
     try:
         # could not get subprocess.run, .call etc to work with "&&"
         # print(bamtools_cmd)
-        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 && bam_merge = path_samtools merge -@ IOthreadsConstant stage_outfile tmpfile0 tmpfile1")
+        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && "
+        #           "keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 "
+        #           "-tag NM:1 && bam_merge = path_samtools merge -@ IOthreadsConstant "
+        #           "stage_outfile tmpfile0 tmpfile1")
         os.system(bamtools_cmd1)
         os.system(bamtools_cmd2)
         os.system(merge)
@@ -1071,12 +1121,12 @@ def runBamtools(stage_infile):
 
 
 def runBamtoolsFixed(stage_infile, numberMismatches):
-    # Keep only reads with x mismatches. Intended for short reads with fixed read lengths, not variable length long reads
+    # Keep only reads with less than x mismatches. Intended for short reads with fixed read lengths, not variable length long reads
     stage = "Keep only reads with x mismatches (default 3) - for metagenomics"
     prefix = stage_infile.replace(".bam", "")
     stage_outfile = prefix + ".mm.bam"
 
-    # "tag" : "NM:<4"
+    # "tag" : "NM:<3"
     mmList = ['"NM:<', numberMismatches, '"']
     mmString = "".join(mmList)
 
@@ -1096,7 +1146,9 @@ def runBamtoolsFixed(stage_infile, numberMismatches):
     try:
         # could not get subprocess.run, .call etc to work with "&&"
         # print(bamtools_cmd)
-        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 &>
+        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && "
+        #           "keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 "
+        #           "-tag NM:1 &>")
         os.system(bamtools_cmd1)
 
     except:
@@ -1114,7 +1166,9 @@ def runBamtoolsAdaptive(stage_infile):
     #################################### Under development and not used yet ##############
 
     # Keep only reads with max 1 mismatch per 20bp of read (eg 3 for 75bp, 7 for 150bp)
-    stage = "Keep only reads with max 1 mismatch per 30bp of read (eg 2 for 75bp, 5 for 150bp). Maximum 7 mismatches. Intended for specific alignments in metagenomics"
+    stage = "Keep only reads with max 1 mismatch per 30bp of read (eg 2 for 75bp, " \
+            "5 for 150bp). Maximum 7 mismatches. Intended for specific alignments in " \
+            "metagenomics"
     prefix = stage_infile.replace(".bam", "")
 
     # Get size
@@ -1163,7 +1217,9 @@ def runBamtoolsAdaptive(stage_infile):
     try:
         # could not get subprocess.run, .call etc to work with "&&"
         # print(bamtools_cmd)
-        # os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -tag NM:1 && bam_merge = path_samtools merge -@ IO>
+        #  os.system("path_bamtools filter -in stage_infile -out tmpfile0 -tag NM:0 && "
+        #            "keep1mm = path_bamtools filter -in stage_infile -out tmpfile1 -"
+        #            "tag NM:1 && bam_merge = path_samtools merge -@ IO>")
         os.system(bamtools_cmd1)
         os.system(bamtools_cmd2)
         os.system(merge)
@@ -1303,81 +1359,27 @@ def abra(stage_infile, fasta, threads):
     return stage_outfile
 
 
-def runTests(stage_infile):
-    stage = "Running internal tests"
-    # use sbatch script to start tests
-    # This section should check the output
-    # Test output will be printed on std out
-    print("\n\n")
-    print("####################################################################")
-    print("######################### Starting tests ###########################")
-    print("####################################################################")
-
-    failedCount = 0
-
-    print("\n\nTest tempfile length")
-    tempFile = ""
-    tempFile = "testdb/reads_R1.fastqprogress.tmp"
-    try:
-        with open(tempFile, mode="r") as f:
-            f.seek(0)
-            testList = f.readlines()
-    except:
-        print("Test FAILED - could not open !" + str(tempFile))
-
-    print(len(testList))
-    if len(testList) == 18:
-        print("Test tempfile length 18 lines  ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print("\n\nTest unmapped file length")
-    tempFile = ""
-    tempFile = "testdb/reads_R1.ndp.lc.trm.s.bam.unmapped.fastq"
-    try:
-        with open(tempFile, mode="r") as f:
-            f.seek(0)
-            testList = f.readlines()
-            print(len(testList))
-    except:
-        print("Test FAILED, could not open file!")
-
-    if len(testList) == 44:
-        print("Test unmapped length 44 lines ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print("\n\nTest bam.txt file contents")
-    tempFile = ""
-    tempFile = "testdb/reads_R1.ndp.lc.trm.s.mq30.mm.dup.bam.txt"
-    with open(tempFile, mode="r") as f:
-        f.seek(0)
-        testList = f.readlines()
-    print(testList[0])
-    if testList[0] == "1	599940	411	0\n":
-        print("Test stats contents  ...  passed!")
-    else:
-        print("Test FAILED!")
-        failedCount = failedCount + 1
-
-    print(str(failedCount) + " tests failed!\n")
-
-    print("\nTesting completed, cleaning up testdb directory")
-    os.system("bash wochenende_test_cleanup.sh")
-
-
 ##############################
 # MAIN FUNCTION (PIPELINE DEFINITION)
 ##############################
 
 
 def main(args, sys_argv):
+
+    # load config from yaml file for the main scope
+    with open(config_path, 'r') as stream:
+        try:
+            print(yaml.safe_load(stream))
+        except yaml.YAMLError as exc:
+            print(exc)
+
     args = check_arguments(args)
     global progress_file
     progress_file = args.fastq + "progress.tmp"
     currentFile = createProgressFile(args)
+    print("Meta/genome selected: " + args.metagenome)
+    # write Meta/genome ref to file
+    createReftmpFile(args)
     threads = args.threads
     global inputFastq
     inputFastq = args.fastq
@@ -1394,7 +1396,7 @@ def main(args, sys_argv):
     if args.nextera:
         adapter_path = adapter_fastp_general
 
-    print("Meta/genome selected: " + args.metagenome)
+
 
     ##############
     # Single ended input reads
@@ -1410,7 +1412,7 @@ def main(args, sys_argv):
             currentFile = runFunc(
                 "runFastpSE", runFastpSE, currentFile, True, args.threads, adapter_path
             )
-        if args.trim_galore:
+        if args.trim_galore and not args.longread:
             currentFile = runFunc(
                 "runTrimGaloreSE",
                 runTrimGaloreSE,
@@ -1442,14 +1444,17 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
+        if args.runAlignerBoost:
+            currentFile = runFunc(
+                "runAlignerBoost", runAlignerBoost, currentFile, True, args.readType
+            )
         currentFile = runFunc(
             "runBAMsort", runBAMsort, currentFile, True, args.readType
         )
         currentFile = runFunc("runBAMindex1", runBAMindex, currentFile, False)
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
-        currentFile = runFunc(
-            "runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile, False
-        )
+        currentFile = runFunc("runSamtoolsFlagstat", runSamtoolsFlagstat, currentFile,
+                              False)
         currentFile = runFunc(
             "runGetUnmappedReads",
             runGetUnmappedReads,
@@ -1471,8 +1476,8 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats3", runIDXstats, currentFile, False)
             # currentFile = runFunc("runBamtoolsAdaptive", runBamtoolsAdaptive, currentFile, True)
-            # currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
-            # currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+            # currentFile = runFunc("runBAMindex12", runBAMindex, currentFile, False)
+            # currentFile = runFunc("runIDXstats12", runIDXstats, currentFile, False)
 
         if not args.no_duplicate_removal and not args.longread:
             # currentFile = runFunc("markDups", markDups, currentFile, True)
@@ -1482,10 +1487,15 @@ def main(args, sys_argv):
             currentFile = runFunc("runBAMindex4", runBAMindex, currentFile, False)
             currentFile = runFunc("runIDXstats4", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, True, "20")
+            currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats9", runIDXstats, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex2", runBAMindex, currentFile, False)
-            currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, True, "30")
+            currentFile = runFunc("runBAMindex10", runBAMindex, currentFile, False)
+            currentFile = runFunc("runIDXstats10", runIDXstats, currentFile, False)
 
         if not args.no_abra and not args.longread:
             currentFile = runFunc(
@@ -1546,6 +1556,10 @@ def main(args, sys_argv):
             args.threads,
             args.readType,
         )
+        if args.runAlignerBoost:
+            currentFile = runFunc(
+                "runAlignerBoost", runAlignerBoost, currentFile, True, args.readType
+            )
         # PE reads need name sorted reads which went through fixmate before duplicate marking
         currentFile = runFunc(
             "runBAMsortByName1", runBAMsortByName, currentFile, True, args.readType
@@ -1592,9 +1606,13 @@ def main(args, sys_argv):
 
         currentFile = runFunc("runIDXstats1", runIDXstats, currentFile, False)
 
+        if args.mq20:
+            currentFile = runFunc("runMappingQualityFilterMQ20", runMappingQualityFilter, currentFile, True, "20")
+            currentFile = runFunc("runBAMindex6", runBAMindex, currentFile, False)
+
         if args.mq30:
-            currentFile = runFunc("runMQ30", runMQ30, currentFile, True)
-            currentFile = runFunc("runBAMindex3", runBAMindex, currentFile, False)
+            currentFile = runFunc("runMappingQualityFilterMQ30", runMappingQualityFilter, currentFile, True, "30")
+            currentFile = runFunc("runBAMindex7", runBAMindex, currentFile, False)
 
         currentFile = runFunc("runIDXstats2", runIDXstats, currentFile, False)
 
@@ -1614,9 +1632,8 @@ def main(args, sys_argv):
         currentFile = runFunc("runIDXstats5", runIDXstats, currentFile, False)
 
     else:
-        print(
-            " --readType must be set to either SE or PE (meaning single ended or paired-end)"
-        )
+        print( "--readType must be set to either SE or PE (meaning single ended or "
+               "paired-end)")
 
     # Report all files
     if args.debug:
@@ -1625,12 +1642,6 @@ def main(args, sys_argv):
             print("Filelist item: " + fileList[i])
             i = i + 1
 
-    # Report all percentage mapped
-
-    if args.testWochenende:
-
-        # Run internal tests
-        currentFile = runFunc("runTests", runTests, currentFile, False)
 
 
 ##############################
@@ -1650,9 +1661,9 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--aligner",
-        help="Aligner to use, either bwamem, ngmlr or minimap2. Usage of minimap2 and ngmlr currently optimized for nanopore data only.",
+        help="Aligner to use, either bwamem, ngmlr or minimap2short and minimap2long. Usage of minimap2long and ngmlr currently optimized for nanopore data only.",
         action="store",
-        choices=["bwamem", "minimap2", "ngmlr"],
+        choices=["bwamem", "minimap2short", "minimap2long", "ngmlr"],
         default="bwamem",
     )
 
@@ -1724,14 +1735,27 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "--runAlignerBoost",
+        help="Runs AlignerBoost Bayesian Mapping Quality calibration.",
+        action="store_true",
+    )
+    
+    parser.add_argument(
+        "--mq20",
+        help="Remove reads with mapping quality less than 20. Recommended for metagenome and amplicon analysis. Less stringent than MQ30.",
+        action="store_true",
+    )
+
+    parser.add_argument(
         "--mq30",
-        help="Remove reads with mapping quality less than 30. Recommended for metagenome and amplicon analysis.",
+        help="Remove reads with mapping quality less than 30. Recommended for metagenome "
+             "and amplicon analysis.",
         action="store_true",
     )
 
     parser.add_argument(
         "--remove_mismatching",
-        help="Remove reads with less than x mismatches (via the NM bam tag). Default 3. Argument required.",
+        help="Remove reads with more than x mismatches (via the NM bam tag). Default 3. Argument required.",
         action="store",
         default="3",
     )
@@ -1739,12 +1763,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--force_restart",
         help="Force restart, without regard to existing progress",
-        action="store_true",
-    )
-
-    parser.add_argument(
-        "--testWochenende",
-        help="Run pipeline tests vs testdb, needs the subdirectory testdb, default false",
         action="store_true",
     )
 

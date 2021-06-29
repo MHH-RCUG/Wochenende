@@ -6,10 +6,22 @@
 # is greater than X (here probably 20). Good for idxstats files i.e. bam.txt files from Wochenende
 
 
+# Run samtools stats
+echo "INFO:  Running samtools stats"
+for bam in `ls *trm.s.bam`
+	do
+	samtools stats $bam > $bam.stats
+done
+for bam in `ls *calmd.bam`
+	do
+	samtools stats $bam > $bam.stats
+done
+
+
 
 # Run multiqc
 echo "INFO:  Running multiqc"
-#multiqc -f .
+multiqc -f .
 
 # Collate mapping stats
 out="mapped_percent.txt"
@@ -23,7 +35,7 @@ done
 
 
 echo "INFO:  Filtering and sorting  Wochenende output bam.txt files"
-## Filter: $3>= means column3 must have 20 or more reads
+## Filter: $3>= means column3 (no. reads assigned to taxon) must have 20 or more reads
 # Sorted descending in column 3 for within experiment clarity 
 for i in `find . -name "*.bam.txt"`
         do

@@ -4,10 +4,12 @@ Author: Tobias Scheithauer, August 2018
 Author: Erik Wessels, October 2019
 Author: Fabian Charly Friedrich, February 2020
 Author: Colin Davenport
+Author: Sophia Poertner
 
 TODOs
 
 Changelog
+1.5.4 new references added
 1.5.3 docs and comments improved
 1.5.2 lint with tool black
 1.5.1 add debug switch for printing, otherwise in quiet mode.
@@ -28,7 +30,7 @@ import pandas as pd
 import click
 
 
-version = "1.5.3"
+version = "1.5.4"
 
 ###################################
 # functions
