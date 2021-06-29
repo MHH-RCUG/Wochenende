@@ -1,4 +1,0 @@
-Name,Growths,Growth Rate,#Reads,Initial Bins,Used Bins,Fit Err,Error Codes
-Dundee020_S35_R1.ndp.trm.s.mm.dup.mq30.calmd_1_AE004091_2_Pseudomonas_aeruginosa_PAO1__complete_genome_BAC,moderate,1.45,219969,50,50,0.51,[]
-Dundee020_S35_R1.ndp.trm.s.mm.dup.mq30.calmd_1_AJ938182_1_Staphylococcus_aureus_RF122_complete_genome_BAC,moderate,1.40,23516,50,46,1.85,[]
-Dundee020_S35_R1.ndp.trm.s.mm.dup.mq30.calmd_1_FR821777_2_Staphylococcus_argenteus_MSHR1132_complete_genome_sequence_BAC,failed,1.51,1070,50,9,15.96,"[-2, -3, -5]"
