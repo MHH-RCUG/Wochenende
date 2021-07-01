@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.25, June 2021"
+version="0.26, July 2021"
 
 #Changelog
+#0.26 - don't save useless sambamba depth output to log
 #0.25 - add viral read extraction
 #0.24 - use bash config.yaml parsing
 #0.23 - handle mq20 output files
@@ -108,7 +109,7 @@ if [[ $1 == "--no-plots" ]]
     then
     echo "INFO: Found --no-plots argument: Skipping runbatch_sambamba_depth.sh"
 else
-    bash runbatch_sambamba_depth.sh >$output_log 2>&1
+    bash runbatch_sambamba_depth.sh >>/dev/null 2>&1
     wait
     echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
     sleep $sleeptimer
