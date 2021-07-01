@@ -3,13 +3,18 @@
 # Prepare Wochenende bam files for the bed to csv script. Makes bed out of Wochenende bam files. Filter out mouse human and mito.
 # Author: Sophia Poertner, 2021
 
+echo "Version 0.1"
+
+#Changelog
+#0.1 - remove bedtools binary and use conda bedtools
+
 # covert bam to bed
 bam_count=$(ls -1 *.bam 2>/dev/null | wc -l)
 if [[ $bam_count != 0 ]]
   then
   for bam in *.bam
   do
-    ./bedtools bamtobed -i "$bam" > "${bam%.bam}".unfiltered.bed
+    bedtools bamtobed -i "$bam" > "${bam%.bam}".unfiltered.bed
   done
 
   for bed in *.bed
