@@ -17,7 +17,7 @@ if [[ $bam_count != 0 ]]
     bedtools bamtobed -i "$bam" > "${bam%.bam}".unfiltered.bed
   done
 
-  for bed in *.bed
+  for bed in *.unfiltered.bed
   do
     #exclude mouse, human, mito
     grep -v "^chr" "$bed" | grep -v "^1_1_1" > "${bed%.unfiltered.bed}".bed
