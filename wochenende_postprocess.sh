@@ -13,7 +13,6 @@ version="0.26, July 2021"
 #0.21 - attempt recovery for second runs to copy data from csv or txt subdirs into haybaler dir
 #0.20 - add haybaler heat tree support
 #0.19 - update haybaler copying and add double square brackets for bash ifs
-#0.1xx - TODO Use environment variables for haybaler and wochenende installations
 #0.18 - make wochenende_plot optional with --no-plots
 #0.17 - check directories and improve haybaler integration
 #0.16 - use Haybaler update runbatch_heatmaps.sh
