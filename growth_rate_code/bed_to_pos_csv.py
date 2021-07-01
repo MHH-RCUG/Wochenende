@@ -26,7 +26,7 @@ def get_pos(df_input_file, filename, path, plot_samples, min_read_count):
             save_as_csv(filename, path, normalised_position, organism)
             if plot_samples:
                 plot_reads(normalised_position, filename, path, organism)
-    return positions
+#    return positions
 
 
 # normalise teh read position so they are between 0 and 1. Shuffle the reads positions
