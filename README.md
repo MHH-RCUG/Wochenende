@@ -372,6 +372,7 @@ Thanks to:
 
 @poer-sophia Code review, testing, maintenance, programming (haybaler and more)
 
+@twehrbein - growth rate code module
 
 ### Gallery
 
