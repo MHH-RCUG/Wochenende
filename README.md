@@ -139,8 +139,6 @@ OR
 2. Create a conda environment for the pipeline. You should have first installed miniconda 64-bit Linux.
 ```
 cd wochenende
-conda env create -f env.wochenende.yml
-# or if you have problems remove the previous environment and try this:
 conda env create -f env.wochenende.minimal.yml
 ```
 3. Install all the other tools.
@@ -148,13 +146,13 @@ conda env create -f env.wochenende.minimal.yml
 4. Important! Edit the configuration section of `config.yaml` to set the paths to the tools, tmp directory and reference sequences. Use a code editor to avoid breaking the yaml format.
 5. Edit the paths to Wochenende and optionally haybaler in `setup.sh`
 6. Run `bash setup.sh` to configure Wochenende BASH environment variables (for current user and server only)
-7. (Wochenende_plot only). Install the python dependencies for visualization by pip. The works on Ubuntu 1604: `pip3 install --user numpy==1.12.1 numpy-base==1.15.0 pandas==0.23.4 matplotlib==2.2.2`
+7. (Wochenende_plot only). Install the python dependencies for visualization by pip. On Ubuntu 2004: `python -m pip install --user numpy==1.20.2 numpy-base==1.20.2 pandas==1.2.5 matplotlib==3.3.4`
 8. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
 9. Optional: run the tests, see below.
 
-### Update conda enviroment
-If there is already a conda enviroment named wochenende:
+### Update conda environment
+If there is already a conda environment named wochenende:
 ```
 conda env update -f env.wochenende.yml
 ```
@@ -228,8 +226,8 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 # Wochenende_plot.py output (png images)
 - wochenende_png_files/
 - wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/
-- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/perhaps_present/  
-- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/probably_present/
+- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/high_score/  
+- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/low_med_score/
 
 
 ```
