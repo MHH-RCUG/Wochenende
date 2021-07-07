@@ -285,7 +285,7 @@ def plot_figures(
     )
     # TODO stem not iterable any more matplotlib 3.3.4
     # https://matplotlib.org/stable/gallery/shapes_and_collections/line_collection.html
-    stems.set_linewidth(10)
+    #stems.set_linewidth(10)
     #for stem in stems:
         # use_line_collection = True
         # stem.set_linewidth(10)
