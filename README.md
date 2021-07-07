@@ -146,13 +146,9 @@ conda env create -f env.wochenende.minimal.yml
 4. Important! Edit the configuration section of `config.yaml` to set the paths to the tools, tmp directory and reference sequences. Use a code editor to avoid breaking the yaml format.
 5. Edit the paths to Wochenende and optionally haybaler in `setup.sh`
 6. Run `bash setup.sh` to configure Wochenende BASH environment variables (for current user and server only)
-7. (Wochenende_plot only). Install the python dependencies for visualization by pip. On Ubuntu 2004: 
-```
-python -m pip install --user numpy==1.20.2 numpy-base==1.20.2 pandas==1.2.5 matplotlib==3.3.4
-```
-8. Activate the conda environment before running the pipeline.
+7. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
-9. Optional: run the tests, see below.
+8. Optional: run the tests, see below.
 
 ### Update conda environment
 If there is already a conda environment named wochenende:
