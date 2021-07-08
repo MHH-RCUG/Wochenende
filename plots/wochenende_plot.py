@@ -25,8 +25,7 @@ import matplotlib.pyplot as plt
 # Changelog
 
 # 0.2.2 change perhaps present to low_med_score and prob_present to high_score
-# 0.2.1 default mean coverage 0.2
-# 0.2 reduce --minMeanCov default from 1.0 to 0.2 after testing, add version.
+# 0.2.1 default mean coverage 0.2# 0.2 reduce --minMeanCov default from 1.0 to 0.2 after testing, add version.
 # 0.1 initial working script
 
 version = "0.2.2"
@@ -284,9 +283,12 @@ def plot_figures(
     markers, stems, base = ax1.stem(
         df_organism["chromStart"], df_organism["readCount"], markerfmt="bo", linefmt="tab:cyan"
     )
-    for stem in stems:
+    # TODO stem not iterable any more matplotlib 3.3.4
+    # https://matplotlib.org/stable/gallery/shapes_and_collections/line_collection.html
+    #stems.set_linewidth(10)
+    #for stem in stems:
         # use_line_collection = True
-        stem.set_linewidth(10)
+        # stem.set_linewidth(10)
         # stem.set_use_line_collection=True
     ax1.tick_params(axis="y", labelcolor="blue")
     ax1.grid()
