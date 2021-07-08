@@ -9,7 +9,7 @@ echo "Version 0.1"
 #0.1 - remove bedtools binary and use conda bedtools
 
 #link bam and bai files found by ls command to current directory
-for i in `ls ../*calmd.bam.bai`
+for i in `ls ../*calmd.bam.txt`
         do
         ln -s $i .
 done
@@ -58,7 +58,7 @@ fi
 
 
 #unlink bam and bai files
-for i in `ls *calmd.bam.bai`
+for i in `ls *calmd.bam.txt`
         do
         unlink $i
 done
