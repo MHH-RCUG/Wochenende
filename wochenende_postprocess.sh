@@ -2,10 +2,11 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.26, July 2021"
+version="0.27, July 2021"
 
 #Changelog
-#0.26 - don't save useless sambamba depth output to log
+#0.27 - add growth rate estimation by Tom Wehrbein @Leibniz University Hannover
+#0.26 - don't save voluminous sambamba depth output to log
 #0.25 - add viral read extraction
 #0.24 - use bash config.yaml parsing
 #0.23 - handle mq20 output files
@@ -88,6 +89,11 @@ then
     echo "INFO: Copying directory extract, as it was missing!" 
     cp -R $wochenende_dir/extract .
 fi
+if [[ ! -d "growth_rate" ]] 
+then
+    echo "INFO: Copying directory growth_rate, as it was missing!" 
+    cp -R $wochenende_dir/growth_rate .
+fi
 if [[ ! -f "reporting/ref.tmp" ]] 
 then
     echo "INFO: Missing file reporting/ref.tmp , attempting to copy ./ref.tmp to reporting/ref.tmp" 
@@ -116,6 +122,16 @@ else
     wait
 fi
 echo "INFO: Completed Sambamba depth and filtering"
+
+
+# Growth rate
+echo "INFO: Started bacterial growth rate analysis"
+cd $bamDir
+cd growth_rate/
+bash run_bed_to_csv.sh  >>$output_log 2>&1
+bash run_reproduction_determiner.sh  >>$output_log 2>&1
+cd $bamDir
+echo "INFO: Completed bacterial growth rate analysis"
 
 
 # Plots

@@ -69,7 +69,7 @@ def evaluate_all_data(sample_folder_path, experiment_name, save_plots=True):
                    ' given dir', required=True)
 def main(dir_path):
     sample_folder_path = Path(dir_path)
-    experiment_name = 'example'
+    experiment_name = 'output'
     evaluate_all_data(sample_folder_path=sample_folder_path, experiment_name=experiment_name,
                       save_plots=True)
 
@@ -79,6 +79,6 @@ if __name__ == '__main__':
 
     # sample_folder_path = Path('Dundee029_S94_R1.ndp.trm.s.mm.dup.mq30.calmd_subsamples')
     # sample_folder_path = Path(dir_path)
-    # experiment_name = 'example'
+    # experiment_name = 'output'
     # evaluate_all_data(sample_folder_path=sample_folder_path, experiment_name=experiment_name,
     #                   save_plots=True)
