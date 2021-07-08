@@ -16,6 +16,7 @@ cp $path_we/*.py .
 cp -R $path_we/extract/ .
 cp -R $path_we/plots/ .
 cp -R $path_we/reporting/ .
+cp -R $path_we/growth_rate/ .
 
 echo "INFO: If you get errors here check setup.sh was configured and run properly"
 echo "INFO: Completed get_wochenende.sh"

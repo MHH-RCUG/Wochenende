@@ -3,13 +3,14 @@
 # Prepare Wochenende bam files for the bed to csv script. Makes bed out of Wochenende bam files. Filter out mouse human and mito.
 # Author: Sophia Poertner, 2021
 
-echo "Version 0.1"
+echo "Version 0.11"
 
 #Changelog
+#0.11 -link in bam and bai files, unlink later
 #0.1 - remove bedtools binary and use conda bedtools
 
 #link bam and bai files found by ls command to current directory
-for i in `ls ../*calmd.bam.txt`
+for i in `ls ../*calmd.bam.bai`
         do
         ln -s $i .
 done
@@ -58,7 +59,7 @@ fi
 
 
 #unlink bam and bai files
-for i in `ls *calmd.bam.txt`
+for i in `ls *calmd.bam.bai`
         do
         unlink $i
 done
