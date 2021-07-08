@@ -32,7 +32,8 @@ if [[ $bam_count != 0 ]]
   for bam in *.bam
   do
     #bedtools bamtobed -i "$bam" > "${bam%.bam}".unfiltered.bed
-    bedtools bamtobed -i "$bam" > "${bam%.bam}.unfiltered.bed"
+    srun -c 2 bedtools bamtobed -i "$bam" > "${bam%.bam}.unfiltered.bed" &
+    wait
   done
 
   for bed in *.unfiltered.bed

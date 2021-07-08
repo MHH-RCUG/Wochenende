@@ -10,18 +10,20 @@
 echo "INFO:  Running samtools stats"
 for bam in `ls *trm.s.bam`
 	do
-	samtools stats $bam > $bam.stats
+	srun -c 1 samtools stats $bam > $bam.stats &
 done
+wait
 for bam in `ls *calmd.bam`
 	do
-	samtools stats $bam > $bam.stats
+	srun -c 1 samtools stats $bam > $bam.stats &
 done
+wait
 
 
 
 # Run multiqc
 echo "INFO:  Running multiqc"
-multiqc -f .
+multiqc -f .  2>&1
 
 # Collate mapping stats
 out="mapped_percent.txt"

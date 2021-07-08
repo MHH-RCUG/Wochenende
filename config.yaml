@@ -6,6 +6,8 @@
 #wochenende_dir: /mnt/ngsnfs/tools/dev/Wochenende
 #haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
 
+# use SLURM job scheduler (yes, no)
+useSLURM: yes
 # path to R
 rscript_bin: /usr/bin/Rscript
 # Servers configured for heat tree analysis with the metacoder R package. String with all server names separated by space: "server1 server2 server3 ..."
