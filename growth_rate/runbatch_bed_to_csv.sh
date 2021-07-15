@@ -13,7 +13,7 @@ if [ $count_bam != 0 ]
   then
   for i in `ls ../*calmd.bam`
     do
-    $slurm_srun bash run_bed_to_csv.sh $i
+    $slurm_srun bash run_bed_to_csv.sh $i &
   done
 else
   echo "ERROR: Bam files not found. Cannot run growth rate module and convert to pos.csv"
