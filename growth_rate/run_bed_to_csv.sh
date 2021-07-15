@@ -31,23 +31,23 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   bedtools bamtobed -i "$bam" > "${bam%.bam}.unfiltered.bed"
 
   bed="${bam%.bam}.unfiltered.bed"
-  #exclude mouse, human, mito chromosomes
-  grep -v "^chr" "$bed" | grep -v "^1_1_1" > "${bed%.unfiltered.bed}".bed
+  # filter - exclude mouse, human, mito chromosomes
+  grep -v "^chr" "$bed" | grep -v "^1_1_1" > "${bed%.filt.bed}".bed
   echo "INFO: Starting bed to csv for file $bed"
-  python3 bed_to_pos_csv.py -i ${bed%.unfiltered.bed}.bed -p .
+  python3 bed_to_pos_csv.py -i ${bed%.filt.bed}.bed -p .
   echo "INFO: Completed file $bed"
 
   # cleanup
   #rm "$bed"  # remove temp file
-  if [[ ! -d "${bed%.unfiltered.bed}_subsamples" ]]
+  if [[ ! -d "${bed%.filt.bed}_subsamples" ]]
     then
-    mkdir "${bed%.unfiltered.bed}_subsamples"
+    mkdir "${bed%.filt.bed}_subsamples"
   fi
 
-  csv_count=$(ls -1 "${bed%.unfiltered.bed}"*.csv 2>/dev/null | wc -l)
+  csv_count=$(ls -1 "${bed%.filt.bed}"*.csv 2>/dev/null | wc -l)
   if [[ $csv_count != 0 ]]
       then
-      mv "${bed%.unfiltered.bed}"*.csv "${bed%.unfiltered.bed}_subsamples"
+      mv "${bed%.filt.bed}"*.csv "${bed%.filt.bed}_subsamples"
   fi
 
   echo "cleanup: unlink bam, bai and bam.txt files"
