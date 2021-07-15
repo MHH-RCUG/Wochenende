@@ -1,12 +1,15 @@
 #!/bin/bash
 
 # Prepare Wochenende bam files for the bed to csv script (input for reproduction determiner)
+# Links input files from one higher directory. Converts bam to bed.
 # Filter out mouse human and mito chromosomes.
 # Author: Sophia Poertner, 2021
+# Usage: bash run_bed_to_csv.sh input.bam
 
-echo "Version 0.12"
+echo "Version 0.13"
 
 # Changelog
+# 0.13 - add usage, correct runbatch_bed_to_csv.sh SLURM submission
 # 0.12 - get input file from sbatch script for speedup
 # 0.11 - link in bam, bam.txt and bai files, unlink later
 # 0.10 - remove bedtools binary and use conda bedtools
