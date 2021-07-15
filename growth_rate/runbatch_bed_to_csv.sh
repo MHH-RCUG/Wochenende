@@ -8,6 +8,7 @@ slurm_srun="srun -c $cpus"
 # check if input exists
 count_bam=`ls -1 ../*calmd.bam 2>/dev/null | wc -l`
 
+echo "INFO: Starting growth rate analysis module"
 if [ $count_bam != 0 ]
   then
   for i in `ls ../*calmd.bam`
@@ -15,5 +16,5 @@ if [ $count_bam != 0 ]
     $slurm_srun bash run_bed_to_csv.sh $i
   done
 else
-  echo "No bam file found. Can't convert to pos.csv"
+  echo "ERROR: Bam files not found. Cannot run growth rate module and convert to pos.csv"
 fi

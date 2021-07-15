@@ -6,9 +6,10 @@
 # Author: Sophia Poertner, 2021
 # Usage: bash run_bed_to_csv.sh input.bam
 
-echo "Version 0.13"
+echo "Version 0.14"
 
 # Changelog
+# 0.14 - simplify naming, bugfixes
 # 0.13 - add usage, correct runbatch_bed_to_csv.sh SLURM submission
 # 0.12 - get input file from sbatch script for speedup
 # 0.11 - link in bam, bam.txt and bai files, unlink later
@@ -25,7 +26,7 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   ln -s $1 .
   ln -s ${1%bam}bam.txt .
   ln -s ${1%bam}bam.bai .
-  ls *
+  #ls *
   bam=${1/..\//}
 
   bedtools bamtobed -i "$bam" > "${bam%.bam}.base.bed"
@@ -56,5 +57,5 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   unlink ${bam%bam}bam.txt
   unlink ${bam%bam}bam.bai
 else
-  echo "no bam.txt and bai found for input bam. Can't convert to pos.csv"
+  echo "ERROR: no bam.txt and bai found for input bam. Can't convert to pos.csv"
 fi
