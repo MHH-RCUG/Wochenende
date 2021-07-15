@@ -128,7 +128,7 @@ echo "INFO: Completed Sambamba depth and filtering"
 echo "INFO: Started bacterial growth rate analysis"
 cd $bamDir
 cd growth_rate/
-bash run_bed_to_csv.sh  >>$output_log 2>&1
+bash runbatch_bed_to_csv.sh  >>$output_log 2>&1
 bash run_reproduction_determiner.sh  >>$output_log 2>&1
 cd $bamDir
 echo "INFO: Completed bacterial growth rate analysis"

@@ -25,7 +25,7 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   ln -s $1 .
   ln -s ${1%bam}bam.txt .
   ln -s ${1%bam}bam.bai .
-  ls *
+  #ls *
   bam=${1/..\//}
 
   bedtools bamtobed -i "$bam" > "${bam%.bam}.unfiltered.bed"
@@ -34,7 +34,7 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   #exclude mouse, human, mito chromosomes
   grep -v "^chr" "$bed" | grep -v "^1_1_1" > "${bed%.unfiltered.bed}".bed
   echo "INFO: Starting bed to csv for file $bed"
-  python3 bed_to_pos_csv.py -i "${bed%.unfiltered.bed}".bed -p .
+  python3 bed_to_pos_csv.py -i ${bed%.unfiltered.bed}.bed -p .
   echo "INFO: Completed file $bed"
 
   # cleanup
