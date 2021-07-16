@@ -19,7 +19,7 @@ def get_pos(df_input_file, filename, path, plot_samples, min_read_count):
     for organism in set(df_input_file.index.values):  # for every organism in the file
         organism_df = df_input_file.loc[[organism]]  # make a df containing only that organism
         if len(organism_df.index) >= min_read_count:
-            print("working on organism {}".format(organism))
+            print("INFO: working on organism {}".format(organism))
             positions = organism_df[1].tolist()
             genome_length = get_genome_length(filename, path, organism)
             normalised_position = norm_shuffle(positions, genome_length)
@@ -41,6 +41,7 @@ def norm_shuffle(position, genome_length):
 # get genome length from bam.txt file
 def get_genome_length(file, path, organism):
     if not os.path.isfile("{}/{}".format(path, file.replace("bed", "bam.txt"))):
+        print("Error: Could not find expected file: "+ file.replace("bed", "bam.txt") + " at path: " + path)
         sys.exit("Error in bed_to_pos_csv.py: no bam.txt file found for file {}  - every bed file needs its associated bam.txt file!".format(file))
     else:
         bam_txt = pd.read_csv("{}/{}".format(path, file.replace("bed", "bam.txt")), delimiter="\t", header=None,

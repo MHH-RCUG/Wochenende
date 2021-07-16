@@ -4,7 +4,8 @@
 # Links input files from one higher directory. Converts bam to bed.
 # Filter out mouse human and mito chromosomes.
 # Author: Sophia Poertner, 2021
-# Usage: bash run_bed_to_csv.sh input.bam
+# Usage1: conda activate wochenende
+# Usage2: bash run_bed_to_csv.sh input.bam
 
 echo "Version 0.14 of run_bed_to_csv.sh"
 
@@ -36,7 +37,7 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   grep -v "^chr" "$bed" | grep -v "^1_1_1" > "${bed%.bed}.filt.bed"
   filtBedFile="${bed%.bed}.filt.bed"
   echo "INFO: Starting bed to csv for file $filtBedFile"
-  # following line is causing core dumps ---
+  # following line causes core dumps if the correct conda environment with pandas etc is not activated
   python3 bed_to_pos_csv.py -i $filtBedFile -p .
   echo "INFO: Completed file $bed"
 
