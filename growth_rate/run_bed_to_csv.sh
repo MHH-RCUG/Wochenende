@@ -6,7 +6,7 @@
 # Author: Sophia Poertner, 2021
 # Usage: bash run_bed_to_csv.sh input.bam
 
-echo "Version 0.14"
+echo "Version 0.14 of run_bed_to_csv.sh"
 
 # Changelog
 # 0.14 - simplify naming, bugfixes
@@ -29,13 +29,15 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   #ls *
   bam=${1/..\//}
 
-  bedtools bamtobed -i "$bam" > "${bam%.bam}.base.bed"
+  bedtools bamtobed -i "$bam" > "${bam%.bam}.bed"
 
-  bed="${bam%.bam}.base.bed"
+  bed="${bam%.bam}.bed"
   # filter - exclude mouse, human, mito chromosomes
   grep -v "^chr" "$bed" | grep -v "^1_1_1" > "${bed%.bed}.filt.bed"
-  echo "INFO: Starting bed to csv for file $bed"
-  python3 bed_to_pos_csv.py -i "${bed%.bed}.filt.bed" -p .
+  filtBedFile="${bed%.bed}.filt.bed"
+  echo "INFO: Starting bed to csv for file $filtBedFile"
+  # following line is causing core dumps ---
+  python3 bed_to_pos_csv.py -i $filtBedFile -p .
   echo "INFO: Completed file $bed"
 
   # cleanup
@@ -53,9 +55,9 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
 
   echo "cleanup: unlink bam, bai and bam.txt files"
   # unlink bam, txt and bai files
-  unlink $bam
-  unlink ${bam%bam}bam.txt
-  unlink ${bam%bam}bam.bai
+  #unlink $bam
+  #unlink ${bam%bam}bam.txt
+  #unlink ${bam%bam}bam.bai
 else
   echo "ERROR: no bam.txt and bai found for input bam. Can't convert to pos.csv"
 fi
