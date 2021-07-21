@@ -21,7 +21,7 @@ adapter_fastp_general: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters
 adapter_fastp_nextera: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa
 adapter_fastp_solid: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters_solid.fa
 adapter_nextera: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa
-adapter_truseq: /mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.38-0/adapters/TruSeq3-PE.fa
+adapter_truseq: /mnt/ngsnfs/tools/miniconda3/envs/wochenende/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa
 ea_adapter_fasta: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa
 # Paths to tools
 path_abra_jar: /mnt/ngsnfs/tools/abra2/abra2_latest.jar
