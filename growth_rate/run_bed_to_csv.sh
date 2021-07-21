@@ -4,11 +4,13 @@
 # Links input files from one higher directory. Converts bam to bed.
 # Filter out mouse human and mito chromosomes.
 # Author: Sophia Poertner, 2021
-# Usage: bash run_bed_to_csv.sh input.bam
+# Usage1: conda activate wochenende
+# Usage2: bash run_bed_to_csv.sh input.bam
 
-echo "Version 0.13"
+echo "Version 0.14 of run_bed_to_csv.sh"
 
 # Changelog
+# 0.14 - simplify naming, bugfixes
 # 0.13 - add usage, correct runbatch_bed_to_csv.sh SLURM submission
 # 0.12 - get input file from sbatch script for speedup
 # 0.11 - link in bam, bam.txt and bai files, unlink later
@@ -25,16 +27,18 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   ln -s $1 .
   ln -s ${1%bam}bam.txt .
   ln -s ${1%bam}bam.bai .
-  ls *
+  #ls *
   bam=${1/..\//}
 
-  bedtools bamtobed -i "$bam" > "${bam%.bam}.base.bed"
+  bedtools bamtobed -i "$bam" > "${bam%.bam}.bed"
 
-  bed="${bam%.bam}.base.bed"
+  bed="${bam%.bam}.bed"
   # filter - exclude mouse, human, mito chromosomes
   grep -v "^chr" "$bed" | grep -v "^1_1_1" > "${bed%.bed}.filt.bed"
-  echo "INFO: Starting bed to csv for file $bed"
-  python3 bed_to_pos_csv.py -i "${bed%.bed}.filt.bed" -p .
+  filtBedFile="${bed%.bed}.filt.bed"
+  echo "INFO: Starting bed to csv for file $filtBedFile"
+  # following line causes core dumps if the correct conda environment with pandas etc is not activated
+  python3 bed_to_pos_csv.py -i $filtBedFile -p .
   echo "INFO: Completed file $bed"
 
   # cleanup
@@ -52,9 +56,9 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
 
   echo "cleanup: unlink bam, bai and bam.txt files"
   # unlink bam, txt and bai files
-  unlink $bam
-  unlink ${bam%bam}bam.txt
-  unlink ${bam%bam}bam.bai
+  #unlink $bam
+  #unlink ${bam%bam}bam.txt
+  #unlink ${bam%bam}bam.bai
 else
-  echo "no bam.txt and bai found for input bam. Can't convert to pos.csv"
+  echo "ERROR: no bam.txt and bai found for input bam. Can't convert to pos.csv"
 fi

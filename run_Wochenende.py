@@ -8,7 +8,7 @@ Author: Fabian Friedrich
 Author: Sophia Poertner
 
 Changelog
-
+1.9.9 calculate bam.bai in paired end mode for all outputs
 1.9.8 yaml config parsing from BASH Env variable defined location (need to configure and run setup.sh before starting)
 1.9.7 use srun in run_Wochenende_SLURM.sh 
 1.9.6 add yaml config parsing in bash and python (replaces paths in run_Wochenende.py and other files)
@@ -72,7 +72,7 @@ import argparse
 import time
 import yaml
 
-version = "1.9.8 - June 2021"
+version = "1.9.8 - July 2021"
 
 
 ##############################
@@ -1580,6 +1580,7 @@ def main(args, sys_argv):
             currentFile = runFunc(
                 "markDupsSamtools", markDupsSamtools, currentFile, True
             )
+            currentFile = runFunc("runBAMindex9", runBAMindex, currentFile, False)
 
         currentFile = runFunc(
             "runSamtoolsFlagstat2", runSamtoolsFlagstat, currentFile, False
@@ -1625,6 +1626,7 @@ def main(args, sys_argv):
                 path_refseq_dict.get(args.metagenome),
                 threads,
             )
+        currentFile = runFunc("runBAMindex8", runBAMindex, currentFile, False)
         currentFile = runFunc(
             "calmd", calmd, currentFile, True, path_refseq_dict.get(args.metagenome)
         )

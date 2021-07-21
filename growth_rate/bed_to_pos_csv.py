@@ -19,18 +19,18 @@ def get_pos(df_input_file, filename, path, plot_samples, min_read_count):
     for organism in set(df_input_file.index.values):  # for every organism in the file
         organism_df = df_input_file.loc[[organism]]  # make a df containing only that organism
         if len(organism_df.index) >= min_read_count:
-            print("working on organism {}".format(organism))
+            print("INFO: working on organism {}".format(organism))
             positions = organism_df[1].tolist()
             genome_length = get_genome_length(filename, path, organism)
-            normalised_position = norm_shuffel(positions, genome_length)
+            normalised_position = norm_shuffle(positions, genome_length)
             save_as_csv(filename, path, normalised_position, organism)
             if plot_samples:
                 plot_reads(normalised_position, filename, path, organism)
 #    return positions
 
 
-# normalise teh read position so they are between 0 and 1. Shuffle the reads positions
-def norm_shuffel(position, genome_length):
+# normalise the read position so they are between 0 and 1. Shuffle the read positions
+def norm_shuffle(position, genome_length):
     normalised_position = []
     for pos in position:
         normalised_position.append(pos / genome_length)
@@ -41,7 +41,8 @@ def norm_shuffel(position, genome_length):
 # get genome length from bam.txt file
 def get_genome_length(file, path, organism):
     if not os.path.isfile("{}/{}".format(path, file.replace("bed", "bam.txt"))):
-        sys.exit("no bam.txt file found for file {}. Every bed file needs its associated bam.txt file!".format(file))
+        print("Error: Could not find expected file: "+ file.replace("bed", "bam.txt") + " at path: " + path)
+        sys.exit("Error in bed_to_pos_csv.py: no bam.txt file found for file {}  - every bed file needs its associated bam.txt file!".format(file))
     else:
         bam_txt = pd.read_csv("{}/{}".format(path, file.replace("bed", "bam.txt")), delimiter="\t", header=None,
                               index_col=0)

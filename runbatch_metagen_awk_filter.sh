@@ -5,17 +5,19 @@
 # Run filter: Keep all lines in the bam.txt where column 3 (reads aligned)
 # is greater than X (here probably 20). Good for idxstats files i.e. bam.txt files from Wochenende
 
+# SLURM command 
+slurm_cmd="srun -c 1"
 
 # Run samtools stats
 echo "INFO:  Running samtools stats"
 for bam in `ls *trm.s.bam`
 	do
-	srun -c 1 samtools stats $bam > $bam.stats &
+	$slurm_cmd samtools stats $bam > $bam.stats &
 done
 wait
 for bam in `ls *calmd.bam`
 	do
-	srun -c 1 samtools stats $bam > $bam.stats &
+	$slurm_cmd samtools stats $bam > $bam.stats &
 done
 wait
 
@@ -23,7 +25,7 @@ wait
 
 # Run multiqc
 echo "INFO:  Running multiqc"
-multiqc -f .  2>&1
+$slurm_cmd multiqc -f .  2>&1 &
 
 # Collate mapping stats
 out="mapped_percent.txt"
@@ -41,7 +43,8 @@ echo "INFO:  Filtering and sorting  Wochenende output bam.txt files"
 # Sorted descending in column 3 for within experiment clarity 
 for i in `find . -name "*.bam.txt"`
         do
-	awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv
+	$slurm_cmd awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
 done
+wait
 
 echo "INFO:  Script runbatch_metagen_awk_filter.sh completed"
