@@ -117,6 +117,10 @@ $slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_mask
 ## 2019 10 October metagenomes with Univec contamination
 #$slurm_srun python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
 
+# 2021_07 mouse
+#$slurm_srun python3 run_Wochenende.py --metagenome 2021_07_meta_fungi_mouse_masked --threads $cpus --aligner bwamem --no_abra --mq20 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#$slurm_srun python3 run_Wochenende.py --metagenome 2021_07_meta_fungi_mouse_masked --threads $cpus --aligner bwamem --no_abra --mq20 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
+
 
 ## 2019 01 January metagenomes
 #$slurm_srun python3 run_Wochenende.py --metagenome 2019_01_meta --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
