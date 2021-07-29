@@ -59,6 +59,7 @@ path_refseq_dict:
   2021_02_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
   2021_02_meta_fungi_human_unmasked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa
   2021_07_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_07_mouse_bact_fungi_vir.fa 
+  2021_08_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_08_human_bact_arch_fungi_vir.fa
   GRCh37: /mnt/ngsnfs/seqres/HS/bwa/GRCh37.fa
   GRCh38-45GB: /mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa
   GRCh38-mito: /mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa
