@@ -40,11 +40,11 @@ def norm_shuffle(position, genome_length):
 
 # get genome length from bam.txt file
 def get_genome_length(file, path, organism):
-    if not os.path.isfile("{}/{}".format(path, file.replace("bed", "bam.txt"))):
-        print("Error: Could not find expected file: "+ file.replace("bed", "bam.txt") + " at path: " + path)
+    if not os.path.isfile("{}/{}".format(path, file.replace("bed", "bam.txt").replace(".filt", ""))):
+        print("Error: Could not find expected file: "+ file.replace("bed", "bam.txt").replace(".filt", "") + " at path: " + path)
         sys.exit("Error in bed_to_pos_csv.py: no bam.txt file found for file {}  - every bed file needs its associated bam.txt file!".format(file))
     else:
-        bam_txt = pd.read_csv("{}/{}".format(path, file.replace("bed", "bam.txt")), delimiter="\t", header=None,
+        bam_txt = pd.read_csv("{}/{}".format(path, file.replace("bed", "bam.txt").replace(".filt", "")), delimiter="\t", header=None,
                               index_col=0)
         genome_length = bam_txt[1][organism]
     return genome_length

@@ -39,7 +39,6 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   echo "INFO: Starting bed to csv for file $filtBedFile"
   # following line causes core dumps if the correct conda environment with pandas etc is not activated
   python3 bed_to_pos_csv.py -i $filtBedFile -p .
-  echo "INFO: Completed file $bed"
 
   # cleanup
   #rm "$bed"  # remove temp file
@@ -53,8 +52,9 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
       then
       mv "${bed%.bed}"*.csv "${bed%.bed}_subsamples"
   fi
+  echo "INFO: Completed file $bed"
 
-  echo "cleanup: unlink bam, bai and bam.txt files"
+  # echo "cleanup: unlink bam, bai and bam.txt files"
   # unlink bam, txt and bai files
   #unlink $bam
   #unlink ${bam%bam}bam.txt
