@@ -7,9 +7,12 @@
 # Usage1: conda activate wochenende
 # Usage2: bash run_bed_to_csv.sh input.bam
 
-echo "Version 0.14 of run_bed_to_csv.sh"
+# Bugs: if you experience problems, try deleting the growth_rate folder and running get_wochenende.sh again.
+
+echo "Version 0.15 of run_bed_to_csv.sh"
 
 # Changelog
+# 0.15 - unlink files at end
 # 0.14 - simplify naming, bugfixes
 # 0.13 - add usage, correct runbatch_bed_to_csv.sh SLURM submission
 # 0.12 - get input file from sbatch script for speedup
@@ -24,6 +27,7 @@ count_bam_txt=`ls -1 ../*calmd.bam.txt 2>/dev/null | wc -l`
 if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   then
   # link bam, bai and bam.txt files found by ls command to current directory
+  #$1 is the input bam file given as the first argument
   ln -s $1 .
   ln -s ${1%bam}bam.txt .
   ln -s ${1%bam}bam.bai .
@@ -56,9 +60,9 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
 
   # echo "cleanup: unlink bam, bai and bam.txt files"
   # unlink bam, txt and bai files
-  #unlink $bam
-  #unlink ${bam%bam}bam.txt
-  #unlink ${bam%bam}bam.bai
+  unlink $1
+  unlink ${1%bam}bam.txt
+  unlink ${1%bam}bam.bai
 else
   echo "ERROR: no bam.txt and bai found for input bam. Can't convert to pos.csv"
 fi
