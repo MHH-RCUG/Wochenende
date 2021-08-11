@@ -6,10 +6,11 @@ pandas
 tqdm
 lmfit	(https://lmfit.github.io/lmfit-py/installation.html)
 
-Old:
-Execute main.py to evaluate the program on the example data in data/
 
-New:
+# Automated - preferred
+Run wochenende_postprocess.sh after the Wochenende pipeline. Data preprocessing and growth rate calculations will be made as part of the pipeline.
+
+# Manual
 Copy all the bam files from the wanted samples and the associated bam.txt files in the growth_rate_code directory.
 Activate the wochenende enviroment.
 First run the run_bed_to_csv.sh script.
