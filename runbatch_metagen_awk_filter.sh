@@ -15,6 +15,12 @@ for bam in `ls *trm.s.bam`
 	$slurm_cmd samtools stats $bam > $bam.stats &
 done
 wait
+# PE reads only
+for bam in `ls *fix.s.bam`
+	do
+	$slurm_cmd samtools stats $bam > $bam.stats &
+done
+wait
 for bam in `ls *calmd.bam`
 	do
 	$slurm_cmd samtools stats $bam > $bam.stats &
