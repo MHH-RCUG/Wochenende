@@ -1,5 +1,5 @@
 #!/bin/bash
-# Colin Davenport, April 2020 - Jan 2021
+# Colin Davenport, April 2020 - Aug 2021
 # Run multiqc report
 # Collect mapping stats from flagstat
 # Run filter: Keep all lines in the bam.txt where column 3 (reads aligned)
@@ -11,6 +11,12 @@ slurm_cmd="srun -c 1"
 # Run samtools stats
 echo "INFO:  Running samtools stats"
 for bam in `ls *trm.s.bam`
+	do
+	$slurm_cmd samtools stats $bam > $bam.stats &
+done
+wait
+# PE reads only
+for bam in `ls *fix.s.bam`
 	do
 	$slurm_cmd samtools stats $bam > $bam.stats &
 done

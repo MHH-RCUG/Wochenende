@@ -55,7 +55,7 @@ def plot_reads(normalised_position, file, path, organism):
     f = plt.figure()
     plt.hist(round_list, bins=100)
     plt.title(organism)
-    f.savefig(path + "/" + file.replace(".bed", "_" + organism + "_plot.pdf"), bbox_inches='tight')
+    f.savefig(path + "/" + file.replace(".bed", "_" + str(organism) + "_plot.pdf"), bbox_inches='tight')
 
 
 def save_as_csv(file, path, normalised_position, organism):
