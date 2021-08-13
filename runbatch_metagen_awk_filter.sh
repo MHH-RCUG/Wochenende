@@ -1,5 +1,5 @@
 #!/bin/bash
-# Colin Davenport, April 2020 - Jan 2021
+# Colin Davenport, April 2020 - Aug 2021
 # Run multiqc report
 # Collect mapping stats from flagstat
 # Run filter: Keep all lines in the bam.txt where column 3 (reads aligned)

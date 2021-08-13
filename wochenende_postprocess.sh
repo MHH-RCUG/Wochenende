@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.27, July 2021"
+version="0.28, Aug 2021"
 
 #Changelog
+#0.28 - check important env vars are set.
 #0.27 - add growth rate estimation by Tom Wehrbein @Leibniz University Hannover
 #0.26 - don't save voluminous sambamba depth output to log
 #0.25 - add viral read extraction
@@ -57,6 +58,12 @@ wochenende_dir=$WOCHENENDE_DIR
 # Set and activate existing conda env
 . $CONDA_SH_PATH
 conda activate $WOCHENENDE_CONDA_ENV_NAME
+
+# check if env variables could be defined.
+if [[ -z "${WOCHENENDE_DIR}" || -z "${HAYBALER_DIR}" ]]; then
+    echo "ERROR: WOCHENENDE_DIR or HAYBALER_DIR was not found. Use setup.sh in the Wochenende project to set the directory properly. Exiting! "
+    exit 1
+fi
 
 # Setup variable sleep duration. Might be useful to set higher for some big projects where the filesystem IO becomes too much.
 # The wait command may fail for some SLURM jobs in these cases simply because files have not yet been written in time.
