@@ -12,7 +12,7 @@ Execute main.py to evaluate the program on the example data in data/
 New:
 Copy all the bam files from the wanted samples and the associated bam.txt files in the growth_rate_code directory.
 Activate the wochenende enviroment.
-First run the run_bed_to_csv.sh script.
+First run the runbatch_bed_to_csv.sh script.
 Then run the run_reproduction_determiner.sh
 
 
