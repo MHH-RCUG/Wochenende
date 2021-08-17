@@ -9,15 +9,29 @@
 
 # Bugs: if you experience problems, try deleting the growth_rate folder and running get_wochenende.sh again.
 
-echo "Version 0.15 of run_bed_to_csv.sh"
+echo "Version 0.16 of run_bed_to_csv.sh"
 
 # Changelog
+# 0.16 - unlink files at start if present already to avoid errors
 # 0.15 - unlink files at end
 # 0.14 - simplify naming, bugfixes
 # 0.13 - add usage, correct runbatch_bed_to_csv.sh SLURM submission
 # 0.12 - get input file from sbatch script for speedup
 # 0.11 - link in bam, bam.txt and bai files, unlink later
 # 0.10 - remove bedtools binary and use conda bedtools
+
+# cleanup links from previous run in the current directory, if they were not unlinked properly
+count_bam=`ls -1 *calmd.bam 2>/dev/null | wc -l`
+count_bai=`ls -1 *calmd.bam.bai 2>/dev/null | wc -l`
+count_bam_txt=`ls -1 *calmd.bam.txt 2>/dev/null | wc -l`
+
+if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
+  then
+  # echo "INFO: cleanup links as previous run might not have completed properly: unlink bam, bai and bam.txt files"
+  unlink $1
+  unlink ${1%bam}bam.txt
+  unlink ${1%bam}bam.bai
+fi
 
 # check if input exists
 count_bam=`ls -1 ../*calmd.bam 2>/dev/null | wc -l`

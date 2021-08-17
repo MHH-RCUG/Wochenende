@@ -16,5 +16,5 @@ if [ $count_bam != 0 ]
     $slurm_srun bash run_bed_to_csv.sh $i &
   done
 else
-  echo "ERROR: Bam files not found. Cannot run growth rate module and convert to pos.csv"
+  echo "ERROR: Bam files ../*calmd.bam not found. Cannot run growth rate module and convert to pos.csv"
 fi
