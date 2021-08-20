@@ -137,6 +137,7 @@ cd $bamDir
 cd growth_rate/
 bash runbatch_bed_to_csv.sh  >>$output_log 2>&1
 bash run_reproduction_determiner.sh  >>$output_log 2>&1
+wait
 cd $bamDir
 echo "INFO: Completed bacterial growth rate analysis"
 
@@ -161,6 +162,7 @@ else
 fi
 
 echo "INFO:  - Extracting selected human viral pathogen reads"
+cd $bamDir
 bash extract_viral_reads.sh >>$output_log 2>&1
 wait
 echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
@@ -168,9 +170,10 @@ sleep $sleeptimer
 
 # Run reporting 
 echo "INFO: Started Wochenende reporting"
+cd $bamDir
 cd reporting
 cp ../*.bam.txt .
-bash runbatch_Wochenende_reporting.sh>>$output_log 2>&1
+bash runbatch_Wochenende_reporting.sh >>$output_log 2>&1
 wait
 echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
 sleep $sleeptimer
