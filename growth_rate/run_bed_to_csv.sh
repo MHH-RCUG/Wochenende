@@ -28,9 +28,9 @@ count_bam_txt=`ls -1 *calmd.bam.txt 2>/dev/null | wc -l`
 if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   then
   # echo "INFO: cleanup links as previous run might not have completed properly: unlink bam, bai and bam.txt files"
-  unlink $1
-  unlink ${1%bam}bam.txt
-  unlink ${1%bam}bam.bai
+  unlink $bam
+  unlink ${bam%bam}bam.txt
+  unlink ${bam%bam}bam.bai
 fi
 
 # check if input exists
@@ -43,8 +43,8 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   # link bam, bai and bam.txt files found by ls command to current directory
   #$1 is the input bam file given as the first argument
   ln -s $1 .
-  ln -s ${1%bam}bam.txt .
-  ln -s ${1%bam}bam.bai .
+  ln -s ${1/bam/bam.txt} .
+  ln -s ${1/bam/bam.bai} .
   #ls *
   bam=${1/..\//}
 
@@ -72,11 +72,11 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   fi
   echo "INFO: Completed file $bed"
 
-  # echo "cleanup: unlink bam, bai and bam.txt files"
-  # unlink bam, txt and bai files
-  unlink $1
-  unlink ${1%bam}bam.txt
-  unlink ${1%bam}bam.bai
+   echo "cleanup: unlink bam, bai and bam.txt files"
+   # unlink bam, txt and bai files
+   unlink $bam
+   unlink ${bam%bam}bam.txt
+   unlink ${bam%bam}bam.bai
 else
   echo "ERROR: no bam.txt and bai found for input bam. Can't convert to pos.csv"
 fi
