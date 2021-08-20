@@ -20,6 +20,8 @@ echo "Version 0.16 of run_bed_to_csv.sh"
 # 0.11 - link in bam, bam.txt and bai files, unlink later
 # 0.10 - remove bedtools binary and use conda bedtools
 
+bam=${1/..\//}
+
 # cleanup links from previous run in the current directory, if they were not unlinked properly
 count_bam=`ls -1 *calmd.bam 2>/dev/null | wc -l`
 count_bai=`ls -1 *calmd.bam.bai 2>/dev/null | wc -l`
@@ -46,7 +48,6 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   ln -s ${1/bam/bam.txt} .
   ln -s ${1/bam/bam.bai} .
   #ls *
-  bam=${1/..\//}
 
   bedtools bamtobed -i "$bam" > "${bam%.bam}.bed"
 
