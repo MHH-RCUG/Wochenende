@@ -60,7 +60,7 @@ def plot_reads(normalised_position, file, path, organism):
 
 def save_as_csv(file, path, normalised_position, organism):
     pd.DataFrame([float(elem) for elem in normalised_position]).to_csv(
-        path + '/' + file.replace(".bed", "_" + organism + ".csv"),
+        path + '/' + file.replace(".bed", "_" + organism + "_pos.csv"),
         header=None,
         index=None)
 
