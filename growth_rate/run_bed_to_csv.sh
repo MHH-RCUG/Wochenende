@@ -23,13 +23,13 @@ echo "Version 0.16 of run_bed_to_csv.sh"
 bam=${1/..\//}
 
 # cleanup links from previous run in the current directory, if they were not unlinked properly
-count_bam=`ls -1 *calmd.bam 2>/dev/null | wc -l`
-count_bai=`ls -1 *calmd.bam.bai 2>/dev/null | wc -l`
-count_bam_txt=`ls -1 *calmd.bam.txt 2>/dev/null | wc -l`
+count_bam=`ls -1 $bam 2>/dev/null | wc -l`
+count_bai=`ls -1 ${bam%bam}bam.bai 2>/dev/null | wc -l`
+count_bam_txt=`ls -1 ${bam%bam}bam.txt 2>/dev/null | wc -l`
 
 if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   then
-  # echo "INFO: cleanup links as previous run might not have completed properly: unlink bam, bai and bam.txt files"
+  echo "INFO: cleanup links as previous run might not have completed properly: unlink bam, bai and bam.txt files"
   unlink $bam
   unlink ${bam%bam}bam.txt
   unlink ${bam%bam}bam.bai
@@ -43,7 +43,7 @@ count_bam_txt=`ls -1 ../*calmd.bam.txt 2>/dev/null | wc -l`
 if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   then
   # link bam, bai and bam.txt files found by ls command to current directory
-  #$1 is the input bam file given as the first argument
+  # $1 is the input bam file given as the first argument
   ln -s $1 .
   ln -s ${1/bam/bam.txt} .
   ln -s ${1/bam/bam.bai} .
