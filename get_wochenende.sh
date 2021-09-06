@@ -6,7 +6,7 @@
 echo "INFO: setup.sh should have created  WOCHENENDE_DIR environment variable on this server and user account"
 echo "INFO: WOCHENENDE_DIR detected as: " $WOCHENENDE_DIR
 
-# check if env variables could be defined.
+# check if env variables are correctly defined.
 if [[ -z "${WOCHENENDE_DIR}" || -z "${HAYBALER_DIR}" ]]; then
     echo "ERROR: WOCHENENDE_DIR or HAYBALER_DIR was not found. Use setup.sh in the Wochenende project to set the directory properly. Exiting! "
     exit 1
