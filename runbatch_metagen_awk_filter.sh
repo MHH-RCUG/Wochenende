@@ -31,7 +31,7 @@ wait
 
 # Run multiqc
 echo "INFO:  Running multiqc"
-$slurm_cmd multiqc -f .  2>&1 &
+#$slurm_cmd multiqc -f .  2>&1 &
 
 # Collate mapping stats
 out="mapped_percent.txt"
