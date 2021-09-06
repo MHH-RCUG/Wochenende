@@ -3,15 +3,16 @@
 # Prepare Wochenende bam files for the bed to csv script (input for reproduction determiner)
 # Links input files from one higher directory. Converts bam to bed.
 # Filter out mouse human and mito chromosomes.
-# Author: Sophia Poertner, 2021
+# Author: Sophia Poertner, Colin Davenport, Tom Wehrbein, 2021
 # Usage1: conda activate wochenende
 # Usage2: bash run_bed_to_csv.sh input.bam
 
 # Bugs: if you experience problems, try deleting the growth_rate folder and running get_wochenende.sh again.
 
-echo "Version 0.16 of run_bed_to_csv.sh"
+echo "Version 0.17 of run_bed_to_csv.sh"
 
 # Changelog
+# 0.17 - remove previous results if present to avoid problems
 # 0.16 - unlink files at start if present already to avoid errors
 # 0.15 - unlink files at end
 # 0.14 - simplify naming, bugfixes
@@ -34,6 +35,9 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   unlink ${bam%bam}bam.txt
   unlink ${bam%bam}bam.bai
 fi
+echo "Removing previous growth rate results"
+rm -rf fit_results
+rm -rf *_subsamples
 
 # check if input exists
 count_bam=`ls -1 ../*calmd.bam 2>/dev/null | wc -l`

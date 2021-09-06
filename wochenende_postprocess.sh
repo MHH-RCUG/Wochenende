@@ -138,8 +138,10 @@ cd growth_rate/
 bash runbatch_bed_to_csv.sh  >>$output_log 2>&1
 bash run_reproduction_determiner.sh  >>$output_log 2>&1
 wait
+echo "INFO: files produced by growth rate"
+ls "growth_rate/fit_results/output/*" >>$output_log 2>&1
 cd $bamDir
-echo "INFO: Completed bacterial growth rate analysis"
+echo "INFO: Completed bacterial growth rate analysis, see growth_rate/fit_results/output for results"
 
 
 # Plots
