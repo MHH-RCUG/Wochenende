@@ -135,6 +135,9 @@ echo "INFO: Completed Sambamba depth and filtering"
 echo "INFO: Started bacterial growth rate analysis"
 cd $bamDir
 cd growth_rate/
+echo "INFO: Cleanup original results >>$output_log 2>&1"
+rm -rf fit_results >>/dev/null 2>&1
+rm -rf *_subsamples >>/dev/null 2>&1
 bash runbatch_bed_to_csv.sh  >>$output_log 2>&1 
 wait
 echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."

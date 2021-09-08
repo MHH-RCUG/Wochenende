@@ -52,9 +52,6 @@ if [ $count_bam != 0 ]  && [ $count_bai != 0 ]  && [ $count_bam_txt != 0 ]
   unlink ${bam%bam}bam.txt
   unlink ${bam%bam}bam.bai
 fi
-echo "Removing previous growth rate results"
-rm -rf fit_results
-rm -rf *_subsamples
 
 # check if input exists
 count_bam=`ls -1 ../*calmd.bam 2>/dev/null | wc -l`
