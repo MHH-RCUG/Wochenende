@@ -36,6 +36,7 @@ echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and ar
 echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
+echo "INFO:  - growth rate calculation"
 echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
 echo "INFO:  - Extract selected human viral pathogen reads"
