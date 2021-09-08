@@ -49,7 +49,9 @@ echo "INFO:  Filtering and sorting  Wochenende output bam.txt files"
 # Sorted descending in column 3 for within experiment clarity 
 for i in `find . -name "*.bam.txt"`
         do
-	$slurm_cmd awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
+		# Run directly, else can adversely impact slurmdbd database.
+		#$slurm_cmd awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
+		awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
 done
 wait
 
