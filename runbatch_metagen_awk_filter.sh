@@ -15,12 +15,16 @@ for bam in `ls *trm.s.bam`
 	$slurm_cmd samtools stats $bam > $bam.stats &
 done
 wait
-# PE reads only
-for bam in `ls *fix.s.bam`
+# Count PE reads only if fix.s.bam files are present
+count=$(ls -1 *fix.s.bam 2>/dev/null | wc -l)
+if [[ $count != 0 ]]
+    then
+    for bam in `ls *fix.s.bam`
 	do
 	$slurm_cmd samtools stats $bam > $bam.stats &
-done
-wait
+	wait
+	done
+fi
 for bam in `ls *calmd.bam`
 	do
 	$slurm_cmd samtools stats $bam > $bam.stats &
