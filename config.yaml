@@ -60,6 +60,7 @@ path_refseq_dict:
   2021_02_meta_fungi_human_unmasked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa
   2021_07_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_07_mouse_bact_fungi_vir.fa 
   2021_08_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_08_human_bact_arch_fungi_vir.fa
+  2021_09_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_09_human_bact_arch_fungi_vir.fa
   GRCh37: /mnt/ngsnfs/seqres/HS/bwa/GRCh37.fa
   GRCh38-45GB: /mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa
   GRCh38-mito: /mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa
@@ -76,6 +77,7 @@ path_refseq_dict:
   k_oxytoca: /mnt/ngsnfs/seqres/metagenref/bwa/k_oxytoca.fa
   k_variicola: /mnt/ngsnfs/seqres/metagenref/bwa/k_variicola.fa
   mm10: /mnt/ngsnfs/seqres/MM/bwa/mm10.fa
+  GRCm39: /mnt/ngsnfs/seqres/MM/Mus_musculus.GRCm39.dna.toplevel.fa
   nci_viruses: /mnt/ngsnfs/seqres/metagenref/bwa/nci_viruses.fa
   rat_1AR1_ont: /mnt/ngsnfs/seqres/RN/bwa/1AR1_2019_ONT_final.fasta
   rn6: /mnt/ngsnfs/seqres/RN/bwa/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa
