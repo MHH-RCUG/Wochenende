@@ -12,7 +12,7 @@
 echo "Version 0.18 of run_bed_to_csv.sh"
 
 # Changelog
-# 0.18 - improve environment handling
+# 0.18 - improve environment handling, concurrent job submission bugfix
 # 0.17 - remove previous results if present to avoid problems
 # 0.16 - unlink files at start if present already to avoid errors
 # 0.15 - unlink files at end
