@@ -15,12 +15,16 @@ for bam in `ls *trm.s.bam`
 	$slurm_cmd samtools stats $bam > $bam.stats &
 done
 wait
-# PE reads only
-for bam in `ls *fix.s.bam`
+# Count PE reads only if fix.s.bam files are present
+count=$(ls -1 *fix.s.bam 2>/dev/null | wc -l)
+if [[ $count != 0 ]]
+    then
+    for bam in `ls *fix.s.bam`
 	do
 	$slurm_cmd samtools stats $bam > $bam.stats &
-done
-wait
+	wait
+	done
+fi
 for bam in `ls *calmd.bam`
 	do
 	$slurm_cmd samtools stats $bam > $bam.stats &
@@ -31,7 +35,7 @@ wait
 
 # Run multiqc
 echo "INFO:  Running multiqc"
-$slurm_cmd multiqc -f .  2>&1 &
+#$slurm_cmd multiqc -f .  2>&1 &
 
 # Collate mapping stats
 out="mapped_percent.txt"
@@ -49,7 +53,9 @@ echo "INFO:  Filtering and sorting  Wochenende output bam.txt files"
 # Sorted descending in column 3 for within experiment clarity 
 for i in `find . -name "*.bam.txt"`
         do
-	$slurm_cmd awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
+		# Run directly, else can adversely impact slurmdbd database.
+		#$slurm_cmd awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
+		awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
 done
 wait
 

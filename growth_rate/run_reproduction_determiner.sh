@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 csv_count=$(ls -d *_subsamples 2>/dev/null | wc -l)
 if [[ $csv_count != 0 ]]
   then

@@ -36,6 +36,7 @@ echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and ar
 echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
+echo "INFO:  - growth rate calculation"
 echo "INFO:  - sambamba depth"
 echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
 echo "INFO:  - Extract selected human viral pathogen reads"
@@ -135,11 +136,22 @@ echo "INFO: Completed Sambamba depth and filtering"
 echo "INFO: Started bacterial growth rate analysis"
 cd $bamDir
 cd growth_rate/
-bash runbatch_bed_to_csv.sh  >>$output_log 2>&1
+echo "INFO: Cleanup original results" >>$output_log 2>&1
+rm -rf fit_results >>/dev/null 2>&1
+rm -rf *_subsamples >>/dev/null 2>&1
+bash runbatch_bed_to_csv.sh  >>$output_log 2>&1 
+wait
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
+sleep $sleeptimer
+
 bash run_reproduction_determiner.sh  >>$output_log 2>&1
 wait
+echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
+sleep $sleeptimer
+echo "INFO: Files produced by growth rate"   >>$output_log 2>&1
+ls "growth_rate/fit_results/output/*" >>$output_log 2>&1
 cd $bamDir
-echo "INFO: Completed bacterial growth rate analysis"
+echo "INFO: Completed bacterial growth rate analysis, see growth_rate/fit_results/output for results"
 
 
 # Plots

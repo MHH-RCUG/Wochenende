@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from tqdm import tqdm
+#from tqdm import tqdm
 from model import compute_ptr
 import click
 
@@ -30,7 +30,9 @@ def evaluate_all_data(sample_folder_path, experiment_name, save_plots=True):
 
     # iterate through all csv files in directory
     files = list(sorted(sample_folder_path.glob('*.csv')))
-    for file in tqdm(files, total=len(files)):
+    # Remove tqdm progress bar
+    #for file in tqdm(files, total=len(files)):
+    for file in files:
         save_name = save_path / (file.stem + '.png')
         sample_names.append(file.stem)
         gr, reads, bins, errs, fit_err = compute_ptr(file, n_windows=bins_initial,
