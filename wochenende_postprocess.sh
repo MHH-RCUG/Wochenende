@@ -2,9 +2,11 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.28, Aug 2021"
+version="0.30, Sept 2021"
 
 #Changelog
+#0.30 - remove growth rate temp files
+#0.29 - solve growth rate problems
 #0.28 - check important env vars are set.
 #0.27 - add growth rate estimation by Tom Wehrbein @Leibniz University Hannover
 #0.26 - don't save voluminous sambamba depth output to log
