@@ -10,25 +10,33 @@ slurm_cmd="srun -c 1"
 
 # Run samtools stats
 echo "INFO:  Running samtools stats"
-for bam in `ls *trm.s.bam`
-	do
-	$slurm_cmd samtools stats $bam > $bam.stats &
-done
+count=$(ls -1 *trm.s.bam 2>/dev/null | wc -l)
+if [[ $count != 0 ]]
+    then
+	for bam in `ls *trm.s.bam`
+		do
+		$slurm_cmd samtools stats $bam > $bam.stats &
+	done
+fi
 wait
 # Count PE reads only if fix.s.bam files are present
 count=$(ls -1 *fix.s.bam 2>/dev/null | wc -l)
 if [[ $count != 0 ]]
     then
     for bam in `ls *fix.s.bam`
-	do
-	$slurm_cmd samtools stats $bam > $bam.stats &
-	wait
+		do
+		$slurm_cmd samtools stats $bam > $bam.stats &
 	done
 fi
-for bam in `ls *calmd.bam`
-	do
-	$slurm_cmd samtools stats $bam > $bam.stats &
-done
+wait
+# Count calmd bam files
+count=$(ls -1 *calmd.bam 2>/dev/null | wc -l)
+if [[ $count != 0 ]]
+	for bam in `ls *calmd.bam`
+		do
+		$slurm_cmd samtools stats $bam > $bam.stats &
+	done
+fi
 wait
 
 
