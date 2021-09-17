@@ -7,7 +7,7 @@
 #SBATCH -p normal
 
 # set run on x MB node only
-#SBATCH --mem 40000
+#SBATCH --mem 50000
 
 # set run x cpus
 #SBATCH --cpus-per-task 12
