@@ -7,7 +7,7 @@
 #SBATCH -p normal
 
 # set run on x MB node only
-#SBATCH --mem 40000
+#SBATCH --mem 50000
 
 # set run x cpus
 #SBATCH --cpus-per-task 12
@@ -67,9 +67,13 @@ slurm_srun="srun -c $cpus"
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
 # Uncomment/adapt the only line you want to run
 
+#2021_09. Update of 2021_02 ref. Archaea, Gemella, better fungi, includes common cold viruses. Recommended
+$slurm_srun python3 run_Wochenende.py --metagenome 2021_09_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#$slurm_srun python3 run_Wochenende.py --metagenome 2021_09_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
+
 # 2021_02 reference update of 2020_03, with fungi, can better detect C. diff, and B. subtilis. No UNVERIF sp like one Achromobacter
 # blacklister masked
-$slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#$slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$slurm_srun python3 run_Wochenende.p --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem  --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner minimap2short --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$slurm_srun python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner minimap2short --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq

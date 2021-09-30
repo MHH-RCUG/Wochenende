@@ -32,6 +32,7 @@ wait
 # Count calmd bam files
 count=$(ls -1 *calmd.bam 2>/dev/null | wc -l)
 if [[ $count != 0 ]]
+	then
 	for bam in `ls *calmd.bam`
 		do
 		$slurm_cmd samtools stats $bam > $bam.stats &
