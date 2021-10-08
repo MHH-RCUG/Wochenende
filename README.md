@@ -1,6 +1,6 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
-Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is relevant for genomics and metagenomics. Wochenende is simple (python script), portable and is easy to configure. 
+Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is relevant for genomics and metagenomics. Wochenende is simple (python script), portable and is easy to configure with a central config file. 
 
 Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
@@ -18,6 +18,7 @@ Features include (see programs listed below at the bottom of this page)
 - MD tag marking (Samtools)
 - Normalization (to Bacteria per Human cell, RPMM Reads Per Million sequenced reads per Million reference bases etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
+- Growth rate estimation. Estimate how fast detected bacteria are growing.
 
 Project Haybaler https://github.com/MHH-RCUG/haybaler allows postprocessing of Wochenende results:
 - collation/integration of multiple reports (reporting csv or bam.txt files) using Python Pandas
@@ -32,7 +33,7 @@ Wochenende means weekend in German. The original developer, Tobias, called the p
 
 ## Platforms
 
-Wochenende has currently (July 2020) only been tested on Ubuntu Linux 20.04 and 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment, BASH and Python3.6+ is critical to get things working.
+Wochenende has only been tested on Ubuntu Linux 20.04 and 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment, BASH and Python3.6+ is critical to get things working. We view Wochenende to be stable (master branch) but are still updating the pipeline with new features.
 
 
 ## Usage 
@@ -41,13 +42,14 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 
 ### SLURM usage
 
+0. See section Installation below if you have not already done so.
 1. Copy all the run_Wochenende* files and prerequisite subfolders to your directory with your FASTQ files
 `cp /path/to/wochenende/get_wochenende.sh .` 
 2. Adjust your path/to/wochenende in the get_wochenende.sh script
 3. `bash get_wochenende.sh`
 4. Adjust settings in the script
 `nano run_Wochenende_SLURM.sh`
-5. Run the pipeline using SLURM (the "_R1" is important)
+5. Run the pipeline using SLURM (the "_R1" is important, R1_001.fastq is not allowed)
 `sbatch run_Wochenende_SLURM.sh sample_R1.fastq`
 6. After completion of the alignment and filtering, run wochenende_postprocess.sh (Requires [Haybaler](https://github.com/MHH-RCUG/haybaler) for final integration steps and R for optional automated heatmaps) 
 `bash wochenende_postprocess.sh`
@@ -187,6 +189,25 @@ Postprocessing
 
 ### Wochenende output
 
+```
+Output file meanings
+
+- .calmd. - samtools Calculate MD tags on a BAM file (to enable easily viewing SNPs in some genome browsers like JBrowse).
+- .dup. - duplicates excluded by samtools markdup
+- .fix. - fixed Paired End reads (PE files only)
+- .lc.  - Low-complexity sequences removed by the tool Prinseq
+- .mm.  - mismatch filter applied as configured (see run_Wochenende_SLURM.sh file and logs, and or check mismatch distributions in BAM files to check the setting)
+- .mq20 - mapping quality cutoff to reads with 20+
+- .mq30 - mapping quality cutoff to reads with 30+
+- .ndp. - no duplicates, as assessed by the program Perldup on Fastq files
+- .ns.  - not-sorted. Sorting follows the .fix step (PE files only)
+- .s.   - sorted bam file
+- .trm. - trimmed reads
+- .unmapped. - Fastq reads which were not mapped to the reference (meta)genome. Currently for single ended reads only. Can be further assessed with other tools
+
+```
+
+
 Wochenende produces many output files, many of which are superseded by later output files and can be removed.
 
 ```
@@ -216,6 +237,11 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 - MB_aero_S2_R1.trm.s.mq30.mm.dup.bam.txt.reporting.sorted.csv    # Output from Wochenende reporting step
 - MB_aero_S2_R1.trm.s.mq30.mm.dup.bam.txt.reporting.unsorted.csv  # Output from Wochenende reporting step
 
+# Haybaler output
+- reporting/haybaler/haybaler_output/
+- reporting/haybaler/haybaler_output/heattree_plots/
+- reporting/haybaler/haybaler_output/top_50_taxa/
+
 
 # Wochenende_plot.py input (.filt.csv) and output (png images)
 - MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.mm.dup_cov_window.txt              # Coverage per window in each BAM
@@ -223,11 +249,12 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 - MB_AERO_044_S70_R1.ndp.lc.trm.s.mq30.mm.dup_cov_window.txt.filt.sort.csv  # Filtered and sorted (descending) coverage per window
 
 # Wochenende_plot.py output (png images)
-- wochenende_png_files/
-- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/
-- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/high_score/  
-- wochenende_png_files/sample1.dup_cov_window.txt.filt.csv/low_med_score/
+- plots/images/sample1.dup_cov_window.txt.filt.csv/
+- plots/images/sample1.dup_cov_window.txt.filt.csv/high_score/  
+- plots/images/sample1.dup_cov_window.txt.filt.csv/low_med_score/
 
+# Growth rate code output
+- growth_rate/fit_results/output/sample/results_summary.csv
 
 ```
 
@@ -242,19 +269,19 @@ Now start the postprocessing script `bash wochenende_postprocess.sh` to automati
 - run the Haybaler report integration tool (provided it is installed and configured)
 - clean up files
 
-This script requires haybaler and it's dependencies to be installed, and will otherwise fail some steps.
+This script requires [Haybaler](https://github.com/MHH-RCUG/haybaler) and it's dependencies to be installed, and will otherwise fail at some steps.
 
 
 ### Running the metagenomic reporting scripts manually 
 
-This tool (which requires python v3.6+) reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
+The reporting tool (which requires python v3.6+) reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
 Normalizations are for:
 
 a) reads normalized to the idealized length of a bacterial chromosome (normalization to 1 million base pairs)
 
 b) total reads in the sequencing library (normalization to 1 million reads)
 
-c) the above two normalizations combined (RPMM)
+c) the above two normalizations combined (RPMM, so Reads Per Million reads per Million base pairs)
 
 d) (bacterial) reads per human cell (only works for metagenomes from human hosts. An estimate of absolute abundance).
 
@@ -292,6 +319,8 @@ Options:
   --help                  Show this message and exit.
 ```
 ### Running Wochenende_plot manually
+
+Again, automatic generation via `wochenende_postprocess.sh` is recommended.
 
 #### Preparing the data from BAM files
 
