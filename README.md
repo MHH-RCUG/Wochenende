@@ -18,7 +18,7 @@ Features include (see programs listed below at the bottom of this page)
 - MD tag marking (Samtools)
 - Normalization (to Bacteria per Human cell, RPMM Reads Per Million sequenced reads per Million reference bases etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
-- Growth rate estimation. Estimate how fast detected bacteria are growing.
+- Growth rate estimation. Estimate how fast detected bacteria are growing
 
 Project Haybaler https://github.com/MHH-RCUG/haybaler allows postprocessing of Wochenende results:
 - collation/integration of multiple reports (reporting csv or bam.txt files) using Python Pandas
@@ -357,6 +357,10 @@ wochenende_plot.py: error: the following arguments are required: filename1
 ### Wochenende_plot output
 
 Wochenende_plot creates one subdirectory per input file. These contain png images of taxa which are probabably (high score, largely based on consistent evenness of coverage and high mean coverage) or perhaps present (need manual review). Confident attributions to taxa depends strongly on the number of reads assigned to bacterial taxa (low in airway metagenomes, higher in for example stool samples).  
+
+### Growth rate estimation
+
+The tools in the subfolder growth_rate estimate the speed at which bacteria are growing. Possible values are no growth, slow, medium and fast. This is based on the observation by Korem et al 2015 [link](https://www.science.org/doi/abs/10.1126/science.aac4812), namely that the ratio of read copy number at the bacterial genomic origin (ori) to the read copy number at the terminus (ter) can be used to infer growing species in a microbiome. Growth rate is determined for bacteria which are attributed sufficient numbers of reads during the alignment process. 
 
 
 ### Known bugs
