@@ -25,6 +25,6 @@ for i in `ls *.csv`
 
         do
                 echo $i
-                python raspir.py $i ${i%.csv}; done
+                python raspir.py $i ${i%.csv}
 
 done
