@@ -180,6 +180,11 @@ conda env update -f env.wochenende.yml
 Postprocessing
 - [Haybaler](https://github.com/MHH-RCUG/haybaler)
 
+Optional extras
+- [growth rate](https://github.com/mmpust/raspir)
+- [raspir](https://github.com/mmpust/raspir)
+
+
 
 
 
@@ -362,6 +367,10 @@ Wochenende_plot creates one subdirectory per input file. These contain png image
 
 The tools in the subfolder growth_rate estimate the speed at which bacteria are growing. Possible values are no growth, slow, medium and fast. This is based on the observation by Korem et al 2015 [link](https://www.science.org/doi/abs/10.1126/science.aac4812), namely that the ratio of read copy number at the bacterial genomic origin (ori) to the read copy number at the terminus (ter) can be used to infer growing species in a microbiome. Growth rate is determined for bacteria which are attributed sufficient numbers of reads during the alignment process. 
 
+### Raspir
+
+The external tool raspir has been integrated into the pipeline. Raspir is known to reduce the number of false positives in Wochenende output considerably. It works on BAM files created by Wochenende and creates another estimation of which species are present in the metagenomic reads. You must install raspir into it's own conda environment (pandas is required for example) before it will successfully run.
+
 
 ### Known bugs
 
@@ -403,6 +412,9 @@ Thanks to:
 @poer-sophia Code review, testing, maintenance, programming (haybaler and more)
 
 @twehrbein - growth rate code module
+
+@mmpust - raspir, testing, reference sequences, discussion
+
 
 ### Gallery
 
