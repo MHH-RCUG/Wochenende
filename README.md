@@ -19,6 +19,7 @@ Features include (see programs listed below at the bottom of this page)
 - Normalization (to Bacteria per Human cell, RPMM Reads Per Million sequenced reads per Million reference bases etc, see Reporting below for details)
 - Visualization (chromosome coverage, intended for bacteria in metagenomics projects) (from v1.4)
 - Growth rate estimation. Estimate how fast detected bacteria are growing
+- Rare species prediction (Raspir)
 
 Project Haybaler https://github.com/MHH-RCUG/haybaler allows postprocessing of Wochenende results:
 - collation/integration of multiple reports (reporting csv or bam.txt files) using Python Pandas
@@ -33,7 +34,7 @@ Wochenende means weekend in German. The original developer, Tobias, called the p
 
 ## Platforms
 
-Wochenende has only been tested on Ubuntu Linux 20.04 and 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment, BASH and Python3.6+ is critical to get things working. We view Wochenende to be stable (master branch) but are still updating the pipeline with new features.
+Wochenende has only been tested by the authors on Ubuntu Linux 20.04 and 16.04 64bit. We advise against any attempts on MacOS or Windows. An appropriate conda environment, BASH and Python3.6+ is critical to get things working. We view Wochenende to be stable (master branch) but are still updating the pipeline with new features.
 
 
 ## Usage 
@@ -181,7 +182,7 @@ Postprocessing
 - [Haybaler](https://github.com/MHH-RCUG/haybaler)
 
 Optional extras
-- [growth rate](https://github.com/mmpust/raspir)
+- [growth rate](https://github.com/MHH-RCUG/Wochenende/tree/master/growth_rate)
 - [raspir](https://github.com/mmpust/raspir)
 
 
@@ -369,7 +370,7 @@ The tools in the subfolder growth_rate estimate the speed at which bacteria are 
 
 ### Raspir
 
-The external tool raspir has been integrated into the pipeline. Raspir is known to reduce the number of false positives in Wochenende output considerably. It works on BAM files created by Wochenende and creates another estimation of which species are present in the metagenomic reads. You must install raspir into it's own conda environment (pandas is required for example) before it will successfully run.
+The external tool [raspir](https://github.com/mmpust/raspir) has been integrated into the pipeline. Raspir is known to reduce the number of false positives in Wochenende output considerably. It works on BAM files created by Wochenende and creates another estimation of which species are present in the metagenomic reads. You must install raspir into it's own conda environment (pandas is required for example) before it will successfully run.
 
 
 ### Known bugs
