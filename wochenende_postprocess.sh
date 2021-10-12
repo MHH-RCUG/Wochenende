@@ -112,8 +112,10 @@ fi
 
 
 
-echo "INFO: Starting Wochenende_postprocess"
+echo "INFO: Starting Wochenende_postprocess" 
+echo "INFO: Current directory" $bamDir >>$output_log 2>&1
 echo "INFO: Current directory" $bamDir
+echo "INFO: Current directory" $bamDir >>$output_log 2>&1
 sleep 3
 
 
@@ -133,9 +135,25 @@ else
 fi
 echo "INFO: Completed Sambamba depth and filtering"
 
+# raspir
+echo "INFO: Run raspir by Marie-Madlen Pust"
+echo "INFO: Run raspir by Marie-Madlen Pust"  >>$output_log 2>&1
+cd $bamDir/raspir
+echo "INFO: link BAM files in"  >>$output_log 2>&1
+bash batch_create_links.sh  >>$output_log 2>&1
+echo "INFO: Start preparing the files for raspir"  >>$output_log 2>&1
+bash run_SLURM_file_prep.sh  >>$output_log 2>&1
+echo "INFO: Run raspir"  >>$output_log 2>&1
+bash run_raspir_SLURM.sh  >>$output_log 2>&1
+echo "INFO: Remove soft linked BAM files"  >>$output_log 2>&1
+batch_remove_links.sh  >>$output_log 2>&1
+cd $bamDir
+echo "INFO: Raspir module completed"
+
 
 # Growth rate
 echo "INFO: Started bacterial growth rate analysis"
+echo "INFO: Started bacterial growth rate analysis" >>$output_log 2>&1
 cd $bamDir
 cd growth_rate/
 echo "INFO: Cleanup original results" >>$output_log 2>&1
@@ -162,6 +180,7 @@ then
     echo "INFO: Found --no-plots argument: Plot mode disabled"
 else
     echo "INFO: Started Wochenende plot"
+    echo "INFO: Started Wochenende plot" >>$output_log 2>&1
     cd $bamDir
     cd plots
     cp ../*_window.txt . 
@@ -176,6 +195,7 @@ else
 fi
 
 echo "INFO:  - Extracting selected human viral pathogen reads"
+echo "INFO:  - Extracting selected human viral pathogen reads" >>$output_log 2>&1
 cd $bamDir
 bash extract_viral_reads.sh >>$output_log 2>&1
 wait
@@ -184,6 +204,7 @@ sleep $sleeptimer
 
 # Run reporting 
 echo "INFO: Started Wochenende reporting"
+echo "INFO: Started Wochenende reporting" >>$output_log 2>&1
 cd $bamDir
 cd reporting
 cp ../*.bam.txt .
@@ -197,6 +218,7 @@ echo "INFO: Completed Wochenende reporting"
 
 # Run haybaler
 echo "INFO: Start Haybaler"
+echo "INFO: Start Haybaler" >>$output_log 2>&1
 if [[ ! -d "haybaler" ]]
     then
     mkdir haybaler
