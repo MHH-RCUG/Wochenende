@@ -148,9 +148,11 @@ https://github.com/MHH-RCUG/Wochenende#installation
 We recommend using [Bioconda](https://bioconda.github.io/) for installation of the tools used by our pipeline.
 
 1. Clone or download the repository to your local machine.
+
 `git clone https://github.com/MHH-RCUG/wochenende.git`
 OR
 `wget https://github.com/MHH-RCUG/wochenende/archive/master.zip`
+
 2. Create a conda environment for the pipeline. You should have first installed miniconda 64-bit Linux.
 ```
 cd wochenende
@@ -158,11 +160,16 @@ conda env create -f env.wochenende.minimal.yml
 ```
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
+
 4. Important! Edit the configuration section of `config.yaml` to set the paths to the tools, tmp directory and reference sequences. Use a code editor to avoid breaking the yaml format.
+
 5. Edit the paths to Wochenende and optionally haybaler in `setup.sh`
+
 6. Run `bash setup.sh` to configure Wochenende BASH environment variables (for current user and server only)
+
 7. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
+
 8. Optional: run the tests, see below.
 
 ### Update conda environment
