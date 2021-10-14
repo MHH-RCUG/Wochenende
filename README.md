@@ -27,7 +27,7 @@ Project Haybaler https://github.com/MHH-RCUG/haybaler allows postprocessing of W
 - create heatmaps using multiple different R libraries
 
 ### Did you know ? 
-Wochenende means weekend in German. The original developer, Tobias, called the pipeline Wochenende, because you can start it running and go off to enjoy your weekend early.
+Wochenende means weekend in German. The original developer, Tobias, called the pipeline Wochenende, because you can start it running and go off to enjoy your weekend early (at least, that was the plan!).
 
 ![Alt text](dependencies/wochenende_2.png?raw=true "Wochenende schematic")
 
