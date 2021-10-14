@@ -46,19 +46,25 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 0. See section Installation below if you have not already done so.
 
 1. Copy `get_wochenende.sh` to your directory with your FASTQ files (this will set the directory up with required scripts and subfolders for analysis, and for later postprocessing)
+
 `cp /path/to/wochenende/get_wochenende.sh .` 
 
-2. Check the environment variable used by the `get_wochenende.sh` script point to your Wochenende directory (now taken care of by setup.sh, see Installation below )
+2. Check the environment variable used by the `get_wochenende.sh` script point to your Wochenende directory (now taken care of by `setup.sh`, see Installation below )
 
-3. Get the `bash get_wochenende.sh`
+3. Get Wochenende by running the script
+
+`bash get_wochenende.sh`
 
 4. Adjust settings in the script (eg single ended, paired end read, reference sequence)
+
 `nano run_Wochenende_SLURM.sh`
 
 5. Run the pipeline using SLURM for all _R1.fastq files in the directory (the "_R1" is important, R1_001.fastq is not allowed)
+
 `bash runbatch_sbatch_Wochenende.sh`
 
 6. After completion of the alignment and filtering, run wochenende_postprocess.sh (Requires [Haybaler](https://github.com/MHH-RCUG/haybaler) for final integration steps and R for optional automated heatmaps) 
+
 `bash wochenende_postprocess.sh`
 
 ### Tutorial
