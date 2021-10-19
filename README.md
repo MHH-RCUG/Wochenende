@@ -161,7 +161,8 @@ conda env create -f env.wochenende.minimal.yml
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
 
-4. Download a reference sequence from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own.
+4. Download a reference sequence from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
+4a. If you want to use bwa mem as aligner, you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`
 
 5. Important! Edit the configuration section of `config.yaml` to set the paths to the tools, tmp directory and reference sequences. Use a code editor to avoid breaking the yaml format.
 
