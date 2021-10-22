@@ -9,7 +9,10 @@ Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford 
   * [Installation](#installation)
   * [Wochenende output](#wochenende-output)
   * [Run the postprocessing automatically](#Run-the-postprocessing-automatically)
+  * [Normalization](#normalization)
   * [Raspir](#raspir)
+  * [Wochenende_plot output](#wochenende_plot-output)
+  * [Growth rate estimation](#growth-rate-estimation)
   * [Known bugs](#known-bugs)
   * [Running software tests](#running-software-tests)
   * [General usage](#general-usage)
@@ -217,7 +220,7 @@ Now start the postprocessing script `bash wochenende_postprocess.sh` to automati
 This script requires [Haybaler](https://github.com/MHH-RCUG/haybaler) and its dependencies to be installed, and will otherwise fail at some steps.
 
 
-### Running the metagenomic reporting scripts manually 
+### Normalization 
 
 The reporting tool (which requires python v3.6+) reports length, GC content of the sequence, read counts attributed to the species and various normalized read count parameters. 
 Normalizations are for:
