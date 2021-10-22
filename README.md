@@ -7,13 +7,14 @@ Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford 
   * [Usage](#usage)
   * [Tutorial](#tutorial)
   * [Installation](#installation)
-  * [Wochenende-output](#wochenende-output)
-  * [Run-the-postprocessing-automatically](#Run-the-postprocessing-automatically)
+  * [Wochenende output](#wochenende-output)
+  * [Run the postprocessing automatically](#Run-the-postprocessing-automatically)
   * [Raspir](#raspir)
-  * [Known-bugs](#known-bugs)
-  * [Running-software-tests](#running-software-tests)
-  * [General-usage](#general-usage)
+  * [Known bugs](#known-bugs)
+  * [Running software tests](#running-software-tests)
+  * [General usage](#general-usage)
   * [Contributors](#contributors)
+  * [Tools used](#tools)
   * [Gallery](#gallery)
   
 
@@ -426,7 +427,7 @@ Thanks to:
 @mmpust - raspir, testing, reference sequences, discussion
 
 
-## List of Tools used or optional in the pipeline
+## Tools
 
 - [Alignerboost](https://github.com/Grice-Lab/AlignerBoost). GPL3, in dependencies folder.
 - [ABRA2](https://github.com/mozack/abra2)
