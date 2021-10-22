@@ -201,7 +201,9 @@ BAMs, Mapping Quality (MQ), Duplicate filtering (dup) and mismatch (mm) filterin
 
 ```
 
-## Run the postprocessing automatically (recommended!)
+## Run the postprocessing automatically
+
+This is strongly recommended!
 
 After a successful Wochenende run, make sure you check that all bams have been created and are sized as expected eg `ls -lh *.bam`
 
@@ -212,7 +214,7 @@ Now start the postprocessing script `bash wochenende_postprocess.sh` to automati
 - run the Haybaler report integration tool (provided it is installed and configured)
 - clean up files
 
-This script requires [Haybaler](https://github.com/MHH-RCUG/haybaler) and it's dependencies to be installed, and will otherwise fail at some steps.
+This script requires [Haybaler](https://github.com/MHH-RCUG/haybaler) and its dependencies to be installed, and will otherwise fail at some steps.
 
 
 ### Running the metagenomic reporting scripts manually 
