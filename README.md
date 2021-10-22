@@ -5,6 +5,17 @@ Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford 
   * [Features](#features)
   * [Platforms](#platforms)
   * [Usage](#usage)
+  * [Tutorial](#tutorial)
+  * [Installation](#installation)
+  * [Wochenende-output](#wochenende-output)
+  * [Run-the-postprocessing-automatically](#Run-the-postprocessing-automatically)
+  * [Raspir](#raspir)
+  * [Known-bugs](#known-bugs)
+  * [Running-software-tests](#running-software-tests)
+  * [General-usage](#general-usage)
+  * [Contributors](#contributors)
+  * [Gallery](#gallery)
+  
 
 ## Features
 
@@ -116,39 +127,6 @@ If there is already a conda environment named wochenende:
 ```
 conda env update -f env.wochenende.yml
 ```
-
-## List of Tools used or optional in the pipeline
-
-- [Alignerboost](https://github.com/Grice-Lab/AlignerBoost). GPL3, in dependencies folder.
-- [ABRA2](https://github.com/mozack/abra2)
-- [bamtools](https://github.com/pezmaster31/bamtools)
-- [BWA](https://github.com/lh3/bwa)
-- [ea-utils](https://github.com/ExpressionAnalysis/ea-utils)
-- [fastp](https://github.com/OpenGene/fastp)
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-- [FastUniq](https://sourceforge.net/projects/fastuniq/)
-- [Minimap2](https://github.com/lh3/minimap2)
-- [NGMLR](https://github.com/philres/ngmlr)
-- [perldup](https://github.com/richardmleggett/scripts/blob/master/remove_pcr_duplicates.pl) Already copied to dependencies folder with permission. Developed by [Richard Leggett](https://github.com/richardmleggett).
-- [PRINSEQ](http://prinseq.sourceforge.net/)
-- [sambamba](https://github.com/biod/sambamba)
-- [samtools](https://github.com/samtools/samtools)
-- [trim_galore](https://github.com/FelixKrueger/TrimGalore)
-- [trimmomatic](https://github.com/timflutre/trimmomatic)
-
-Postprocessing
-- [Haybaler](https://github.com/MHH-RCUG/haybaler)
-
-Optional extras
-- [growth rate](https://github.com/MHH-RCUG/Wochenende/tree/master/growth_rate)
-- [raspir](https://github.com/mmpust/raspir)
-
-
-
-
-
-
-
 
 
 ### Wochenende output
@@ -446,6 +424,34 @@ Thanks to:
 @twehrbein - growth rate code module
 
 @mmpust - raspir, testing, reference sequences, discussion
+
+
+## List of Tools used or optional in the pipeline
+
+- [Alignerboost](https://github.com/Grice-Lab/AlignerBoost). GPL3, in dependencies folder.
+- [ABRA2](https://github.com/mozack/abra2)
+- [bamtools](https://github.com/pezmaster31/bamtools)
+- [BWA](https://github.com/lh3/bwa)
+- [ea-utils](https://github.com/ExpressionAnalysis/ea-utils)
+- [fastp](https://github.com/OpenGene/fastp)
+- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- [FastUniq](https://sourceforge.net/projects/fastuniq/)
+- [Minimap2](https://github.com/lh3/minimap2)
+- [NGMLR](https://github.com/philres/ngmlr)
+- [perldup](https://github.com/richardmleggett/scripts/blob/master/remove_pcr_duplicates.pl) Already copied to dependencies folder with permission. Developed by [Richard Leggett](https://github.com/richardmleggett).
+- [PRINSEQ](http://prinseq.sourceforge.net/)
+- [sambamba](https://github.com/biod/sambamba)
+- [samtools](https://github.com/samtools/samtools)
+- [trim_galore](https://github.com/FelixKrueger/TrimGalore)
+- [trimmomatic](https://github.com/timflutre/trimmomatic)
+
+Postprocessing
+- [Haybaler](https://github.com/MHH-RCUG/haybaler)
+
+Optional extras
+- [growth rate](https://github.com/MHH-RCUG/Wochenende/tree/master/growth_rate)
+- [raspir](https://github.com/mmpust/raspir)
+
 
 
 ### Gallery
