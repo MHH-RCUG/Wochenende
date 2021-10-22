@@ -2,6 +2,12 @@
 
 Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is relevant for genomics and metagenomics. Wochenende is simple (python script), portable and is easy to configure with a central config file. 
 
+  * [Features](#features)
+  * [Platforms](#platforms)
+  * [Usage](#usage)
+
+## Features
+
 Features include (see programs listed below at the bottom of this page)
 - QC (Fastqc)
 - pre alignment duplicate removal (perldup)
@@ -71,77 +77,6 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 
 Once you've got the tools installed and tested, you can look at or run the commands in the tutorial in the subdirectory `tutorial`. https://github.com/MHH-RCUG/Wochenende/blob/master/tutorial/tutorial.txt
 
-### General usage
-
-```
-Warning, this usage is just an example and might be slightly out of date. 
-
-Run this with: 
-python3 run_Wochenende.py
-
-Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
-Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors
-version: 1.9.1 - Mar 2021
-
-usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2,ngmlr}]
-                         [--readType {PE,SE}]
-                         [--metagenome {2021_02_meta_fungi_human_masked,2021_02_meta_fungi_human_unmasked,2020_09_massiveref_human,2020_05_meta_human,2020_03_meta_human,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,ecoli,nci_viruses,ezv_viruses,testdb,strept_halo,k_variicola,k_oxytoca,clost_bot,clost_bot_e,clost_diff,clost_perf,citro_freundii}]
-                         [--threads THREADS] [--fastp] [--nextera]
-                         [--trim_galore] [--debug] [--longread]
-                         [--no_duplicate_removal] [--no_prinseq] [--no_fastqc]
-                         [--no_abra] [--mq20] [--mq30]
-                         [--remove_mismatching REMOVE_MISMATCHING]
-                         [--force_restart] [--testWochenende]
-                         fastq
-
-positional arguments:
-  fastq                 _R1.fastq Input read1 fastq file
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --aligner {bwamem,minimap2,ngmlr}
-                        Aligner to use, either bwamem, ngmlr or minimap2.
-                        Usage of minimap2 and ngmlr currently optimized for
-                        nanopore data only.
-  --readType {PE,SE}    Single end or paired end data
-  --metagenome {2021_02_meta_fungi_human_masked,2021_02_meta_fungi_human_unmasked,2020_09_massiveref_human,2020_05_meta_human,2020_03_meta_human,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,ecoli,nci_viruses,ezv_viruses,testdb,strept_halo,k_variicola,k_oxytoca,clost_bot,clost_bot_e,clost_diff,clost_perf,citro_freundii}
-                        Meta/genome reference to use
-  --threads THREADS     Number of threads to use
-  --fastp               Use fastp trimmer instead of fastqc and trimmomatic
-  --nextera             Attempt to remove Illumina Nextera adapters and
-                        transposase sequence (default is Illumina Ultra II
-                        adapters, but Illumina Nextera more common in future)
-  --trim_galore         Use trim_galore read trimmer. Effective for Nextera
-                        adapters and transposase sequence
-  --debug               Report all files
-  --longread            Only do steps relevant for long PacBio/ONT reads eg.
-                        no dup removal, no trimming, just alignment and bam
-                        conversion
-  --no_duplicate_removal
-                        Skips steps for duplicate removal. Recommended for
-                        amplicon sequencing.
-  --no_prinseq          Skips prinseq step (low_complexity sequence removal)
-  --no_fastqc           Skips FastQC quality control step.
-  --no_abra             Skips steps for Abra realignment. Recommended for
-                        metagenome and amplicon analysis.
-  --mq20                Remove reads with mapping quality less than 20.
-                        Recommended for metagenome and amplicon analysis. Less
-                        stringent than MQ30.
-  --mq30                Remove reads with mapping quality less than 30.
-                        Recommended for metagenome and amplicon analysis.
-  --remove_mismatching REMOVE_MISMATCHING
-                        Remove reads with x or more mismatches (via the NM
-                        bam tag). Default 3 (so reads with 0-2 mismatches remain). Argument required.
-  --force_restart       Force restart, without regard to existing progress
-  --testWochenende      Run pipeline tests vs testdb, needs the subdirectory
-                        testdb, default false
-
-We recommend using bioconda for the installation of the tools. Remember to run
-'conda activate <environment name>' before you start if you are using
-bioconda. Details about the installation are available on
-https://github.com/MHH-RCUG/Wochenende#installation
-
-```
 
 ## Installation
 
@@ -162,7 +97,8 @@ conda env create -f env.wochenende.minimal.yml
    - [ABRA2](https://github.com/mozack/abra2)
 
 4. Download a reference sequence from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
-4a. If you want to use bwa mem as aligner, you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`
+
+4a. If you want to use bwa mem as aligner, you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`. Minimap2 works with fasta directly without this step.
 
 5. Important! Edit the configuration section of `config.yaml` to set the paths to the tools, tmp directory and reference sequences. Use a code editor to avoid breaking the yaml format.
 
@@ -413,6 +349,79 @@ python3 run_Wochenende.py --metagenome testdb --threads 4 --testWochenende --ali
 You should be able to see in the SLURM outfile or standard out if the tests passed or not. Failed tests may be due to program versions or pipeline configuration issues.
 
 
+
+
+### General usage
+
+```
+Warning, this usage is just an example and might be slightly out of date. 
+
+Run this with: 
+python3 run_Wochenende.py
+
+Wochenende - Whole Genome/Metagenome Sequencing Alignment Pipeline
+Wochenende was created by Dr. Colin Davenport, Tobias Scheithauer and Fabian Friedrich with help from many further contributors https://github.com/MHH-RCUG/Wochenende/graphs/contributors
+version: 1.9.1 - Mar 2021
+
+usage: run_Wochenende.py [-h] [--aligner {bwamem,minimap2,ngmlr}]
+                         [--readType {PE,SE}]
+                         [--metagenome {2021_02_meta_fungi_human_masked,2021_02_meta_fungi_human_unmasked,2020_09_massiveref_human,2020_05_meta_human,2020_03_meta_human,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,ecoli,nci_viruses,ezv_viruses,testdb,strept_halo,k_variicola,k_oxytoca,clost_bot,clost_bot_e,clost_diff,clost_perf,citro_freundii}]
+                         [--threads THREADS] [--fastp] [--nextera]
+                         [--trim_galore] [--debug] [--longread]
+                         [--no_duplicate_removal] [--no_prinseq] [--no_fastqc]
+                         [--no_abra] [--mq20] [--mq30]
+                         [--remove_mismatching REMOVE_MISMATCHING]
+                         [--force_restart] [--testWochenende]
+                         fastq
+
+positional arguments:
+  fastq                 _R1.fastq Input read1 fastq file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --aligner {bwamem,minimap2,ngmlr}
+                        Aligner to use, either bwamem, ngmlr or minimap2.
+                        Usage of minimap2 and ngmlr currently optimized for
+                        nanopore data only.
+  --readType {PE,SE}    Single end or paired end data
+  --metagenome {2021_02_meta_fungi_human_masked,2021_02_meta_fungi_human_unmasked,2020_09_massiveref_human,2020_05_meta_human,2020_03_meta_human,2019_01_meta,2019_10_meta_human,2019_10_meta_human_univec,2019_01_meta_mouse,2019_01_meta_mouse_ASF_OMM,2019_01_meta_mouse_ASF,2019_01_meta_mouse_OMM,hg19,GRCh37,GRCh38-45GB,GRCh38-noalt,GRCh38-mito,mm10,rn6,rat_1AR1_ont,zf10,ss11,PA14,ecoli,nci_viruses,ezv_viruses,testdb,strept_halo,k_variicola,k_oxytoca,clost_bot,clost_bot_e,clost_diff,clost_perf,citro_freundii}
+                        Meta/genome reference to use
+  --threads THREADS     Number of threads to use
+  --fastp               Use fastp trimmer instead of fastqc and trimmomatic
+  --nextera             Attempt to remove Illumina Nextera adapters and
+                        transposase sequence (default is Illumina Ultra II
+                        adapters, but Illumina Nextera more common in future)
+  --trim_galore         Use trim_galore read trimmer. Effective for Nextera
+                        adapters and transposase sequence
+  --debug               Report all files
+  --longread            Only do steps relevant for long PacBio/ONT reads eg.
+                        no dup removal, no trimming, just alignment and bam
+                        conversion
+  --no_duplicate_removal
+                        Skips steps for duplicate removal. Recommended for
+                        amplicon sequencing.
+  --no_prinseq          Skips prinseq step (low_complexity sequence removal)
+  --no_fastqc           Skips FastQC quality control step.
+  --no_abra             Skips steps for Abra realignment. Recommended for
+                        metagenome and amplicon analysis.
+  --mq20                Remove reads with mapping quality less than 20.
+                        Recommended for metagenome and amplicon analysis. Less
+                        stringent than MQ30.
+  --mq30                Remove reads with mapping quality less than 30.
+                        Recommended for metagenome and amplicon analysis.
+  --remove_mismatching REMOVE_MISMATCHING
+                        Remove reads with x or more mismatches (via the NM
+                        bam tag). Default 3 (so reads with 0-2 mismatches remain). Argument required.
+  --force_restart       Force restart, without regard to existing progress
+  --testWochenende      Run pipeline tests vs testdb, needs the subdirectory
+                        testdb, default false
+
+We recommend using bioconda for the installation of the tools. Remember to run
+'conda activate <environment name>' before you start if you are using
+bioconda. Details about the installation are available on
+https://github.com/MHH-RCUG/Wochenende#installation
+
+```
 
 
 
