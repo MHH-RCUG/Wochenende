@@ -86,7 +86,7 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 
 6. After completion of the alignment and filtering, run wochenende_postprocess.sh (Requires [Haybaler](https://github.com/MHH-RCUG/haybaler) for final integration steps, R for optional automated heatmaps and optionally [raspir](https://github.com/mmpust/raspir) for rare species detection).
 
-`bash wochenende_postprocess.sh`
+`bash wochenende_postprocess.sh -r -h -s -p -g`
 
 ### Tutorial
 
