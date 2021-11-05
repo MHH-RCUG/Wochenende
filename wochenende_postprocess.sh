@@ -2,9 +2,11 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.30, Sept 2021"
+version="0.32, Nov 2021"
 
 #Changelog
+#0.32 - add command line args
+#0.31 - remove --no-plots
 #0.30 - remove growth rate temp files
 #0.29 - solve growth rate problems
 #0.28 - check important env vars are set.
@@ -31,7 +33,7 @@ version="0.30, Sept 2021"
 echo "INFO: Postprocess Wochenende BAM and bam.txt files for plotting, reporting and haybaler integration" 
 echo "INFO: Version: " $version
 echo "INFO: Usage: bash wochenende_postprocess.sh args"
-echo "INFO: Usage: bash wochenende_postprocess.sh --no-plots"
+echo "INFO: Usage: bash wochenende_postprocess.sh -r -h -s -p -g"
 echo "INFO: Remember to run this using the haybaler conda environment if available - we attempt to load this in the script"
 echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and are filled"
@@ -40,17 +42,13 @@ echo "INFO:  ####### "
 echo "INFO:  Runs following stages"
 echo "INFO:  - growth rate calculation"
 echo "INFO:  - sambamba depth"
-echo "INFO:  - Wochenende plot (disable with --no-plots argument)"
+echo "INFO:  - Wochenende plot (disable with -p argument)"
 echo "INFO:  - Extract selected human viral pathogen reads"
 echo "INFO:  - Wochenende reporting"
 echo "INFO:  - Haybaler and heatmaps in R (Haybaler and R required)"
 echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, metacoder and R required)"
 echo "INFO:  - cleanup directories "
 
-if [[ $1 == "--no-plots" ]]
-then
-    echo "INFO: Found --no-plots argument: Plot mode disabled"
-fi
 
 
 # Setup conda and directories using data parsed from config.yaml
@@ -142,6 +140,11 @@ sleep 3
 bash runbatch_metagen_awk_filter.sh
 wait
 
+# Check args
+if [[ $runHaybaler == "1" ]]; then
+    echo "INFO: Haybaler requires reporting"
+    $runReporting == "1"
+fi
 
 # Run reporting 
 if [[ $runReporting == "1" ]]; then
