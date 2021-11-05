@@ -125,6 +125,7 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 #echo "INFO: Arguments Run all stages (-a)   : $runAll"
+echo "INFO: Selected stages (1 means activated) via command line args."
 echo "INFO: Arguments Run reporting (-r)    : $runReporting"
 echo "INFO: Arguments Run haybaler (-h)     : $runHaybaler"
 echo "INFO: Arguments Run Raspir (-s)       : $runRaspir"
@@ -143,7 +144,7 @@ wait
 
 
 # Run reporting 
-if [[ $runReporting == "1" ]] 
+if [[ $runReporting == "1" ]]; then
     echo "INFO: Started Wochenende reporting"
     echo "INFO: Started Wochenende reporting" >>$output_log 2>&1
     cd $bamDir
@@ -157,7 +158,7 @@ if [[ $runReporting == "1" ]]
 fi
 
 # Run haybaler
-if [[ $runHaybaler == "1" ]] 
+if [[ $runHaybaler == "1" ]]; then
     echo "INFO: Start Haybaler"
     echo "INFO: Start Haybaler" >>$output_log 2>&1
     if [[ ! -d "haybaler" ]]
@@ -220,7 +221,8 @@ fi
 
 
 
-if [[ $runReporting == "1" ]] 
+if [[ $runReporting == "1" ]]; then
+
     echo "INFO: Start cleanup reporting"
     cd $bamDir
     cd reporting
@@ -269,7 +271,7 @@ fi
 
 
 # Growth rate
-if [[ $runGrowth == "1" ]] 
+if [[ $runGrowth == "1" ]]; then
     echo "INFO: Started bacterial growth rate analysis"
     echo "INFO: Started bacterial growth rate analysis" >>$output_log 2>&1
     cd $bamDir
@@ -293,7 +295,7 @@ if [[ $runGrowth == "1" ]]
 fi
 
 # Plots
-if [[ $runPlotting == "1" ]] 
+if [[ $runPlotting == "1" ]]; then
     echo "INFO: Started Wochenende plot"
     echo "INFO: Started Wochenende plot" >>$output_log 2>&1
     cd $bamDir
@@ -318,7 +320,7 @@ if [[ $runPlotting == "1" ]]
 fi
 
 # raspir
-if [[ $runRaspir == "1" ]] 
+if [[ $runRaspir == "1" ]]; then
     echo "INFO: Run raspir by Marie-Madlen Pust"
     echo "INFO: Run raspir by Marie-Madlen Pust"  >>$output_log 2>&1
     cd $bamDir/raspir
