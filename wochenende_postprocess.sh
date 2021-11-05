@@ -143,7 +143,7 @@ wait
 # Check args
 if [[ $runHaybaler == "1" ]]; then
     echo "INFO: Haybaler requires reporting"
-    $runReporting == "1"
+    runReporting="1"
 fi
 
 # Run reporting 
