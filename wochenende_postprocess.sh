@@ -114,22 +114,22 @@ fi
 ## Set command line arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        -a|--all) runAll="1"; shift ;;
-        -r|--reporting) runReporting="1"; shift ;;
-        -s|--raspir) runRaspir="1"; shift ;;
-        -p|--plot) runPlotting="1"; shift ;;
-        -g|--growth) runGrowth="1"; shift ;;
-        -h|--haybaler) runHaybaler="1"; shift ;;
+        -a) runAll="1";  ;;
+        -r) runReporting="1";  ;;
+        -s) runRaspir="1";  ;;
+        -p) runPlotting="1";  ;;
+        -g) runGrowth="1";  ;;
+        -h) runHaybaler="1";  ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
 done
-echo "INFO: Arguments Run all stages -a: $runAll"
-echo "INFO: Arguments Run reporting -r: $runReporting"
-echo "INFO: Arguments Run Raspir -s: $runRaspir"
-echo "INFO: Arguments Run plotting -p: $runPlotting"
-echo "INFO: Arguments Run growth rate -g: $runGrowth"
-echo "INFO: Arguments Run haybaler -h: $runHaybaler"
+echo "INFO: Arguments Run all stages (-a)   : $runAll"
+echo "INFO: Arguments Run reporting (-r)    : $runReporting"
+echo "INFO: Arguments Run haybaler (-h)     : $runHaybaler"
+echo "INFO: Arguments Run Raspir (-s)       : $runRaspir"
+echo "INFO: Arguments Run plotting (-p)     : $runPlotting"
+echo "INFO: Arguments Run growth rate (-g)  : $runGrowth"
 
 echo "INFO: Starting Wochenende_postprocess" 
 echo "INFO: Current directory" $bamDir >>$output_log 2>&1
