@@ -69,11 +69,11 @@ eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 # use SLURM job scheduler (yes, no)
 if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
     #echo USE_CUSTOM_SCHED set"
-    scheduler=CUSTOM_SCHED_CUSTOM_PARAMS
+    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS
 fi
 if [[ "${USE_SLURM}" == "yes" ]]; then
     #echo USE_SLURM set"
-    scheduler=SLURM_CUSTOM_PARAMS
+    scheduler=$SLURM_CUSTOM_PARAMS
 fi
 
 

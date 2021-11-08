@@ -21,11 +21,11 @@ eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 # use SLURM job scheduler (yes, no)
 if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
     #echo USE_CUSTOM_SCHED set"
-    scheduler=CUSTOM_SCHED_CUSTOM_PARAMS
+    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS
 fi
 if [[ "${USE_SLURM}" == "yes" ]]; then
     #echo USE_SLURM set"
-    scheduler=SLURM_CUSTOM_PARAMS
+    scheduler=$SLURM_CUSTOM_PARAMS
 fi
 
 for i in *calmd.bam; do
@@ -37,20 +37,12 @@ for i in *calmd.bam; do
 	window=1000
 	overlap=500
 	covMax=999999999
-	#threads=8
-	#queue=short
 
 	echo "INFO: Create new BAM file with reads from references specified in BED file $taxaToKeep only"
 	
-	# SLURM
-    #Aligned reads in a region specified by a BED file
+	#Aligned reads in a region specified by a BED file
     $scheduler samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
     $scheduler samtools index extract/$sec_input.filt.bam
-
-	# Direct submission, not SLURM
-	#samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
-    #samtools index extract/$sec_input.filt.bam
-
 
 
 	echo "INFO: Extracting data from extracted specified BAMs"
@@ -58,10 +50,7 @@ for i in *calmd.bam; do
 	window_input_bam_prefix=${window_input_bam%%.bam}
 	# Get coverage depth in tiny windows (eg 1kbp, set above) for small ref seqs, eg viruses
 	# SLURM
-	srun -c $threads -p $queue sambamba depth window -t $threads --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${window_input_bam_prefix}.bam > ${window_input_bam_prefix}_cov_window.txt &
-
-	# Direct submission, not SLURM
-	#sambamba depth window -t $threads --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${window_input_bam_prefix}.bam > ${window_input_bam_prefix}_cov_window.txt &
+	$scheduler sambamba depth window -t $threads --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${window_input_bam_prefix}.bam > ${window_input_bam_prefix}_cov_window.txt &
 
 
 

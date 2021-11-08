@@ -8,17 +8,12 @@ eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 # use SLURM job scheduler (yes, no)
 if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
     #echo USE_CUSTOM_SCHED set"
-    scheduler=CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE
+    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE
 fi
 if [[ "${USE_SLURM}" == "yes" ]]; then
     #echo USE_SLURM set"
-    scheduler=SLURM_CUSTOM_PARAMS_SINGLECORE
+    scheduler=$SLURM_CUSTOM_PARAMS_SINGLECORE
 fi
-
-## Set variables
-#cpus=1
-## with SLURM srun, default
-#scheduler="srun -c $cpus"
 
 # check if input bams exist
 count_bam=`ls -1 ../*calmd.bam 2>/dev/null | wc -l`
