@@ -299,7 +299,7 @@ if [[ $runGrowth == "1" ]]; then
     echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
     sleep $sleeptimer
     echo "INFO: Files produced by growth rate"   >>$output_log 2>&1
-    ls "growth_rate/fit_results/output/*" >>$output_log 2>&1
+    ls "fit_results/output/*" >>$output_log 2>&1
     cd $bamDir
     echo "INFO: Completed bacterial growth rate analysis, see growth_rate/fit_results/output for results"
 fi
