@@ -62,7 +62,7 @@ fastq=$1
 cpus=12
 #with SLURM srun, default
 slurm_srun="srun -c $cpus"
-#slurm_srun=""  # Uncomment this to avoid slurrm, start with bash run_Wochenende_SLURM.sh
+#slurm_srun=""  # Uncomment this to avoid slurm, start with bash run_Wochenende_SLURM.sh
 
 # Run script - Paired end reads R2 will be calculated by replacing R1 with R2
 # Uncomment/adapt the only line you want to run

@@ -7,7 +7,11 @@
 #haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
 
 # use SLURM job scheduler (yes, no)
-useSLURM: yes
+USE_SLURM: "yes"
+SLURM_CUSTOM_PARAMS: "srun -p normal -c 12"
+# use a non-SLURM scheduler (yes, no)
+USE_CUSTOM_SCHED: "no"
+CUSTOM_SCHED_CUSTOM_PARAMS: "bsub -q queue -p cores"
 # path to R
 rscript_bin: /usr/bin/Rscript
 # Servers configured for heat tree analysis with the metacoder R package. String with all server names separated by space: "server1 server2 server3 ..."

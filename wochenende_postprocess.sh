@@ -51,7 +51,7 @@ echo "INFO:  - cleanup directories "
 
 
 
-# Setup conda and directories using data parsed from config.yaml
+# Setup conda,  directories and SLURM using data parsed from config.yaml
 source $WOCHENENDE_DIR/scripts/parse_yaml.sh
 eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 haybaler_dir=$HAYBALER_DIR
@@ -59,6 +59,11 @@ wochenende_dir=$WOCHENENDE_DIR
 # Set and activate existing conda env
 . $CONDA_SH_PATH
 conda activate $WOCHENENDE_CONDA_ENV_NAME
+# Setup job scheduler
+# use SLURM job scheduler (yes, no)
+if [[ "${USE_SLURM}" == "yes" && "${USE_CUSTOM_SCHED}" == "yes" ]]; then
+    echo "Config warning, both USE_SLURM and USE_CUSTOM_SCHED set. Defaulting to SLURM"
+fi
 
 # check if env variables could be defined.
 if [[ -z "${WOCHENENDE_DIR}" || -z "${HAYBALER_DIR}" ]]; then
