@@ -123,6 +123,7 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 #echo "INFO: Arguments Run all stages (-a)   : $runAll"
+echo "###################################################"
 echo "INFO: Selected stages (1 means activated) via command line args."
 echo "INFO: Arguments Run reporting (-r)    : $runReporting"
 echo "INFO: Arguments Run haybaler (-h)     : $runHaybaler"
@@ -142,7 +143,7 @@ wait
 
 # Check args
 if [[ $runHaybaler == "1" ]]; then
-    echo "INFO: Haybaler requires reporting"
+    #echo "INFO: Haybaler requires Wochenende reporting"
     runReporting="1"
 fi
 

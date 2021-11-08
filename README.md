@@ -84,7 +84,7 @@ You can just run the pipeline as a normal Python3 script. However, we also offer
 
 `bash runbatch_sbatch_Wochenende.sh`
 
-6. After completion of the alignment and filtering, run wochenende_postprocess.sh (Requires [Haybaler](https://github.com/MHH-RCUG/haybaler) for final integration steps, R for optional automated heatmaps and optionally [raspir](https://github.com/mmpust/raspir) for rare species detection).
+6. After completion of the alignment and filtering, run wochenende_postprocess.sh (Requires [Haybaler](https://github.com/MHH-RCUG/haybaler) for final integration steps, R for optional automated heatmaps and optionally [raspir](https://github.com/mmpust/raspir) for rare species detection). 
 
 `bash wochenende_postprocess.sh -r -h -s -p -g`
 
@@ -210,11 +210,13 @@ This is strongly recommended!
 
 After a successful Wochenende run, make sure you check that all bams have been created and are sized as expected eg `ls -lh *.bam`
 
-Now start the postprocessing script `bash wochenende_postprocess.sh` to automatically:
+Now start the postprocessing script `bash wochenende_postprocess.sh  -r -h -s -g -p` to automatically:
 - run sambamba depth to get read coverage of all configured BAM files in the current directory
-- run the Wochenende plot to create coverage diagrams
-- run Wochenende reporting to count and normalize all read data
-- run the Haybaler report integration tool (provided it is installed and configured)
+- run the Wochenende plot to create coverage diagrams (-p)
+- run Wochenende reporting to count and normalize all read data (-r)
+- run the Haybaler report integration tool (-h provided it is installed and configured) 
+- run raspir (-s)
+- run growth_rate analysis (-g)
 - clean up files
 
 This script requires [Haybaler](https://github.com/MHH-RCUG/haybaler) and its dependencies to be installed, and will otherwise fail at some steps.
