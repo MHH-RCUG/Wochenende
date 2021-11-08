@@ -121,11 +121,11 @@ done
 echo "INFO: Arguments Run all stages (-a)   : $runAll"
 if [[ $runAll == "1" ]] 
 then
-    $runReporting="1"
-    $runRaspir="1"
-    $runPlotting="1"
-    $runGrowth="1"
-    $runHaybaler="1"
+    runReporting="1"
+    runRaspir="1"
+    runPlotting="1"
+    runGrowth="1"
+    runHaybaler="1"
 fi
 echo "###################################################"
 echo "INFO: Selected stages (1 means activated) via command line args."
