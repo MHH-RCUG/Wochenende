@@ -118,7 +118,7 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
-echo "INFO: Arguments Run all stages (-a)   : $runAll"
+
 if [[ $runAll == "1" ]] 
 then
     runReporting="1"
@@ -128,7 +128,8 @@ then
     runHaybaler="1"
 fi
 echo "###################################################"
-echo "INFO: Selected stages (1 means activated) via command line args."
+echo "INFO: Selected stages via command line args  (1 means activated)"
+echo "INFO: Arguments Run all stages (-a)   : $runAll"
 echo "INFO: Arguments Run reporting (-r)    : $runReporting"
 echo "INFO: Arguments Run haybaler (-h)     : $runHaybaler"
 echo "INFO: Arguments Run Raspir (-s)       : $runRaspir"
