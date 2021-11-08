@@ -13,7 +13,9 @@
 
 # Segment 1, preparation, rename, run pipeline
 
-#0 
+#0 Setup 
+Set up Wochenende following the commands on the Wochenende github page. Download a reference sequence and edit config.yaml
+# Now copy get_wochenende.sh to your current directory
 cp (your_wochenende_path)/get_wochenende.sh .
 
 #1 edit the location "path_we" in the following script, then run it to collect the Wochenende files and directories needed.
@@ -55,6 +57,8 @@ Output directories
 * plots 
 * reporting
 * reporting/haybaler/haybaler_output
+* extract
+* growth_rate
 
 Files
 * multiqc.html
