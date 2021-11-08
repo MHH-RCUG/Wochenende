@@ -27,7 +27,7 @@ if [[ $count != 0 ]]
     then
 	for bam in `ls *trm.s.bam`
 		do
-		$scheduler samtools stats $bam > $bam.stats &
+		$scheduler $path_samtools stats $bam > $bam.stats &
 	done
 fi
 wait
@@ -37,7 +37,7 @@ if [[ $count != 0 ]]
     then
     for bam in `ls *fix.s.bam`
 		do
-		$scheduler samtools stats $bam > $bam.stats &
+		$scheduler $path_samtools stats $bam > $bam.stats &
 	done
 fi
 wait
@@ -47,7 +47,7 @@ if [[ $count != 0 ]]
 	then
 	for bam in `ls *calmd.bam`
 		do
-		$scheduler samtools stats $bam > $bam.stats &
+		$scheduler $path_samtools stats $bam > $bam.stats &
 	done
 fi
 wait

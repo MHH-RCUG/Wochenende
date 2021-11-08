@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# Run the growth rate reproduction determiner module
+# Sophia Poertner 2021
 
 csv_count=$(ls -d *_subsamples 2>/dev/null | wc -l)
 if [[ $csv_count != 0 ]]
