@@ -30,4 +30,19 @@ echo "$ref"
 
 
 # Run script
-$scheduler python3 basic_reporting.py --input_file $bamtxt --reference $ref --sequencer illumina --output_name $bamtxt
+
+
+#Former script runbatch_Wochenende_reporting was removed and functionality included here
+echo "INFO: Starting batch reporting"
+
+for bamtxt in `ls *.bam.txt`
+        do
+        # run 
+        $scheduler python3 basic_reporting.py --input_file $bamtxt --reference $ref --sequencer illumina --output_name $bamtxt >/dev/null 2>&1 &
+        #bash run_Wochenende_reporting_SLURM.sh $bamtxt >/dev/null 2>&1 &
+done
+
+echo "INFO: Waiting for SLURM scripts to complete"
+wait
+
+echo "INFO: Completed batch reporting"
