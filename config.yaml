@@ -23,6 +23,8 @@ heattree_server: "hpc-bc15-07 hpc-bc15-12 hpc06"
 CONDA_SH_PATH: /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 WOCHENENDE_CONDA_ENV_NAME: wochenende
 HAYBALER_CONDA_ENV_NAME: haybaler
+# Activate multiqc
+USE_MULTIQC: "no"
 # Adapter sequence locations
 adapter_fastp_general: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa
 adapter_fastp_nextera: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa

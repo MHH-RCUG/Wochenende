@@ -52,11 +52,12 @@ if [[ $count != 0 ]]
 fi
 wait
 
-
-
 # Run multiqc
-echo "INFO:  Running multiqc"
-$scheduler multiqc -f .  2>&1 &
+if [[ "${USE_MULTIQC}" == "yes" ]]; then
+	echo "INFO:  Running multiqc"
+	$scheduler multiqc -f .  2>&1 &
+fi
+
 
 # Collate mapping stats
 out="mapped_percent.txt"
