@@ -6,12 +6,15 @@
 #wochenende_dir: /mnt/ngsnfs/tools/dev/Wochenende
 #haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
 
-# use SLURM job scheduler (yes, no)
+# use SLURM job scheduler (yes, no). 
+# For direct non-scheduler submission set USE_SLURM to "yes" and SLURM_CUSTOM_PARAMS and SLURM_CUSTOM_PARAMS_SINGLECORE to "" (empty string)
 USE_SLURM: "yes"
 SLURM_CUSTOM_PARAMS: "srun -p normal -c 12"
+SLURM_CUSTOM_PARAMS_SINGLECORE: "srun -p normal -c 1"
 # use a non-SLURM scheduler (yes, no)
 USE_CUSTOM_SCHED: "no"
 CUSTOM_SCHED_CUSTOM_PARAMS: "bsub -q queue -p cores"
+CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE: "bsub -q queue -p cores"
 # path to R
 rscript_bin: /usr/bin/Rscript
 # Servers configured for heat tree analysis with the metacoder R package. String with all server names separated by space: "server1 server2 server3 ..."

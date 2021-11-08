@@ -14,6 +14,19 @@ cp runbatch_metagen_window_filter.sh extract/
 
 taxaToKeep="extract/viruses_2021_02.bed"
 
+# Setup SLURM using data parsed from config.yaml
+source $WOCHENENDE_DIR/scripts/parse_yaml.sh
+eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
+# Setup job scheduler
+# use SLURM job scheduler (yes, no)
+if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
+    #echo USE_CUSTOM_SCHED set"
+    scheduler=CUSTOM_SCHED_CUSTOM_PARAMS
+fi
+if [[ "${USE_SLURM}" == "yes" ]]; then
+    #echo USE_SLURM set"
+    scheduler=SLURM_CUSTOM_PARAMS
+fi
 
 for i in *calmd.bam; do
 
@@ -24,15 +37,15 @@ for i in *calmd.bam; do
 	window=1000
 	overlap=500
 	covMax=999999999
-	threads=8
-	queue=short
+	#threads=8
+	#queue=short
 
 	echo "INFO: Create new BAM file with reads from references specified in BED file $taxaToKeep only"
 	
 	# SLURM
     #Aligned reads in a region specified by a BED file
-    srun -c $threads samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
-    srun -c 1 samtools index extract/$sec_input.filt.bam
+    $scheduler samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
+    $scheduler samtools index extract/$sec_input.filt.bam
 
 	# Direct submission, not SLURM
 	#samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
