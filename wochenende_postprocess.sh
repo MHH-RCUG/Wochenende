@@ -39,15 +39,6 @@ echo "INFO:  ####### "
 echo "INFO:  Usage: Make sure the directories plots/ and reporting/ exist and are filled"
 echo "INFO:  eg. run: bash get_wochenende.sh to get the relevant files"
 echo "INFO:  ####### "
-echo "INFO:  Runs following stages"
-echo "INFO:  - growth rate calculation"
-echo "INFO:  - sambamba depth"
-echo "INFO:  - Wochenende plot (disable with -p argument)"
-echo "INFO:  - Extract selected human viral pathogen reads"
-echo "INFO:  - Wochenende reporting"
-echo "INFO:  - Haybaler and heatmaps in R (Haybaler and R required)"
-echo "INFO:  - Haybaler taxonomy and heat-trees in R (Haybaler, pytaxonkit, metacoder and R required)"
-echo "INFO:  - cleanup directories "
 
 
 
@@ -117,7 +108,7 @@ fi
 ## Set command line arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
- #       -a) runAll="1";  ;;
+        -a) runAll="1";  ;;
         -r) runReporting="1";  ;;
         -s) runRaspir="1";  ;;
         -p) runPlotting="1";  ;;
@@ -127,7 +118,15 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
-#echo "INFO: Arguments Run all stages (-a)   : $runAll"
+echo "INFO: Arguments Run all stages (-a)   : $runAll"
+if [[ $runAll == "1" ]] 
+then
+    $runReporting="1"
+    $runRaspir="1"
+    $runPlotting="1"
+    $runGrowth="1"
+    $runHaybaler="1"
+fi
 echo "###################################################"
 echo "INFO: Selected stages (1 means activated) via command line args."
 echo "INFO: Arguments Run reporting (-r)    : $runReporting"
@@ -143,6 +142,7 @@ echo "INFO: Current directory" $bamDir >>$output_log 2>&1
 sleep 3
 
 
+# Run simple filtering and sorting script and multiqc
 bash runbatch_metagen_awk_filter.sh
 wait
 
@@ -159,7 +159,7 @@ if [[ $runReporting == "1" ]]; then
     cd $bamDir
     cd reporting
     cp ../*.bam.txt .
-    bash runbatch_Wochenende_reporting.sh >>$output_log 2>&1
+    bash run_Wochenende_reporting_SLURM.sh >>$output_log 2>&1
     wait
     echo "INFO: Sleeping for "$sleeptimer "to allow writes to complete."
     sleep $sleeptimer
