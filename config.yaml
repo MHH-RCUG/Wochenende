@@ -2,9 +2,7 @@
 ## Config file for Wochenende and Haybaler
 # If you mess up this file, use an online yaml validator to find the problematic lines.
 
-# Paths to program directories. The two following lines are set in setup.sh and are not used here. Will be removed.
-#wochenende_dir: /mnt/ngsnfs/tools/dev/Wochenende
-#haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
+# For paths to program directories - see setup.sh
 
 # use SLURM job scheduler (yes, no). 
 # For direct non-scheduler submission set USE_SLURM to "yes" and SLURM_CUSTOM_PARAMS and SLURM_CUSTOM_PARAMS_SINGLECORE to "" (empty string)
