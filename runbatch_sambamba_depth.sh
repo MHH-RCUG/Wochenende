@@ -10,11 +10,11 @@ eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 # use SLURM job scheduler (yes, no)
 if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
     #echo USE_CUSTOM_SCHED set"
-    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE
+    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS
 fi
 if [[ "${USE_SLURM}" == "yes" ]]; then
     #echo USE_SLURM set"
-    scheduler=$SLURM_CUSTOM_PARAMS_SINGLECORE
+    scheduler=$SLURM_CUSTOM_PARAMS
 fi
 
 
@@ -29,9 +29,9 @@ for i in *calmd.bam; do
 	covMax=999999999
 	
 	# Get coverage depth in windows
-	# 8 threads, Windows 100000, overlap 50000, -c minimum coverage. 
+	# x threads, Windows 100000, overlap 50000, -c minimum coverage. 
 	# SLURM
-	$scheduler sambamba depth window -t 1 --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${sec_input}.bam > ${sec_input}_cov_window.txt &
+	$scheduler $path_sambamba depth window -t $THREADS --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${sec_input}.bam > ${sec_input}_cov_window.txt &
 
 done
 wait

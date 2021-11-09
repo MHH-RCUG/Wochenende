@@ -15,6 +15,8 @@ SLURM_CUSTOM_PARAMS_SINGLECORE: "srun -p normal -c 1"
 USE_CUSTOM_SCHED: "no"
 CUSTOM_SCHED_CUSTOM_PARAMS: "bsub -q queue -p cores"
 CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE: "bsub -q queue -p cores"
+# set number of threads used above eg -c 12 for slurm, then 12 here
+THREADS: 12
 # path to R
 rscript_bin: /usr/bin/Rscript
 # Servers configured for heat tree analysis with the metacoder R package. String with all server names separated by space: "server1 server2 server3 ..."

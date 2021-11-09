@@ -41,8 +41,8 @@ for i in *calmd.bam; do
 	echo "INFO: Create new BAM file with reads from references specified in BED file $taxaToKeep only"
 	
 	#Aligned reads in a region specified by a BED file
-    $scheduler samtools view -@ $threads -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
-    $scheduler samtools index extract/$sec_input.filt.bam
+    $scheduler $path_samtools view -@ $THREADS -b -h -L $taxaToKeep -o extract/$sec_input.filt.bam $input 
+    $scheduler $path_samtools index extract/$sec_input.filt.bam
 
 
 	echo "INFO: Extracting data from extracted specified BAMs"
@@ -50,7 +50,7 @@ for i in *calmd.bam; do
 	window_input_bam_prefix=${window_input_bam%%.bam}
 	# Get coverage depth in tiny windows (eg 1kbp, set above) for small ref seqs, eg viruses
 	# SLURM
-	$scheduler sambamba depth window -t $threads --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${window_input_bam_prefix}.bam > ${window_input_bam_prefix}_cov_window.txt &
+	$scheduler sambamba depth window -t $THREADS --max-coverage=$covMax --window-size=$window --overlap $overlap -c 0.00001 ${window_input_bam_prefix}.bam > ${window_input_bam_prefix}_cov_window.txt &
 
 
 
