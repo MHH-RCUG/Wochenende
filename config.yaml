@@ -6,8 +6,15 @@
 #wochenende_dir: /mnt/ngsnfs/tools/dev/Wochenende
 #haybaler_dir: /mnt/ngsnfs/tools/dev/haybaler
 
-# use SLURM job scheduler (yes, no)
-useSLURM: yes
+# use SLURM job scheduler (yes, no). 
+# For direct non-scheduler submission set USE_SLURM to "yes" and SLURM_CUSTOM_PARAMS and SLURM_CUSTOM_PARAMS_SINGLECORE to "" (empty string)
+USE_SLURM: "yes"
+SLURM_CUSTOM_PARAMS: "srun -p normal -c 12"
+SLURM_CUSTOM_PARAMS_SINGLECORE: "srun -p normal -c 1"
+# use a non-SLURM scheduler (yes, no)
+USE_CUSTOM_SCHED: "no"
+CUSTOM_SCHED_CUSTOM_PARAMS: "bsub -q queue -p cores"
+CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE: "bsub -q queue -p cores"
 # path to R
 rscript_bin: /usr/bin/Rscript
 # Servers configured for heat tree analysis with the metacoder R package. String with all server names separated by space: "server1 server2 server3 ..."
@@ -16,6 +23,8 @@ heattree_server: "hpc-bc15-07 hpc-bc15-12 hpc06"
 CONDA_SH_PATH: /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
 WOCHENENDE_CONDA_ENV_NAME: wochenende
 HAYBALER_CONDA_ENV_NAME: haybaler
+# Activate multiqc
+USE_MULTIQC: "no"
 # Adapter sequence locations
 adapter_fastp_general: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa
 adapter_fastp_nextera: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/NexteraPE-PE.fa

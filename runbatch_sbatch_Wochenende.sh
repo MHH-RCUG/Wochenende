@@ -1,13 +1,13 @@
 #!/bin/bash
 
-## Colin Davenport, Dec. 2017 - May 2021
+## Colin Davenport, Dec. 2017 - Nov 2021
 ## Submit all R1.fastq in directory to sbatch run_Wochenende
 
 echo "INFO: Starting Wochenende"
 
 echo "INFO: First checking which analysis mode is selected - only ONE should be selected."
-egrep '^\$slurm_srun python3' run_Wochenende_SLURM.sh
-analysisCount="$(egrep '^\$slurm_srun python3 run_Wochenende.py' run_Wochenende_SLURM.sh | wc -l )"
+egrep '^\$scheduler python3' run_Wochenende_SLURM.sh
+analysisCount="$(egrep '^\$scheduler python3 run_Wochenende.py' run_Wochenende_SLURM.sh | wc -l )"
 echo "INFO: Argument count: " ${analysisCount}
 if [ $analysisCount != "1" ]; then
         echo "#############################################"

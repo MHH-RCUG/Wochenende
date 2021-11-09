@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Prepare Wochenende bam files for the bed to csv script (input for reproduction determiner)
+# Prepare Wochenende bam files for the bed to csv script (input for growth rate module reproduction determiner)
 # Links input files from one higher directory. Converts bam to bed.
 # Filter out mouse human and mito chromosomes.
 # Author: Sophia Poertner, Colin Davenport, Tom Wehrbein, 2021

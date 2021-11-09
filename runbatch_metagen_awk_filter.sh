@@ -1,12 +1,24 @@
 #!/bin/bash
-# Colin Davenport, April 2020 - Aug 2021
+# Colin Davenport, April 2020 - Nov 2021
 # Run multiqc report
 # Collect mapping stats from flagstat
 # Run filter: Keep all lines in the bam.txt where column 3 (reads aligned)
 # is greater than X (here probably 20). Good for idxstats files i.e. bam.txt files from Wochenende
 
-# SLURM command 
-slurm_cmd="srun -c 1"
+
+# Setup SLURM using data parsed from config.yaml
+source $WOCHENENDE_DIR/scripts/parse_yaml.sh
+eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
+# Setup job scheduler
+# use SLURM job scheduler (yes, no)
+if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
+    #echo USE_CUSTOM_SCHED set"
+    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE
+fi
+if [[ "${USE_SLURM}" == "yes" ]]; then
+    #echo USE_SLURM set"
+    scheduler=$SLURM_CUSTOM_PARAMS_SINGLECORE
+fi
 
 # Run samtools stats
 echo "INFO:  Running samtools stats"
@@ -15,7 +27,7 @@ if [[ $count != 0 ]]
     then
 	for bam in `ls *trm.s.bam`
 		do
-		$slurm_cmd samtools stats $bam > $bam.stats &
+		$scheduler $path_samtools stats $bam > $bam.stats &
 	done
 fi
 wait
@@ -25,7 +37,7 @@ if [[ $count != 0 ]]
     then
     for bam in `ls *fix.s.bam`
 		do
-		$slurm_cmd samtools stats $bam > $bam.stats &
+		$scheduler $path_samtools stats $bam > $bam.stats &
 	done
 fi
 wait
@@ -35,25 +47,26 @@ if [[ $count != 0 ]]
 	then
 	for bam in `ls *calmd.bam`
 		do
-		$slurm_cmd samtools stats $bam > $bam.stats &
+		$scheduler $path_samtools stats $bam > $bam.stats &
 	done
 fi
 wait
 
-
-
 # Run multiqc
-echo "INFO:  Running multiqc"
-#$slurm_cmd multiqc -f .  2>&1 &
+if [[ "${USE_MULTIQC}" == "yes" ]]; then
+	echo "INFO:  Running multiqc"
+	$scheduler multiqc -f .  2>&1 &
+fi
+
 
 # Collate mapping stats
 out="mapped_percent.txt"
 echo "INFO:  Generating Wochenende mapping stats to $out"
 echo "Wochenende mapping stats" > $out
-for z in `ls *flagstat.txt`
+for file in `ls *flagstat.txt`
 	do
-	echo -n $z "\t"  >> $out
-	grep "mapped (" $z >> $out
+	echo -n $file "\t"  >> $out
+	$scheduler grep "mapped (" $file >> $out
 done
 
 
@@ -63,7 +76,7 @@ echo "INFO:  Filtering and sorting  Wochenende output bam.txt files"
 for i in `find . -name "*.bam.txt"`
         do
 		# Run directly, else can adversely impact slurmdbd database.
-		#$slurm_cmd awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
+		#$scheduler awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
 		awk -F "\t" '$3>=20' $i | sort -t$'\t' -k3 -nr > $i.filt.sort.csv &
 done
 wait

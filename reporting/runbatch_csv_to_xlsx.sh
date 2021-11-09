@@ -2,19 +2,30 @@
 set -eo pipefail
 shopt -s nullglob
 
-# Fabian Charly Friedrich
-# Start from a folder containing csv files from the nextflow blast pipeline
+# Fabian Charly Friedrich and Colin Davenport
+# Start from a folder containing csv files 
 # bash runbatch_csv_to_xlsx.sh
 
-# activate conda env
-. /mnt/ngsnfs/tools/miniconda3/etc/profile.d/conda.sh
-conda activate wochenende >> /dev/null
+# Setup SLURM using data parsed from config.yaml
+source $WOCHENENDE_DIR/scripts/parse_yaml.sh
+eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
+# Setup job scheduler
+# use SLURM job scheduler (yes, no)
+if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
+    #echo USE_CUSTOM_SCHED set"
+    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS_SINGLECORE
+fi
+if [[ "${USE_SLURM}" == "yes" ]]; then
+    #echo USE_SLURM set"
+    scheduler=$SLURM_CUSTOM_PARAMS_SINGLECORE
+fi
+
 
 # wochenende output files
 for file in ./*rep.*.csv
 do
         echo "$file"
-	      srun -p short -c 1 python3 csv_to_xlsx_converter.py "$file" &
+	      $scheduler python3 csv_to_xlsx_converter.py "$file" &
 	wait
 done
 
@@ -22,7 +33,7 @@ done
 for file in ./*.txt
 do
         echo "$file"
-              srun -p short -c 1 python3 csv_to_xlsx_converter.py "$file" &
+              $scheduler python3 csv_to_xlsx_converter.py "$file" &
 	wait
 done
 
@@ -31,7 +42,7 @@ for file in ./*annot.csv
 do
 	conda activate nextflow >> /dev/null
         echo "$file"
-              srun -p short -c 1 python3 csv_to_xlsx_converter.py "$file" &
+              $scheduler python3 csv_to_xlsx_converter.py "$file" &
         wait
 done
 
