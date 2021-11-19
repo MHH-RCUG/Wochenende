@@ -319,7 +319,7 @@ The external tool [raspir](https://github.com/mmpust/raspir) has been integrated
 
 ### Known bugs
 
-RPMM bug: fixed in v1.7.8. In October 2020 a bug in the Wochenende_reporting script was found which calculated the RPMM column incorrectly. Please recalculate your reporting statistics if you use this feature. Thanks to @sannareddyk and colleagues at Leibniz University Hannover.
+RPMM bug: fixed in v1.7.8. In October 2020 a bug in the Wochenende_reporting script was found which calculated the RPMM column incorrectly. Please recalculate your reporting statistics if you use this feature. Thanks to @sannareddyk at the MHH and @twehrbein at Leibniz University Hannover.
 
 ### Running software tests
 
