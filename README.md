@@ -32,7 +32,7 @@ Features include (see programs listed below at the bottom of this page)
 - SAM-> BAM conversion (samtools and sambamba)
 - AlignerBoost Mapping Quality recalculation (in testing April-June 2021)
 - Report % aligned reads (samtools)
-- Output unmapped reads as fastq (samtools)  (from v1.4)
+- Output unmapped reads as fastq (samtools)  (from v1.4) 
 - Post-alignment duplicate removal (Samtools from v1.7.8, Sambamba)
 - Removal reads with x mismatches (bamtools), adjustable from v1.7.3
 - Realignment (Abra2)
