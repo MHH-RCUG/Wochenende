@@ -129,7 +129,7 @@ conda env create -f env.wochenende.minimal.yml
 ### Update conda environment
 If there is already a conda environment named wochenende:
 ```
-conda env update -f env.wochenende.yml
+conda env update -f env.wochenende.minimal.yml
 ```
 
 
