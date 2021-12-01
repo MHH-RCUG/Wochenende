@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.33, Nov 2021"
+version="0.34, Dec 2021"
 
 #Changelog
+#0.34 - resolve bug with conda envs with -a option
 #0.33 - add -a all option, test refactoring with global scheduler setup 
 #0.32 - add command line args
 #0.31 - remove --no-plots
