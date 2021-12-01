@@ -5,7 +5,7 @@
 version="0.34, Dec 2021"
 
 #Changelog
-#0.34 - resolve bug with conda envs with -a option
+#0.34 - resolve bug with conda envs with -a option (thanks @irosenboom, @vangreuj )
 #0.33 - add -a all option, test refactoring with global scheduler setup 
 #0.32 - add command line args
 #0.31 - remove --no-plots

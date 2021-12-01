@@ -429,9 +429,16 @@ Thanks to:
 
 @poer-sophia Code review, testing, maintenance, programming (haybaler and more)
 
-@twehrbein - growth rate code module
+@twehrbein - growth rate code module, testing
 
 @mmpust - raspir, testing, reference sequences, discussion
+
+@irosenboom - reference sequences, testing, bugfixes
+
+@vangreuj - bugfixes, testing
+
+@LisaHollstein - reference sequences, testing
+
 
 
 ## Tools
