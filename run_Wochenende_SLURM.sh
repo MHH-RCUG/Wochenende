@@ -182,7 +182,7 @@ $scheduler python3 run_Wochenende.py --metagenome 2021_10_meta_fungi_human_maske
 #$scheduler python3 run_Wochenende.py --metagenome hg19 --threads $cpus --longread --remove_mismatching 250 --debug --force_restart --no_prinseq $fastq
 #$scheduler python3 run_Wochenende.py --metagenome hg19 --threads $cpus --readType PE --no_duplicate_removal --debug --force_restart --no_prinseq $fastq
 #$scheduler python3 run_Wochenende.py --metagenome GRCh37 --threads $cpus --readType PE --aligner bwamem --no_duplicate_removal --no_abra --force_restart --no_prinseq $fastq
-#$scheduler python3 run_Wochenende.py --metagenome mm10 --threads $cpus --readType PE --aligner bwamem --force_restart --no_prinseq $fastq
+#$scheduler python3 run_Wochenende.py --metagenome mm10 --threads $cpus --readType PE --aligner bwamem --no_abra --remove_mismatching 4 --force_restart --no_prinseq $fastq
 #$scheduler python3 run_Wochenende.py --metagenome mm10 --threads $cpus --no_duplicate_removal --no_abra --readType SE --longread --aligner minimap2long --debug --force_restart --no_prinseq $fastq
 #$scheduler python3 run_Wochenende.py --metagenome rat_1AR1_ont --threads $cpus --no_duplicate_removal --readType SE --aligner bwa --debug --force_restart --no_prinseq $fastq
 #$scheduler python3 run_Wochenende.py --metagenome ss11 --threads $cpus --readType PE --no_duplicate_removal --no_abra --debug --force_restart --no_prinseq $fastq
