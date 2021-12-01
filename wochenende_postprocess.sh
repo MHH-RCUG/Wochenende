@@ -230,6 +230,9 @@ if [[ $runHaybaler == "1" ]]; then
     echo "INFO: Completed Haybaler"
 fi
 
+# leave haybaler conda env, reactivate Wochenende conda env
+conda deactivate
+conda activate $WOCHENENDE_CONDA_ENV_NAME
 
 
 if [[ $runReporting == "1" ]]; then
