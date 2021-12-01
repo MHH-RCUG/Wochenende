@@ -191,7 +191,7 @@ $scheduler python3 run_Wochenende.py --metagenome 2021_10_meta_fungi_human_maske
 #$scheduler python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType SE --aligner minimap2long --longread --no_duplicate_removal --no_abra --force_restart --no_prinseq $fastq
 #$scheduler python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType SE --aligner bwamem --no_duplicate_removal --no_abra --force_restart --no_prinseq $fastq
 #$scheduler python3 run_Wochenende.py --metagenome GRCh38-noalt --threads $cpus --readType PE --aligner bwamem --no_duplicate_removal --no_abra --remove_mismatching 3 --mq30 --force_restart --no_prinseq $fastq
-
+#$scheduler python3 run_Wochenende.py --metagenome T2T_v1_1 --threads $cpus --readType SE --aligner minimap2long --longread --no_duplicate_removal --no_abra --force_restart --no_prinseq $fastq
 
 # Test wochenende pipeline. Run tests with sbatch run_Wochenende_SLURM.sh testdb/reads_R1.fastq
 #$scheduler python3 run_Wochenende.py --metagenome testdb --threads $cpus --testWochenende --aligner bwamem --mq30 --remove_mismatching 3 --readType SE --debug --force_restart $fastq
