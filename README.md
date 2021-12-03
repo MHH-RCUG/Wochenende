@@ -32,7 +32,7 @@ Features include (see programs listed below at the bottom of this page)
 - SAM-> BAM conversion (samtools and sambamba)
 - AlignerBoost Mapping Quality recalculation (in testing April-June 2021)
 - Report % aligned reads (samtools)
-- Output unmapped reads as fastq (samtools)  (from v1.4)
+- Output unmapped reads as fastq (samtools)  (from v1.4) 
 - Post-alignment duplicate removal (Samtools from v1.7.8, Sambamba)
 - Removal reads with x mismatches (bamtools), adjustable from v1.7.3
 - Realignment (Abra2)
@@ -129,7 +129,7 @@ conda env create -f env.wochenende.minimal.yml
 ### Update conda environment
 If there is already a conda environment named wochenende:
 ```
-conda env update -f env.wochenende.yml
+conda env update -f env.wochenende.minimal.yml
 ```
 
 
@@ -319,7 +319,7 @@ The external tool [raspir](https://github.com/mmpust/raspir) has been integrated
 
 ### Known bugs
 
-RPMM bug: fixed in v1.7.8. In October 2020 a bug in the Wochenende_reporting script was found which calculated the RPMM column incorrectly. Please recalculate your reporting statistics if you use this feature. Thanks to @sannareddyk and colleagues at Leibniz University Hannover.
+RPMM bug: fixed in v1.7.8. In October 2020 a bug in the Wochenende_reporting script was found which calculated the RPMM column incorrectly. Please recalculate your reporting statistics if you use this feature. Thanks to @sannareddyk at the MHH and @twehrbein at Leibniz University Hannover.
 
 ### Running software tests
 
@@ -429,9 +429,16 @@ Thanks to:
 
 @poer-sophia Code review, testing, maintenance, programming (haybaler and more)
 
-@twehrbein - growth rate code module
+@twehrbein - growth rate code module, testing
 
 @mmpust - raspir, testing, reference sequences, discussion
+
+@irosenboom - reference sequences, testing, bugfixes
+
+@vangreuj - bugfixes, testing
+
+@LisaHollstein - reference sequences, testing
+
 
 
 ## Tools

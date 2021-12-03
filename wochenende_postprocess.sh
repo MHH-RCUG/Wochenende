@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.33, Nov 2021"
+version="0.34, Dec 2021"
 
 #Changelog
+#0.34 - resolve bug with conda envs with -a option (thanks @irosenboom, @vangreuj )
 #0.33 - add -a all option, test refactoring with global scheduler setup 
 #0.32 - add command line args
 #0.31 - remove --no-plots
@@ -230,6 +231,9 @@ if [[ $runHaybaler == "1" ]]; then
     echo "INFO: Completed Haybaler"
 fi
 
+# leave haybaler conda env, reactivate Wochenende conda env
+conda deactivate
+conda activate $WOCHENENDE_CONDA_ENV_NAME
 
 
 if [[ $runReporting == "1" ]]; then
@@ -342,7 +346,7 @@ if [[ $runRaspir == "1" ]]; then
     echo "INFO: Run raspir"  >>$output_log 2>&1
     bash run_raspir_SLURM.sh  >>$output_log 2>&1
     echo "INFO: Remove soft linked BAM files"  >>$output_log 2>&1
-    batch_remove_links.sh  >>$output_log 2>&1
+    bash batch_remove_links.sh  >>$output_log 2>&1
     cd $bamDir
     echo "INFO: Raspir module completed"
 fi
