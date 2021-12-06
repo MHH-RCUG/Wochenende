@@ -60,6 +60,8 @@ path_refseq_dict:
   2019_01_meta_mouse_ASF: /mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF.fasta
   2019_01_meta_mouse_ASF_OMM: /mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta
   2019_01_meta_mouse_OMM: /mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_OMM.fasta
+  2021_07_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_07_mouse_bact_fungi_vir.fa 
+  2021_11_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_11_mouse_bact_arch_fungi_vir.fa 
   2019_10_meta_human: /mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta
   2019_10_meta_human_univec: /mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta
   2020_03_meta_human: /mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa
@@ -67,7 +69,6 @@ path_refseq_dict:
   2020_09_massiveref_human: /mnt/ngsnfs/seqres/metagenref/bwa/2020_09_massiveref.fa
   2021_02_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
   2021_02_meta_fungi_human_unmasked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa
-  2021_07_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_07_mouse_bact_fungi_vir.fa 
   2021_08_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_08_human_bact_arch_fungi_vir.fa
   2021_09_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_09_human_bact_arch_fungi_vir.fa
   2021_10_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_10_human_bact_arch_fungi_vir.fa

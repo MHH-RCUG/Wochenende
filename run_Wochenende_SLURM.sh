@@ -143,7 +143,12 @@ $scheduler python3 run_Wochenende.py --metagenome 2021_10_meta_fungi_human_maske
 ## 2019 10 October metagenomes with Univec contamination
 #$scheduler python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --no_prinseq --debug --force_restart $fastq
 
-# 2021_07 mouse
+# 2021_11 mouse
+#$scheduler python3 run_Wochenende.py --metagenome 2021_11_meta_fungi_mouse_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#$scheduler python3 run_Wochenende.py --metagenome 2021_11_meta_fungi_mouse_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
+
+
+# 2021_07 mouse - deprecated
 #$scheduler python3 run_Wochenende.py --metagenome 2021_07_meta_fungi_mouse_masked --threads $cpus --aligner bwamem --no_abra --mq20 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$scheduler python3 run_Wochenende.py --metagenome 2021_07_meta_fungi_mouse_masked --threads $cpus --aligner bwamem --no_abra --mq20 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 
