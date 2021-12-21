@@ -35,7 +35,7 @@ ea_adapter_fasta: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa
 # Paths to tools
 path_abra_jar: /mnt/ngsnfs/tools/abra2/abra2_latest.jar
 path_afterqc: /mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py
-path_alignerboost: /mnt/ngsnfs/tools/Wochenende/dependencies/AlignerBoost.jar
+path_alignerboost: /mnt/ngsnfs/tools/Wochenende/dev/dependencies/AlignerBoost.jar
 path_bamtools: bamtools
 path_bwa: bwa
 path_fastp: fastp
@@ -46,7 +46,7 @@ path_java: java
 path_minimap2: minimap2
 path_ngmlr: ngmlr
 path_perl: perl
-path_perldup: /mnt/ngsnfs/tools/Wochenende/dependencies/remove_pcr_duplicates.pl
+path_perldup: /mnt/ngsnfs/tools/Wochenende/dev/dependencies/remove_pcr_duplicates.pl
 path_prinseq: prinseq-lite.pl
 path_sambamba: sambamba
 path_samtools: samtools
