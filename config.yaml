@@ -78,6 +78,7 @@ path_refseq_dict:
   GRCh38-mito: /mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa
   GRCh38-noalt: /mnt/ngsnfs/seqres/HS/bwa/GRCh38_no_alt.fa
   T2T_v1_1: /mnt/ngsnfs/seqres/HS/bwa/chm13.draft_v1.1_plus_Y.fasta
+  seqins_v3: /mnt/ngsnfs/seqres/metagenref/bwa/metasequin_sequences_3.0.fa
   PA14: /mnt/ngsnfs/seqres/PA/bwa/NC_008463.fna
   citro_freundii: /mnt/ngsnfs/seqres/metagenref/bwa/citro_freundii.fa
   clost_bot: /mnt/ngsnfs/seqres/metagenref/bwa/clost_bot.fa
@@ -98,4 +99,3 @@ path_refseq_dict:
   strept_halo: /mnt/ngsnfs/seqres/metagenref/bwa/strept_halo.fa
   testdb: testdb/ref.fa
   zf10: /mnt/ngsnfs/seqres/DR/bwa/GRCz10.fa
-  seqins_v3: /mnt/ngsnfs/seqres/metagenref/bwa/metasequin_sequences_3.0.fa
