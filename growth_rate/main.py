@@ -36,7 +36,7 @@ def evaluate_all_data(sample_folder_path, experiment_name, save_plots=True):
         png_name = file.stem
         # shorten filename
         png_name = png_name.replace(".fix.s", "").replace(".dup", "").replace(".ns", "").replace(".mm", "")
-        png_name = png_name.replace(".mq20", "").replace(".mq30", "").replace("c.almd", "").replace(".filt", "")
+        png_name = png_name.replace(".mq20", "").replace(".mq30", "").replace(".calmd", "").replace(".filt", "")
         png_name = png_name.replace("chromosome", "").replace("complete", "").replace("genome", "")
         save_name = save_path / (png_name + '.png')
         sample_names.append(file.stem)
