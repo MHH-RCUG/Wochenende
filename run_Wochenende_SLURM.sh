@@ -176,8 +176,8 @@ $scheduler python3 run_Wochenende.py --metagenome 2021_12_meta_fungi_human_maske
 # Univec added for exclusion of contamination
 #$scheduler python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 
-# Seqins from Anaquini metasequin_sequences_3.0.fa
-#$scheduler python3 run_Wochenende.py --metagenome seqins_v3 --threads $cpus --readType SE --debug --force_restart --no_abra --mq30 --remove_mismatching 3 --no_prinseq $fastq
+# Seqins from Anaquini metasequin_sequences_3.0.fa. If present, final eg calmd.bams probably have MB size files, but check alignments.
+#$scheduler python3 run_Wochenende.py --metagenome seqins_v3 --threads $cpus --readType SE --debug --force_restart --no_abra --no_fastqc --mq30 --remove_mismatching 3 --no_prinseq $fastq
 
 
 # Genomes
