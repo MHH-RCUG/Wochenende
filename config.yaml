@@ -97,3 +97,4 @@ path_refseq_dict:
   strept_halo: /mnt/ngsnfs/seqres/metagenref/bwa/strept_halo.fa
   testdb: testdb/ref.fa
   zf10: /mnt/ngsnfs/seqres/DR/bwa/GRCz10.fa
+  seqins_v3: /mnt/ngsnfs/seqres/metagenref/bwa/metasequin_sequences_3.0.fa

@@ -216,7 +216,7 @@ if [[ $runHaybaler == "1" ]]; then
     bash runbatch_heatmaps.sh >>$output_log 2>&1
     echo "INFO: Attempting to add taxonomy. Requires pytaxonkit." 
     bash run_haybaler_tax.sh >>$output_log 2>&1
-    echo "INFO: Attempting create heat-trees. Requires R installation and packages: packages = c("metacoder", "taxa", "dplyr", "tibble", "ggplot2")." 
+    echo "INFO: Attempting to create heat-trees. Requires R installation and packages: packages = c("metacoder", "taxa", "dplyr", "tibble", "ggplot2")." 
     bash run_heattrees.sh >>$output_log 2>&1
     cd ..
     cd ..

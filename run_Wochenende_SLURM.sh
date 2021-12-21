@@ -172,6 +172,9 @@ $scheduler python3 run_Wochenende.py --metagenome 2021_10_meta_fungi_human_maske
 # Univec added for exclusion of contamination
 #$scheduler python3 run_Wochenende.py --metagenome 2019_10_meta_human_univec --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 
+# Seqins from Anaquini metasequin_sequences_3.0.fa
+#$scheduler python3 run_Wochenende.py --metagenome seqins_v3 --threads $cpus --readType SE --debug --force_restart --no_abra --mq30 --remove_mismatching 3 --no_prinseq $fastq
+
 
 # Genomes
 #$scheduler python3 run_Wochenende.py --metagenome strept_halo --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq
