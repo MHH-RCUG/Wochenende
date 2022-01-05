@@ -35,7 +35,7 @@ ea_adapter_fasta: /mnt/ngsnfs/seqres/contaminants/2020_02/adapters/adapters.fa
 # Paths to tools
 path_abra_jar: /mnt/ngsnfs/tools/abra2/abra2_latest.jar
 path_afterqc: /mnt/ngsnfs/tools/afterQC/AfterQC-0.9.6/after.py
-path_alignerboost: /mnt/ngsnfs/tools/Wochenende/dependencies/AlignerBoost.jar
+path_alignerboost: /mnt/ngsnfs/tools/dev/Wochenende/dependencies/AlignerBoost.jar
 path_bamtools: bamtools
 path_bwa: bwa
 path_fastp: fastp
@@ -46,7 +46,7 @@ path_java: java
 path_minimap2: minimap2
 path_ngmlr: ngmlr
 path_perl: perl
-path_perldup: /mnt/ngsnfs/tools/Wochenende/dependencies/remove_pcr_duplicates.pl
+path_perldup: /mnt/ngsnfs/tools/dev/Wochenende/dependencies/remove_pcr_duplicates.pl
 path_prinseq: prinseq-lite.pl
 path_sambamba: sambamba
 path_samtools: samtools
@@ -60,6 +60,8 @@ path_refseq_dict:
   2019_01_meta_mouse_ASF: /mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF.fasta
   2019_01_meta_mouse_ASF_OMM: /mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_ASF_OMM.fasta
   2019_01_meta_mouse_OMM: /mnt/ngsnfs/seqres/metagenref/bwa/mm10_plus_OMM.fasta
+  2021_07_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_07_mouse_bact_fungi_vir.fa 
+  2021_11_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_11_mouse_bact_arch_fungi_vir.fa 
   2019_10_meta_human: /mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3.fasta
   2019_10_meta_human_univec: /mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_201910_3_with_UniVec.fasta
   2020_03_meta_human: /mnt/ngsnfs/seqres/metagenref/bwa/refSeqs_allKingdoms_2020_03.fa
@@ -67,15 +69,16 @@ path_refseq_dict:
   2020_09_massiveref_human: /mnt/ngsnfs/seqres/metagenref/bwa/2020_09_massiveref.fa
   2021_02_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_masked.fa
   2021_02_meta_fungi_human_unmasked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_02_human_bact_fungi_vir_unmasked.fa
-  2021_07_meta_fungi_mouse_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_07_mouse_bact_fungi_vir.fa 
   2021_08_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_08_human_bact_arch_fungi_vir.fa
   2021_09_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_09_human_bact_arch_fungi_vir.fa
   2021_10_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_10_human_bact_arch_fungi_vir.fa
+  2021_12_meta_fungi_human_masked: /mnt/ngsnfs/seqres/metagenref/bwa/2021_12_human_bact_arch_fungi_vir.fa
   GRCh37: /mnt/ngsnfs/seqres/HS/bwa/GRCh37.fa
   GRCh38-45GB: /mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.toplevel.fa
   GRCh38-mito: /mnt/ngsnfs/seqres/HS/bwa/Homo_sapiens.GRCh38.dna.chromosome.MT.fa
   GRCh38-noalt: /mnt/ngsnfs/seqres/HS/bwa/GRCh38_no_alt.fa
   T2T_v1_1: /mnt/ngsnfs/seqres/HS/bwa/chm13.draft_v1.1_plus_Y.fasta
+  seqins_v3: /mnt/ngsnfs/seqres/metagenref/bwa/metasequin_sequences_3.0.fa
   PA14: /mnt/ngsnfs/seqres/PA/bwa/NC_008463.fna
   citro_freundii: /mnt/ngsnfs/seqres/metagenref/bwa/citro_freundii.fa
   clost_bot: /mnt/ngsnfs/seqres/metagenref/bwa/clost_bot.fa

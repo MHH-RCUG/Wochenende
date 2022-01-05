@@ -1,18 +1,26 @@
 # Wochenende setup. Set environment variables for Wochenende https://github.com/MHH-RCUG/Wochenende
-# v0.2 2021_06
+# v0.3 2022_01
 # Only uncommented lines without a # are read
-
+# Usage: bash setup.sh  OR for containers only bash setup.sh singularity 
 
 #############
-# Users: change following two paths as appropriate
+# Users: change following two paths as appropriate, but leave the singularity section untouched
 #############
+if [[ $1 = "" ]] ; then
+    # Install_directory for Wochenende on your system, full path
+    wochenende_install_dir=/mnt/ngsnfs/tools/dev/Wochenende
+    # Install_directory for Haybaler https://github.com/MHH-RCUG/haybaler on your system, full path
+    haybaler_install_dir=/mnt/ngsnfs/tools/dev/haybaler
 
-# Install_directory for Wochenende on your system, full path
-wochenende_install_dir=/mnt/ngsnfs/tools/dev/Wochenende
-
-# Install_directory for Haybaler https://github.com/MHH-RCUG/haybaler on your system, full path
-haybaler_install_dir=/mnt/ngsnfs/tools/dev/haybaler
-
+elif [[ $1 = "singularity" ]] ; then
+    # Users: warning, do not edit this !
+    # Install_directory for Wochenende in a singularity container, full path
+    wochenende_install_dir=/data/Wochenende
+    # Install_directory for Haybaler https://github.com/MHH-RCUG/haybaler in a singularity container, full path 
+    haybaler_install_dir=/data/haybaler
+else
+    echo "Error: usage bash setup.sh OR when building containers bash setup.sh singularity "
+fi
 
 
 # Users: please do not change this.
