@@ -96,6 +96,8 @@ path_refseq_dict:
   rat_1AR1_ont: /mnt/ngsnfs/seqres/RN/bwa/1AR1_2019_ONT_final.fasta
   rn6: /mnt/ngsnfs/seqres/RN/bwa/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa
   ss11: /mnt/ngsnfs/seqres/SS/bwa/Sus_scrofa.Sscrofa11.1.dna.toplevel.fa
+  ssplasmid1: /mnt/ngsnfs/seqres/plasmids/bwa/pX330_NLS1_2-AKCP204LgRneoR_cln.fasta
+  ssplasmid2: /mnt/ngsnfs/seqres/plasmids/bwa/SB-U6-gRNA-eCas9-DNLS1_2-EGFP-Neo_cln.fasta
   strept_halo: /mnt/ngsnfs/seqres/metagenref/bwa/strept_halo.fa
   testdb: testdb/ref.fa
   zf10: /mnt/ngsnfs/seqres/DR/bwa/GRCz10.fa
