@@ -15,9 +15,9 @@ if [[ $1 = "" ]] ; then
 elif [[ $1 = "singularity" ]] ; then
     # Users: warning, do not edit this !
     # Install_directory for Wochenende in a singularity container, full path
-    wochenende_install_dir=/data/Wochenende
+    wochenende_install_dir=/opt/Wochenende
     # Install_directory for Haybaler https://github.com/MHH-RCUG/haybaler in a singularity container, full path 
-    haybaler_install_dir=/data/haybaler
+    haybaler_install_dir=/opt/haybaler
 else
     echo "Error: usage bash setup.sh OR when building containers bash setup.sh singularity "
 fi
