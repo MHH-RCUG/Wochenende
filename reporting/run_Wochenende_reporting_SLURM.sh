@@ -28,6 +28,10 @@ conda activate $WOCHENENDE_CONDA_ENV_NAME
 ref=$(<ref.tmp)
 echo "$ref"
 
+if [[ $ref == "" ]]; then
+	echo "INFO: Error in reporting - reference file is empty or not present. Rerun Wochenende to correct this."
+	exit 1
+fi
 
 # Run script
 
