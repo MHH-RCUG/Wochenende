@@ -171,8 +171,17 @@ def make_time_domain(x):
 def fourier_trans(x):
     species_name = x['Organism'].iloc[0]
     sep = '_'
-    stripped_name = species_name.split(sep)
-    stripped_name2 = stripped_name[3] + ' ' + stripped_name[4]
+    # check for separators and use try except to avoid errors
+    if sep in species_name:
+        try:
+            stripped_name = species_name.split(sep)
+            stripped_name2 = stripped_name[3] + ' ' + stripped_name[4]
+        except:
+            logging.info('Warning  Name could not be parsed correctly using "_" splits: {}', str(species_name))
+            stripped_name = species_name
+    else:
+        stripped_name = species_name
+
 
     x['fft_ref1'] = np.fft.fft(x['Reference'])
     x['fft_bio1'] = np.fft.fft(x['Real'])
@@ -246,9 +255,19 @@ def make_freq_images(x, set_images):
         x_bio += [0]*b
         x_reference3 = np.sqrt(x_reference)
         sep = '_'
-        stripped_name = species_name.split(sep)
-        stripped_name2 = stripped_name[3] + ' ' + stripped_name[4]
-        stripped_name3 = stripped_name[3] + '_' + stripped_name[4]
+        # add error handling in case separator not present for some taxa. eg chrY etc from mouse
+        if sep in species_name:
+            try:
+                stripped_name = species_name.split(sep)
+                stripped_name2 = stripped_name[3] + ' ' + stripped_name[4]
+                stripped_name3 = stripped_name[3] + '_' + stripped_name[4]
+            except:
+                logging.info('Warning  Name could not be parsed correctly using "_" splits: {}', str(species_name))
+                stripped_name = species_name
+                stripped_name3 = species_name
+        else:
+            stripped_name = species_name
+            stripped_name3 = species_name
 
         fig, ax1 = plt.subplots(1, 1, figsize=(2.5, 2))
         fig.suptitle(stripped_name2, style='italic', fontsize=4)
@@ -291,11 +310,17 @@ def process_csv(file_name, out_prefix, args):
     with open(file_name, newline='') as inF:
         df = pd.read_csv(inF, delimiter=',')
 
-        # filtering human reads
+        # filtering reads attrib to human chromosomes
         pattern_del = '1_1_1_'
         filter_approach = df['Organism'].str.contains(pattern_del, na=False)
         df = df[~filter_approach]
-        logging.info('1) Human reads have been removed')
+        logging.info('1a) Human reads have been removed')
+        
+        # filtering  reads attributed to organisms starting with chr eg some human, mouse chrs
+        pattern_del = 'chr'
+        filter_approach = df['Organism'].str.startswith(pattern_del, na=False)
+        df = df[~filter_approach]
+        logging.info('1b) Human chr reads have been removed')
 
         # counting reads per organism
         df = df.dropna(subset=['GenomeLength'])

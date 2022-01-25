@@ -56,17 +56,23 @@ if [ $count != 0 ]
 fi
 
 # Start from sorted mq20 BAM with no unmapped sequences  
-for items in *.bam
-	do
-		echo $items
-		fname=$(echo ${items} | sed 's/.bam//')
-		echo $fname
+#for items in *.bam
+#	do
+		#echo $items
+#		fname=$(echo ${items} | sed 's/.bam//')
+		#echo $fname
+#########		
+# Faster version, allow parallel samtools depth, but keep as close to original as possible
+########
+bam_fullname=$1
+bam_prefix=$(echo ${bam} | sed 's/.bam//')
+fname=$bam_prefix
 
    		# Obtain coverage information
    		samtools depth ${fname}.bam | grep -v $human_chr_pattern  > ${fname}.raspir1.csv
 
    		# Add genome size, pipe in a BAM header only
-   		samtools view -H ${items} | sed 's/LN://g' > ${fname}.genomeSize_1.csv
+   		samtools view -H ${bam_fullname} | sed 's/LN://g' > ${fname}.genomeSize_1.csv
    		sed -i 's/SN://g' ${fname}.genomeSize_1.csv
    		cut -f2- ${fname}.genomeSize_1.csv > ${fname}.genomeSize.csv
 
@@ -81,4 +87,4 @@ for items in *.bam
 
 		# Remove intermediate files
 		rm ${fname}.raspir1.csv ${fname}.genomeSize_1.csv ${fname}.genomeSize.csv
-	done
+#	done
