@@ -347,8 +347,8 @@ fi
 
 # raspir
 if [[ $runRaspir == "1" ]]; then
-    echo "INFO: Run raspir by Marie-Madlen Pust"
-    echo "INFO: Run raspir by Marie-Madlen Pust"  >>$output_log 2>&1
+    echo "INFO: Run raspir by M. Pust"
+    echo "INFO: Run raspir by M. Pust"  >>$output_log 2>&1
     cd $bamDir/raspir
     echo "INFO: link BAM files in"  >>$output_log 2>&1
     bash batch_create_links.sh  >>$output_log 2>&1
@@ -360,12 +360,15 @@ if [[ $runRaspir == "1" ]]; then
         then
             scheduler=$SLURM_CUSTOM_PARAMS
             # SLURM job scheduler- srun will not work here, need sbatch
-            sbatch run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
+            sbatch -J fileprep run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
         else
             # local job submission
             bash run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
         fi
     done
+    echo "INFO: waiting for raspir file prep jobs to run"
+    srun --dependency=singleton --job-name=fileprep sleep $sleeptimer
+    wait
     echo "INFO: Run raspir"  >>$output_log 2>&1
     bash run_raspir_SLURM.sh  >>$output_log 2>&1
     echo "INFO: Remove soft linked BAM files"  >>$output_log 2>&1
