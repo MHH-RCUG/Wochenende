@@ -372,7 +372,7 @@ if [[ $runRaspir == "1" ]]; then
     echo "INFO: Run raspir"  >>$output_log 2>&1
     bash run_raspir_SLURM.sh  >>$output_log 2>&1
     echo "INFO: Remove soft linked BAM files"  >>$output_log 2>&1
-    bash batch_remove_links.sh  >>$output_log 2>&1
+    #bash batch_remove_links.sh  >>$output_log 2>&1
     cd $bamDir
     echo "INFO: Raspir module completed"
 fi

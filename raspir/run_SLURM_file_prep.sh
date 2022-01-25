@@ -65,7 +65,8 @@ fi
 # Faster version, allow parallel samtools depth, but keep as close to original as possible
 ########
 bam_fullname=$1
-bam_prefix=$(echo ${bam} | sed 's/.bam//')
+bam_prefix=$(echo ${bam_fullname} | sed 's/.bam//')
+#bam_prefix=
 fname=$bam_prefix
 
    		# Obtain coverage information
