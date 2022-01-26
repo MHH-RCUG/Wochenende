@@ -263,9 +263,12 @@ def make_freq_images(x, set_images):
                 stripped_name3 = stripped_name[3] + '_' + stripped_name[4]
             except:
                 logging.info('Warning  Name could not be parsed correctly using "_" splits: {}', str(species_name))
+                # don't try to strip the names for chromosomes without separators
+                # we don't need to attribute stripped_name2 since it is not used elsewhere
                 stripped_name = species_name
                 stripped_name3 = species_name
         else:
+            logging.info('Warning  Name could not be parsed correctly using "_" splits: {}', str(species_name))
             stripped_name = species_name
             stripped_name3 = species_name
 

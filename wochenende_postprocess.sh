@@ -2,9 +2,10 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.35, Jan 2022"
+version="0.36, Jan 2022"
 
 #Changelog
+#0.36 - add random number to allow concurrent independent fileprep jobs
 #0.35 - update raspir and attempt raspir samtools depth parallel speedup
 #0.34 - resolve bug with ordering of conda envs with -a option (thanks @irosenboom, @vangreuj )
 #0.33 - add -a all option, test refactoring with global scheduler setup 
