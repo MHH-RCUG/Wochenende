@@ -179,6 +179,9 @@ $scheduler python3 run_Wochenende.py --metagenome 2021_12_meta_fungi_human_maske
 # Seqins from Anaquini metasequin_sequences_3.0.fa. If present, final eg calmd.bams probably have MB size files, but check alignments.
 #$scheduler python3 run_Wochenende.py --metagenome seqins_v3 --threads $cpus --readType SE --debug --force_restart --no_abra --no_fastqc --mq30 --remove_mismatching 3 --no_prinseq $fastq
 
+#plasmids
+#$scheduler python3 run_Wochenende.py --metagenome ssplasmid1 --threads $cpus --aligner minimap2long --longread --debug --force_restart --no_prinseq $fastq
+#$scheduler python3 run_Wochenende.py --metagenome ssplasmid2 --threads $cpus --aligner minimap2long --longread --debug --force_restart --no_prinseq $fastq
 
 # Genomes
 #$scheduler python3 run_Wochenende.py --metagenome strept_halo --threads $cpus --readType SE --debug --force_restart --no_prinseq $fastq

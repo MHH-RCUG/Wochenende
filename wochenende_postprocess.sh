@@ -2,10 +2,12 @@
 # Automated postprocessing of results from the Wochenende pipeline, with wochenende reporting and haybaler.
 # Authors: Colin Davenport, Sophia Poertner
 
-version="0.34, Dec 2021"
+version="0.36, Jan 2022"
 
 #Changelog
-#0.34 - resolve bug with conda envs with -a option (thanks @irosenboom, @vangreuj )
+#0.36 - add random number to allow concurrent independent fileprep jobs
+#0.35 - update raspir and attempt raspir samtools depth parallel speedup
+#0.34 - resolve bug with ordering of conda envs with -a option (thanks @irosenboom, @vangreuj )
 #0.33 - add -a all option, test refactoring with global scheduler setup 
 #0.32 - add command line args
 #0.31 - remove --no-plots
@@ -44,7 +46,7 @@ echo "INFO:  ####### "
 
 
 
-# Setup conda,  directories and SLURM using data parsed from config.yaml
+# Setup conda, directories and SLURM using data parsed from config.yaml
 source $WOCHENENDE_DIR/scripts/parse_yaml.sh
 eval $(parse_yaml $WOCHENENDE_DIR/config.yaml)
 haybaler_dir=$HAYBALER_DIR
@@ -56,6 +58,16 @@ conda activate $WOCHENENDE_CONDA_ENV_NAME
 # use SLURM job scheduler (yes, no)
 if [[ "${USE_SLURM}" == "yes" && "${USE_CUSTOM_SCHED}" == "yes" ]]; then
     echo "Config warning, both USE_SLURM and USE_CUSTOM_SCHED set. Defaulting to SLURM"
+fi
+# Setup job scheduler
+# use SLURM job scheduler (yes, no)
+if [[ "${USE_CUSTOM_SCHED}" == "yes" ]]; then
+    #echo USE_CUSTOM_SCHED set"
+    scheduler=$CUSTOM_SCHED_CUSTOM_PARAMS
+fi
+if [[ "${USE_SLURM}" == "yes" ]]; then
+    #echo USE_SLURM set"
+    scheduler=$SLURM_CUSTOM_PARAMS
 fi
 
 # check if env variables could be defined.
@@ -336,15 +348,34 @@ fi
 
 # raspir
 if [[ $runRaspir == "1" ]]; then
-    echo "INFO: Run raspir by Marie-Madlen Pust"
-    echo "INFO: Run raspir by Marie-Madlen Pust"  >>$output_log 2>&1
+    echo "INFO: Run raspir by M. Pust"
+    echo "INFO: Run raspir by M. Pust"  >>$output_log 2>&1
+    conda activate $HAYBALER_CONDA_ENV_NAME
     cd $bamDir/raspir
+    #cleanup
+    rm -f *raspir*.csv >/dev/null 2>/dev/null`
     echo "INFO: link BAM files in"  >>$output_log 2>&1
     bash batch_create_links.sh  >>$output_log 2>&1
-    echo "INFO: Start preparing the files for raspir"  >>$output_log 2>&1
-    bash run_SLURM_file_prep.sh  >>$output_log 2>&1
+    echo "INFO: Start preparing the files for raspir. Now with SLURM loop"  >>$output_log 2>&1
+    # Use random number to create unique fileprep job names and avoid clashes when multiple fileprep jobs are running
+    rand=$RANDOM
+    for input_bam in `ls *.bam`
+        do      
+        if [[ "${USE_SLURM}" == "yes" ]]; 
+        then
+            scheduler=$SLURM_CUSTOM_PARAMS
+            # SLURM job scheduler- srun will not work here, need sbatch
+            sbatch -J fileprep$rand run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
+        else
+            # local job submission
+            bash run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
+        fi
+    done
+    echo "INFO: waiting for raspir file prep jobs to complete"
+    srun --dependency=singleton --job-name=fileprep$rand sleep $sleeptimer
+    wait
     echo "INFO: Run raspir"  >>$output_log 2>&1
-    bash run_raspir_SLURM.sh  >>$output_log 2>&1
+    sbatch run_raspir_SLURM.sh  >>$output_log 2>&1
     echo "INFO: Remove soft linked BAM files"  >>$output_log 2>&1
     bash batch_remove_links.sh  >>$output_log 2>&1
     cd $bamDir
