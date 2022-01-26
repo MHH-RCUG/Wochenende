@@ -6,7 +6,7 @@ version="0.35, Jan 2022"
 
 #Changelog
 #0.35 - update raspir and attempt raspir samtools depth parallel speedup
-#0.34 - resolve bug with conda envs with -a option (thanks @irosenboom, @vangreuj )
+#0.34 - resolve bug with ordering of conda envs with -a option (thanks @irosenboom, @vangreuj )
 #0.33 - add -a all option, test refactoring with global scheduler setup 
 #0.32 - add command line args
 #0.31 - remove --no-plots
@@ -366,13 +366,13 @@ if [[ $runRaspir == "1" ]]; then
             bash run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
         fi
     done
-    echo "INFO: waiting for raspir file prep jobs to run"
+    echo "INFO: waiting for raspir file prep jobs to complete"
     srun --dependency=singleton --job-name=fileprep sleep $sleeptimer
     wait
     echo "INFO: Run raspir"  >>$output_log 2>&1
     bash run_raspir_SLURM.sh  >>$output_log 2>&1
     echo "INFO: Remove soft linked BAM files"  >>$output_log 2>&1
-    #bash batch_remove_links.sh  >>$output_log 2>&1
+    bash batch_remove_links.sh  >>$output_log 2>&1
     cd $bamDir
     echo "INFO: Raspir module completed"
 fi
