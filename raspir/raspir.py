@@ -179,9 +179,11 @@ def fourier_trans(x):
         except:
             logging.info('Warning  Name could not be parsed correctly using "_" splits: {}', str(species_name))
             stripped_name = species_name
+            stripped_name2 = species_name
+            
     else:
         stripped_name = species_name
-
+        stripped_name2 = species_name
 
     x['fft_ref1'] = np.fft.fft(x['Reference'])
     x['fft_bio1'] = np.fft.fft(x['Real'])
@@ -266,10 +268,12 @@ def make_freq_images(x, set_images):
                 # don't try to strip the names for chromosomes without separators
                 # we don't need to attribute stripped_name2 since it is not used elsewhere
                 stripped_name = species_name
+                stripped_name2 = species_name
                 stripped_name3 = species_name
         else:
             logging.info('Warning  Name could not be parsed correctly using "_" splits: {}', str(species_name))
             stripped_name = species_name
+            stripped_name2 = species_name
             stripped_name3 = species_name
 
         fig, ax1 = plt.subplots(1, 1, figsize=(2.5, 2))
