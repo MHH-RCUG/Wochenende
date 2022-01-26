@@ -351,23 +351,27 @@ if [[ $runRaspir == "1" ]]; then
     echo "INFO: Run raspir by M. Pust"  >>$output_log 2>&1
     conda activate $HAYBALER_CONDA_ENV_NAME
     cd $bamDir/raspir
+    #cleanup
+    rm *raspir*.csv
     echo "INFO: link BAM files in"  >>$output_log 2>&1
     bash batch_create_links.sh  >>$output_log 2>&1
     echo "INFO: Start preparing the files for raspir. Now with SLURM loop"  >>$output_log 2>&1
+    # Use random number to create unique fileprep job names and avoid clashes when multiple fileprep jobs are running
+    rand=$RANDOM
     for input_bam in `ls *.bam`
         do      
         if [[ "${USE_SLURM}" == "yes" ]]; 
         then
             scheduler=$SLURM_CUSTOM_PARAMS
             # SLURM job scheduler- srun will not work here, need sbatch
-            sbatch -J fileprep run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
+            sbatch -J fileprep$rand run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
         else
             # local job submission
             bash run_SLURM_file_prep.sh $input_bam >>$output_log 2>&1
         fi
     done
     echo "INFO: waiting for raspir file prep jobs to complete"
-    srun --dependency=singleton --job-name=fileprep sleep $sleeptimer
+    srun --dependency=singleton --job-name=fileprep$rand sleep $sleeptimer
     wait
     echo "INFO: Run raspir"  >>$output_log 2>&1
     sbatch run_raspir_SLURM.sh  >>$output_log 2>&1
