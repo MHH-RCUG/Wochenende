@@ -349,11 +349,11 @@ fi
 if [[ $runRaspir == "1" ]]; then
     echo "INFO: Run raspir by M. Pust"
     echo "INFO: Run raspir by M. Pust"  >>$output_log 2>&1
+    conda activate $HAYBALER_CONDA_ENV_NAME
     cd $bamDir/raspir
     echo "INFO: link BAM files in"  >>$output_log 2>&1
     bash batch_create_links.sh  >>$output_log 2>&1
     echo "INFO: Start preparing the files for raspir. Now with SLURM loop"  >>$output_log 2>&1
-    #bash run_SLURM_file_prep.sh  >>$output_log 2>&1
     for input_bam in `ls *.bam`
         do      
         if [[ "${USE_SLURM}" == "yes" ]]; 
@@ -370,7 +370,7 @@ if [[ $runRaspir == "1" ]]; then
     srun --dependency=singleton --job-name=fileprep sleep $sleeptimer
     wait
     echo "INFO: Run raspir"  >>$output_log 2>&1
-    bash run_raspir_SLURM.sh  >>$output_log 2>&1
+    sbatch run_raspir_SLURM.sh  >>$output_log 2>&1
     echo "INFO: Remove soft linked BAM files"  >>$output_log 2>&1
     bash batch_remove_links.sh  >>$output_log 2>&1
     cd $bamDir
