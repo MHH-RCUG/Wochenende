@@ -1,14 +1,15 @@
 #!/bin/bash
 # Colin Davenport, Lisa Hollstein 2022_01
+set -u pipefail
 
 echo "Removing non essential files such as unsorted BAMs and moving logs to subfolders"
 
 base_dir=$(pwd)
 echo $base_dir
 
-mkdir stats
-mkdir fastqc
-mkdir logs
+mkdir -p stats
+mkdir -p fastqc
+mkdir -p logs
 
 rm *.tmp
 rm *.trm.fastq
@@ -26,7 +27,7 @@ echo "INFO: removing png files from growth_rate"
 # a find exec rm is dangerous though, so go more targeted
 cd growth_rate
 #find . -n
-cd $bash_dir
+cd $base_dir
 
 
 echo "INFO: gzipping fastq with pigz"
