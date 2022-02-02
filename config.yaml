@@ -79,6 +79,7 @@ path_refseq_dict:
   GRCh38-noalt: /mnt/ngsnfs/seqres/HS/bwa/GRCh38_no_alt.fa
   T2T_v1_1: /mnt/ngsnfs/seqres/HS/bwa/chm13.draft_v1.1_plus_Y.fasta
   seqins_v3: /mnt/ngsnfs/seqres/metagenref/bwa/metasequin_sequences_3.0.fa
+  2021_12_meta_fungi_human_masked_seqins_v3: /mnt/ngsnfs/seqres/metagenref/bwa/2021_12_human_bact_arch_fungi_vir_metasequins.fa
   PA14: /mnt/ngsnfs/seqres/PA/bwa/NC_008463.fna
   citro_freundii: /mnt/ngsnfs/seqres/metagenref/bwa/citro_freundii.fa
   clost_bot: /mnt/ngsnfs/seqres/metagenref/bwa/clost_bot.fa
