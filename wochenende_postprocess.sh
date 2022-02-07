@@ -353,7 +353,7 @@ if [[ $runRaspir == "1" ]]; then
     conda activate $HAYBALER_CONDA_ENV_NAME
     cd $bamDir/raspir
     #cleanup
-    rm -f *raspir*.csv >/dev/null 2>/dev/null`
+    rm -f *raspir*.csv >/dev/null 2>/dev/null
     echo "INFO: link BAM files in"  >>$output_log 2>&1
     bash batch_create_links.sh  >>$output_log 2>&1
     echo "INFO: Start preparing the files for raspir. Now with SLURM loop"  >>$output_log 2>&1
