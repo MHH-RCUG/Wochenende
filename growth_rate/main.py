@@ -66,8 +66,9 @@ def evaluate_all_data(sample_folder_path, experiment_name, save_plots=True):
                             'Growth_Rate': growth_rates, "No_Reads": reads_all,
                             'Initial_Bins': initial_bins, 'Used_Bins': used_bins,
                             'Fit_Err': bins_fit_error, 'Error_Codes': error_codes})
-    save_name = save_path / (png_name + '_results.csv')
-    filename = save_path / 'results_summary.csv'
+    # change filename from generic results_summary.csv to include sample name, also one level up
+    filename = save_path / ".." / (png_name + '_results.csv')
+    #filename = save_path / 'results_summary.csv'
     # save results to a single csv file
     df.to_csv(filename, sep=',', index=False, header=True, float_format='%.2f')
 
