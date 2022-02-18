@@ -81,8 +81,8 @@ fi
 # Uncomment/adapt the only line you want to run
 
 #2021_12, minor update for 2021_10 ref. 
-#$scheduler python3 run_Wochenende.py --metagenome 2021_12_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
-$scheduler python3 run_Wochenende.py --metagenome 2021_12_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 5 --readType PE --debug --no_prinseq --force_restart $fastq
+$scheduler python3 run_Wochenende.py --metagenome 2021_12_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#$scheduler python3 run_Wochenende.py --metagenome 2021_12_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 5 --readType PE --debug --no_prinseq --force_restart $fastq
 
 #2021_10. Minor update of 2021_09. Streptococcus agalactiae double removed.
 #$scheduler python3 run_Wochenende.py --metagenome 2021_10_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
