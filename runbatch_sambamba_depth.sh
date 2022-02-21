@@ -19,7 +19,7 @@ fi
 
 
 # Actually run for each BAM file
-for i in *calmd.bam; do
+for i in `ls *calmd.bam`; do
 	input=$i
 	sec_input=${input%%.bam}
 	#sec_in_bam=${input%%.bam}
