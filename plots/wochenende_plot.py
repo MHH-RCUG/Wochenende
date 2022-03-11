@@ -50,9 +50,9 @@ parser.add_argument(
     default=0.2,
     help="""The minimum mean coverage. Default: 0.2
                     This does not affect the score. After the score has been calculated, this number will be the 
-                    threshold for both low scored and good scored taxa.\n
+                    threshold for both low scored and highly scoring taxa.\n
                     ## Case1: Poor scoring that have a maximum score above this minMeanCov value -> Images go to folder 
-                    potentially_present.\n
+                    low_med_score.\n
                     ## Case2: Poor scoring will have a maximum score below or equal to this minMeanCov value -> Images 
                     will not be printed (unless --createAllPngs is given).\n
                     ## Case3: Highly scored taxa that have a minimum score above this minMeanCov value -> Images will 
@@ -77,7 +77,7 @@ parser.add_argument(
 parser.add_argument(
     "--minWindows",
     default=5,
-    help="Choose the least number of 100kbp windows per organism that should be taken into account.\n "
+    help="Choose the least number of (default - set in runbatch_sambamba_depth.sh) 100kbp windows per organism that should be taken into account.\n "
          "Generally, more then 5 is suggested, otherwise quartiles q1 or Q3 will be useless. Since we "
          "are focussing on bacteria and bins are 100,000 bp length (50,000bp overlap), there should be "
          "no point on having less then 5 window bins accepted. Default: 5.",

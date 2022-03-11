@@ -9,6 +9,8 @@
 USE_SLURM: "yes"
 SLURM_CUSTOM_PARAMS: "srun -p normal -c 12"
 SLURM_CUSTOM_PARAMS_SINGLECORE: "srun -p normal -c 1"
+#SLURM_CUSTOM_PARAMS: ""
+#SLURM_CUSTOM_PARAMS_SINGLECORE: ""
 # use a non-SLURM scheduler (yes, no)
 USE_CUSTOM_SCHED: "no"
 CUSTOM_SCHED_CUSTOM_PARAMS: "bsub -q queue -p cores"
