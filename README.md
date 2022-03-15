@@ -113,7 +113,7 @@ conda env create -f env.wochenende.minimal.yml
 
 4. Download a reference sequence from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
 
-4a. If you want to use bwa mem as aligner, you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`. Minimap2 works with fasta directly without this step.
+4. a) If you want to use bwa mem as aligner (recommended for short reads), you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`. Minimap2 works with fasta directly without this step.
 
 5. Important! Edit the configuration section of `config.yaml` to set the paths to the tools, tmp directory and reference sequences. Use a code editor to avoid breaking the yaml format.
 
@@ -121,10 +121,12 @@ conda env create -f env.wochenende.minimal.yml
 
 7. Run `bash setup.sh` to configure Wochenende BASH environment variables (for current user and server only)
 
-8. Activate the conda environment before running the pipeline.
+8. Log out, and log back in to allow bash to read the environment variables (or `source ~/.bashrc` )
+
+9. Activate the conda environment before running the pipeline.
 `conda activate wochenende`
 
-9. Optional: run the tests, see below.
+10. Optional: run the tests, see below.
 
 ### Update conda environment
 If there is already a conda environment named wochenende:
