@@ -21,6 +21,10 @@ Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford 
   * [Gallery](#gallery)
   
 
+## Preprint 
+
+Please view and cite the Wochenende preprint at https://www.biorxiv.org/content/10.1101/2022.03.18.484377v2
+
 ## Features
 
 Features include (see programs listed below at the bottom of this page)
