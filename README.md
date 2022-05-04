@@ -109,7 +109,7 @@ OR
 
 2. Create a conda environment for the pipeline. You should have first installed miniconda 64-bit Linux.
 ```
-cd wochenende
+cd Wochenende
 conda env create -f env.wochenende.minimal.yml
 ```
 3. Install all the other tools.
