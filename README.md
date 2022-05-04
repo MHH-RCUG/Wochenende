@@ -99,7 +99,7 @@ Once you've got the tools installed and tested, you can look at or run the comma
 
 ## Installation
 
-We recommend using [Bioconda](https://bioconda.github.io/) for installation of the tools used by our pipeline.
+We recommend using [Bioconda](https://bioconda.github.io/) for installation of the tools used by our pipeline. First install miniconda if you have not already done this. Use mamba instead of conda if you like faster installs (follow the mamba install instructions here https://github.com/mamba-org/mamba ) Required libs are listed in the file env.wochenende.minimal.yml
 
 1. Clone or download the repository to your local machine.
 
@@ -110,6 +110,10 @@ OR
 2. Create a conda environment for the pipeline. You should have first installed miniconda 64-bit Linux.
 ```
 cd Wochenende
+# mamba is faster
+mamba env create -f env.wochenende.minimal.yml
+
+# conda is a slower alternative:
 conda env create -f env.wochenende.minimal.yml
 ```
 3. Install all the other tools.
