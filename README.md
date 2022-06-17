@@ -1,5 +1,10 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
+
+# Warning ! Will be deprecated for usage outside Hannover Medical School (June 2022)
+## The cluster version of Wochenende has been reported to be difficult to configure, especially on non-SLURM clusters. We are building a new nextflow version at the following link, please bear with us.
+https://github.com/MHH-RCUG/nf_wochenende
+
 Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is relevant for genomics and metagenomics. Wochenende is simple (python script), portable and is easy to configure with a central config file. 
 
   * [Features](#features)
@@ -20,6 +25,10 @@ Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford 
   * [Tools used](#tools)
   * [Gallery](#gallery)
   
+
+## Preprint 
+
+Please view and cite the Wochenende preprint at https://www.biorxiv.org/content/10.1101/2022.03.18.484377v2
 
 ## Features
 
@@ -95,7 +104,7 @@ Once you've got the tools installed and tested, you can look at or run the comma
 
 ## Installation
 
-We recommend using [Bioconda](https://bioconda.github.io/) for installation of the tools used by our pipeline.
+We recommend using [Bioconda](https://bioconda.github.io/) for installation of the tools used by our pipeline. First install miniconda if you have not already done this. Use mamba instead of conda if you like faster installs (follow the mamba install instructions here https://github.com/mamba-org/mamba ) Required libs are listed in the file env.wochenende.minimal.yml
 
 1. Clone or download the repository to your local machine.
 
@@ -105,13 +114,17 @@ OR
 
 2. Create a conda environment for the pipeline. You should have first installed miniconda 64-bit Linux.
 ```
-cd wochenende
+cd Wochenende
+# mamba is faster
+mamba env create -f env.wochenende.minimal.yml
+
+# conda is a slower alternative:
 conda env create -f env.wochenende.minimal.yml
 ```
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
 
-4. Download a reference sequence from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
+4. Download a reference sequence from https://drive.google.com/drive/folders/1q1btJCxtU15XXqfA-iCyNwgKgQq0SrG4?usp=sharing or from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
 
 4. a) If you want to use bwa mem as aligner (recommended for short reads), you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`. Minimap2 works with fasta directly without this step.
 
