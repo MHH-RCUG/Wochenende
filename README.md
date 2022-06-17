@@ -1,5 +1,10 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
+
+# Warning ! Will be deprecated for usage outside Hannover Medical School (June 2022)
+## The cluster version of Wochenende has been reported to be difficult to configure, especially on non-SLURM clusters. We are building a new nextflow version at the following link, please bear with us.
+https://github.com/MHH-RCUG/nf_wochenende
+
 Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is relevant for genomics and metagenomics. Wochenende is simple (python script), portable and is easy to configure with a central config file. 
 
   * [Features](#features)
@@ -119,7 +124,7 @@ conda env create -f env.wochenende.minimal.yml
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
 
-4. Download a reference sequence from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
+4. Download a reference sequence from https://drive.google.com/drive/folders/1q1btJCxtU15XXqfA-iCyNwgKgQq0SrG4?usp=sharing or from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
 
 4. a) If you want to use bwa mem as aligner (recommended for short reads), you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`. Minimap2 works with fasta directly without this step.
 
