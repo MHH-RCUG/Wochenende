@@ -124,7 +124,7 @@ conda env create -f env.wochenende.minimal.yml
 3. Install all the other tools.
    - [ABRA2](https://github.com/mozack/abra2)
 
-4. Download a reference sequence from https://drive.google.com/drive/folders/1q1btJCxtU15XXqfA-iCyNwgKgQq0SrG4?usp=sharing or from https://owncloud.gwdg.de/index.php/s/TpILOi3TluJZewg, or create your own. 
+4. Download a reference sequence from https://drive.google.com/drive/folders/1q1btJCxtU15XXqfA-iCyNwgKgQq0SrG4?usp=sharing or create your own. 
 
 4. a) If you want to use bwa mem as aligner (recommended for short reads), you'll need to create an index of that fasta reference sequence as usual, eg. `gunzip x.fa && bwa index x.fa x.fa &`. Minimap2 works with fasta directly without this step.
 
