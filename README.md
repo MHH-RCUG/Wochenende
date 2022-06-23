@@ -487,3 +487,7 @@ Optional extras
 ### Gallery
 
 ![Alt text](dependencies/1_AP011540_1_Rothia_mucilaginosa_DY_18_DNA__BAC_8.png?raw=true "Genome coverage plot")
+
+![Alt text](dependencies/bacteria_per_human_cell_haybaler.csv.filt.heatmap.csv_heatmap3_log2.png?raw=true "Heatmap")
+
+![Alt text](dependencies/bacteria_per_human_cell_heattree.csv_KGCF51_no_background_heattree.png?raw=true "Heat tree")
