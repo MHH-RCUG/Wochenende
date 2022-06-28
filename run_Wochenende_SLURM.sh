@@ -96,7 +96,7 @@ $scheduler python3 run_Wochenende.py --metagenome 2021_12_meta_fungi_human_maske
 # 2021_02 reference update of 2020_03, with fungi, can better detect C. diff, and B. subtilis. No UNVERIF sp like one Achromobacter
 # blacklister masked
 #$scheduler python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
-#$scheduler python3 run_Wochenende.p --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem  --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
+#$scheduler python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner bwamem  --nextera --trim_galore --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$scheduler python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner minimap2short --no_abra --mq30 --remove_mismatching 3 --readType SE --debug --no_prinseq --force_restart $fastq
 #$scheduler python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner minimap2short --no_abra --mq30 --remove_mismatching 3 --readType PE --debug --no_prinseq --force_restart $fastq
 #$scheduler python3 run_Wochenende.py --metagenome 2021_02_meta_fungi_human_masked --threads $cpus --aligner minimap2long --longread --no_abra --mq30 --remove_mismatching 250 --readType SE --debug --no_prinseq --force_restart $fastq
