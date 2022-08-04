@@ -302,7 +302,7 @@ def plot_figures(
         df_organism["chromStart"],
         df_organism["meanCoverage"],
         markerfmt="rd",
-        linefmt="white",
+        linefmt="red",
         use_line_collection=True,
     )  # bottom 1 could be used for those with a good score and bad Mean Coverage
     ax2.tick_params(axis="y", labelcolor="tab:red")
