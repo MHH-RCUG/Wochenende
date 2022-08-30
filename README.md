@@ -1,12 +1,12 @@
 # Wochenende - A whole Genome/Metagenome Sequencing Alignment Pipeline
 
-This version has been superseded by an improved Nextflow version available at the following link, with support for more clusters and easier configuration: 
+## This version has been superseded by an improved Nextflow version available at the following link, with support for more clusters and easier configuration: 
 
 https://github.com/MHH-RCUG/nf_wochenende
 
 
-## Warning ! This repository is deprecated for usage outside Hannover Medical School (from June 2022)
-## 
+### Warning ! This repository is deprecated for usage outside Hannover Medical School (from June 2022)
+
 Wochenende runs alignment of short reads (eg Illumina) or long reads (eg Oxford Nanopore) against a reference sequence. It is relevant for genomics and metagenomics. Wochenende is simple (python script), portable and is easy to configure with a central config file. 
 
   * [Features](#features)
